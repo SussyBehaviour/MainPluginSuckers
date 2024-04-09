@@ -1,0 +1,8 @@
+package Thisiscool.features.history;
+
+import mindustry.gen.Player;
+
+public interface HistoryEntry {
+
+    String getMessage(Player player);
+}
