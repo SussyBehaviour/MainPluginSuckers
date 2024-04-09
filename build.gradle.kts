@@ -36,7 +36,13 @@ dependencies {
     implementation("com.github.xzxadixzx.useful-stuffs:effect:$usefulHash")
     implementation("com.github.xzxadixzx.useful-stuffs:menu:$usefulHash")
     implementation("com.github.xzxadixzx.useful-stuffs:security:$usefulHash")
+    compileOnly("com.github.anuken.arc:arc-core:v146")
+    compileOnly("com.github.anuken.arc:arcnet:v146")
 
+    implementation("com.alibaba:fastjson:2.0.40")
+
+    compileOnly("org.projectlombok:lombok:1.18.30")
+    annotationProcessor("org.projectlombok:lombok:1.18.30")
     compileOnly("org.projectlombok:lombok:1.18.30")
     annotationProcessor("org.projectlombok:lombok:1.18.30")
     implementation("com.alibaba:fastjson:2.0.40")
