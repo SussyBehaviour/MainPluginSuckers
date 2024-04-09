@@ -1,5 +1,6 @@
 package Thisiscool.features.menus;
 
+import Thisiscool.features.menus.Interface.View;
 import Thisiscool.features.menus.State.StateKey;
 import arc.Events;
 import arc.func.Cons;
@@ -10,9 +11,10 @@ import arc.struct.Seq;
 import mindustry.game.EventType.PlayerLeave;
 import mindustry.gen.Player;
 
-public abstract class Interface<V extends Interface<V>.View> {
-    protected final ObjectMap<Player, V> views = new ObjectMap<>();
-    protected final Seq<Cons<V>> transformers = new Seq<>();
+
+public abstract class Interface<V extends View> {
+    public final ObjectMap<Player, V> views = new ObjectMap<>();
+    public final Seq<Cons<V>> transformers = new Seq<>();
 
     public final int id = register();
 
@@ -20,10 +22,15 @@ public abstract class Interface<V extends Interface<V>.View> {
         Events.on(PlayerLeave.class, event -> views.remove(event.player));
     }
 
+    // region abstract
+
     public abstract int register();
 
     public abstract V show(Player player, State state, View previous);
     public abstract void hide(Player player);
+
+    // endregion
+    // region show
 
     public V show(Player player) {
         return show(player, State.create());
@@ -65,6 +72,8 @@ public abstract class Interface<V extends Interface<V>.View> {
         return show(parent.player, parent.state.put(key1, value1).put(key2, value2).put(key3, value3), parent);
     }
 
+    // region transform
+
     public Interface<V> transform(Cons<V> transformer) {
         this.transformers.add(transformer);
         return this;
@@ -77,6 +86,8 @@ public abstract class Interface<V extends Interface<V>.View> {
     public <T1, T2> Interface<V> transform(StateKey<T1> key1, StateKey<T2> key2, Cons3<V, T1, T2> transformer) {
         return transform(view -> transformer.get(view, view.state.get(key1), view.state.get(key2)));
     }
+
+    // endregion
 
     public abstract class View {
         public final Player player;
