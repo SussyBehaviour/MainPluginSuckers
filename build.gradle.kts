@@ -33,7 +33,7 @@ dependencies {
     implementation("org.jline:jline-reader:3.21.0")
     implementation("org.jline:jline-console:3.21.0")
     implementation("org.jline:jline-terminal-jna:3.21.0")
-
+    implementation("org.ocpsoft.prettytime:prettytime:5.0.4.Final")
     compileOnly("com.github.anuken.arc:arc-core:v146")
     compileOnly("com.github.anuken.arc:arcnet:v146")
 

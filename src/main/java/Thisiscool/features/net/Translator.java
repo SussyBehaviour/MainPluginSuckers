@@ -2,6 +2,7 @@ package Thisiscool.features.net;
 
 import static Thisiscool.PluginVars.*;
 
+import Thisiscool.MainHelper.Bundle;
 import Thisiscool.database.Cache;
 import Thisiscool.features.menus.MenuHandler.Language;
 import arc.func.Boolf;
@@ -12,7 +13,7 @@ import arc.util.Strings;
 import arc.util.serialization.JsonReader;
 import mindustry.gen.Groups;
 import mindustry.gen.Player;
-import useful.Bundle;
+
 
 public class Translator {
 

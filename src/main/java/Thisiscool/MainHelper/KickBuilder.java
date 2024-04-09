@@ -1,7 +1,7 @@
 package Thisiscool.MainHelper;
 
 import mindustry.net.NetConnection;
-import useful.Bundle;
+
 
 public class KickBuilder {
     public final NetConnection con;

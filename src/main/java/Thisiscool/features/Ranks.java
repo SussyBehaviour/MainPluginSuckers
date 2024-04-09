@@ -1,10 +1,11 @@
 package Thisiscool.features;
 
+import Thisiscool.MainHelper.Bundle;
 import Thisiscool.database.models.PlayerData;
 import arc.struct.Seq;
 import lombok.NoArgsConstructor;
 import mindustry.gen.Player;
-import useful.Bundle;
+
 
 public class Ranks {
 

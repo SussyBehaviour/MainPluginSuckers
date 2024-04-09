@@ -3,11 +3,12 @@ package Thisiscool.features.history;
 import static Thisiscool.utils.Utils.*;
 import static mindustry.Vars.*;
 
+import Thisiscool.MainHelper.Bundle;
 import arc.util.Time;
 import mindustry.game.EventType.BlockBuildEndEvent;
 import mindustry.gen.Player;
 import mindustry.world.blocks.ConstructBlock.ConstructBuild;
-import useful.Bundle;
+
 
 public class BlockEntry implements HistoryEntry {
     public final String uuid;

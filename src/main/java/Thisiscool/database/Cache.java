@@ -1,8 +1,8 @@
 package Thisiscool.database;
 
+import Thisiscool.MainHelper.ExtendedMap;
 import Thisiscool.database.models.PlayerData;
 import mindustry.gen.Player;
-import useful.ExtendedMap;
 
 public class Cache {
 

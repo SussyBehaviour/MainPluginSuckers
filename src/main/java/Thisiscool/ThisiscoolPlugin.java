@@ -4,6 +4,8 @@ import static Thisiscool.config.Config.*;
 import static Thisiscool.utils.Utils.*;
 import static mindustry.Vars.*;
 
+import Thisiscool.MainHelper.Bundle;
+import Thisiscool.MainHelper.Commands;
 import Thisiscool.commands.AdminCommands;
 import Thisiscool.commands.ClientCommands;
 import Thisiscool.commands.DiscordCommands;
@@ -28,8 +30,6 @@ import mindustry.gen.AdminRequestCallPacket;
 import mindustry.mod.Plugin;
 import mindustry.net.Packets.Connect;
 import mindustry.net.Packets.ConnectPacket;
-import useful.Bundle;
-import useful.Commands;
 
 public class ThisiscoolPlugin extends Plugin {
 

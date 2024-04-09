@@ -5,6 +5,8 @@ import static mindustry.Vars.*;
 
 import java.time.Duration;
 
+import Thisiscool.MainHelper.Commands;
+import Thisiscool.MainHelper.Commands.Command;
 import arc.files.Fi;
 import arc.func.Cons3;
 import arc.struct.Seq;
@@ -16,8 +18,6 @@ import mindustry.gen.Player;
 import mindustry.maps.Map;
 import mindustry.type.UnitType;
 import mindustry.world.Block;
-import useful.Commands;
-import useful.Commands.Command;
 
 public class Utils {
 

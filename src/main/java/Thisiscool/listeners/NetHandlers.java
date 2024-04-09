@@ -6,6 +6,7 @@ import static Thisiscool.utils.Checks.*;
 import static Thisiscool.utils.Utils.*;
 import static mindustry.Vars.*;
 
+import Thisiscool.MainHelper.Bundle;
 import Thisiscool.database.Cache;
 import Thisiscool.features.menus.MenuHandler;
 import Thisiscool.features.net.LegenderyCum;
@@ -31,7 +32,6 @@ import mindustry.net.Administration.TraceInfo;
 import mindustry.net.NetConnection;
 import mindustry.net.Packets.Connect;
 import mindustry.net.Packets.ConnectPacket;
-import useful.Bundle;
 
 public class NetHandlers {
 

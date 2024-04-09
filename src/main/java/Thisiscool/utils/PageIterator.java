@@ -3,6 +3,7 @@ package Thisiscool.utils;
 import static Thisiscool.PluginVars.*;
 import static Thisiscool.utils.Utils.*;
 
+import Thisiscool.MainHelper.Bundle;
 import Thisiscool.database.Cache;
 import Thisiscool.discord.MessageContext;
 import Thisiscool.features.menus.MenuHandler;
@@ -21,7 +22,7 @@ import discord4j.core.spec.EmbedCreateSpec.Builder;
 import discord4j.rest.util.Color;
 import mindustry.gen.Groups;
 import mindustry.gen.Player;
-import useful.Bundle;
+
 
 
 public class PageIterator {

@@ -2,6 +2,7 @@ package Thisiscool.features.history;
 
 import static mindustry.Vars.*;
 
+import Thisiscool.MainHelper.Bundle;
 import arc.math.geom.Point2;
 import arc.struct.Seq;
 import arc.util.Structs;
@@ -17,7 +18,7 @@ import mindustry.world.blocks.logic.LogicBlock;
 import mindustry.world.blocks.logic.LogicBlock.LogicBuild;
 import mindustry.world.blocks.power.LightBlock;
 import mindustry.world.blocks.units.UnitFactory.UnitFactoryBuild;
-import useful.Bundle;
+
 
 public class ConfigEntry implements HistoryEntry {
     public final String uuid;

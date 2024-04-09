@@ -4,6 +4,7 @@ import static Thisiscool.PluginVars.*;
 import static Thisiscool.config.Config.*;
 import static mindustry.Vars.*;
 
+import Thisiscool.MainHelper.Bundle;
 import Thisiscool.database.Cache;
 import arc.func.Boolp;
 import arc.math.geom.Position;
@@ -18,7 +19,7 @@ import mindustry.gen.Building;
 import mindustry.type.Item;
 import mindustry.world.Block;
 import mindustry.world.Tile;
-import useful.Bundle;
+
 
 public class Alerts {
 

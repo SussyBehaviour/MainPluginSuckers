@@ -3,10 +3,11 @@ package Thisiscool.features.history;
 import static Thisiscool.utils.Utils.*;
 import static mindustry.Vars.*;
 
+import Thisiscool.MainHelper.Bundle;
 import arc.util.Time;
 import mindustry.game.EventType.BuildRotateEvent;
 import mindustry.gen.Player;
-import useful.Bundle;
+
 
 public class RotateEntry implements HistoryEntry {
     public final String uuid;

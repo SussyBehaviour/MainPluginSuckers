@@ -3,10 +3,11 @@ package Thisiscool.features.votes;
 import static Thisiscool.PluginVars.*;
 import static Thisiscool.utils.Checks.*;
 
+import Thisiscool.MainHelper.Bundle;
 import arc.math.Mathf;
 import mindustry.game.Team;
 import mindustry.gen.Player;
-import useful.Bundle;
+
 
 public class VoteSurrender extends VoteSession {
 

@@ -1,12 +1,9 @@
 package Thisiscool.commands;
 
-import static Thisiscool.PluginVars.*;
 import static Thisiscool.config.Config.*;
-import static Thisiscool.utils.Checks.*;
-import static Thisiscool.utils.Utils.*;
-import static mindustry.Vars.*;
-import static mindustry.server.ServerControl.*;
 
+import Thisiscool.MainHelper.Bundle;
+import Thisiscool.MainHelper.Commands;
 import Thisiscool.database.Cache;
 import Thisiscool.features.menus.MenuHandler;
 import Thisiscool.features.net.LegenderyCum;
@@ -20,8 +17,6 @@ import Thisiscool.utils.Find;
 import Thisiscool.utils.PageIterator;
 import arc.util.Strings;
 import mindustry.gen.Call;
-import useful.Bundle;
-import useful.Commands;
 
 public class ClientCommands {
 

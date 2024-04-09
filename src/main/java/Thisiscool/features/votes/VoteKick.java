@@ -3,10 +3,11 @@ package Thisiscool.features.votes;
 import static Thisiscool.PluginVars.*;
 import static Thisiscool.utils.Checks.*;
 
+import Thisiscool.MainHelper.Bundle;
 import Thisiscool.utils.Admins;
 import mindustry.gen.Groups;
 import mindustry.gen.Player;
-import useful.Bundle;
+
 
 public class VoteKick extends VoteSession {
 

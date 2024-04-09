@@ -2,8 +2,9 @@ package Thisiscool.features.votes;
 
 import static mindustry.Vars.*;
 
+import Thisiscool.MainHelper.Bundle;
 import mindustry.gen.Player;
-import useful.Bundle;
+
 
 public class VoteWaves extends VoteSession {
 

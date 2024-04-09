@@ -8,6 +8,7 @@ import static mindustry.Vars.*;
 import java.time.Instant;
 import java.util.Collections;
 
+import Thisiscool.MainHelper.Bundle;
 import Thisiscool.config.Config.Gamemode;
 import Thisiscool.database.Database;
 import Thisiscool.features.net.LegenderyCum;
@@ -30,7 +31,7 @@ import discord4j.core.object.reaction.ReactionEmoji;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.rest.util.Color;
 import mindustry.gen.Groups;
-import useful.Bundle;
+
 
 public class DiscordIntegration {
 
