@@ -5,8 +5,8 @@ import static Thisiscool.config.Config.Gamemode.*;
 import static mindustry.Vars.*;
 import static mindustry.net.Administration.Config.*;
 
+import Thisiscool.MainHelper.ConfigLoader;
 import arc.util.Log;
-import useful.ConfigLoader;
 
 public class Config {
 

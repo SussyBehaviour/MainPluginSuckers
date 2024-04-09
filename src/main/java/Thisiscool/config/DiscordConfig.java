@@ -3,10 +3,10 @@ package Thisiscool.config;
 import static Thisiscool.PluginVars.*;
 import static mindustry.Vars.*;
 
+import Thisiscool.MainHelper.ConfigLoader;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Log;
-import useful.ConfigLoader;
 
 public class DiscordConfig {
 

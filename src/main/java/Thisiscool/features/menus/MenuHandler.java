@@ -1,13 +1,23 @@
 package Thisiscool.features.menus;
 
 import static Thisiscool.PluginVars.*;
+import static Thisiscool.features.Ranks.*;
+import static Thisiscool.utils.Utils.*;
+import static mindustry.net.Administration.Config.*;
 
 import java.time.Duration;
 
 import Thisiscool.MainHelper.Bundle;
+import Thisiscool.MainHelper.Effects;
 import Thisiscool.database.Cache;
 import Thisiscool.database.models.PlayerData;
-import Thisiscool.features.menus.MenuHandler.EffectsPack;
+import Thisiscool.features.menus.State.StateKey;
+import Thisiscool.features.menus.menu.Menu;
+import Thisiscool.features.menus.menu.Menu.MenuView;
+import Thisiscool.features.menus.menu.Menu.MenuView.OptionData;
+import Thisiscool.features.menus.menu.impl.ConfirmMenu;
+import Thisiscool.features.menus.menu.impl.ListMenu;
+import Thisiscool.features.menus.text.TextInput;
 import Thisiscool.utils.Admins;
 import arc.func.Cons;
 import arc.func.Cons3;
@@ -19,14 +29,6 @@ import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.gen.Player;
 import mindustry.graphics.Pal;
-import useful.Effects;
-import useful.State.StateKey;
-import useful.menu.Menu;
-import useful.menu.Menu.MenuView;
-import useful.menu.Menu.MenuView.OptionData;
-import useful.menu.impl.ConfirmMenu;
-import useful.menu.impl.ListMenu;
-
 @SuppressWarnings("unchecked")
 public class MenuHandler {
 

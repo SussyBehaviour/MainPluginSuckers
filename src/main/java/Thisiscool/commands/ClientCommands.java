@@ -1,6 +1,10 @@
 package Thisiscool.commands;
 
+import static Thisiscool.PluginVars.*;
 import static Thisiscool.config.Config.*;
+import static Thisiscool.utils.Checks.*;
+import static mindustry.Vars.*;
+import static mindustry.server.ServerControl.*;
 
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.MainHelper.Commands;
@@ -15,9 +19,9 @@ import Thisiscool.features.votes.VoteWaves;
 import Thisiscool.listeners.LegenderyCumEvents.AdminRequestEvent;
 import Thisiscool.utils.Find;
 import Thisiscool.utils.PageIterator;
+import Thisiscool.utils.Utils;
 import arc.util.Strings;
 import mindustry.gen.Call;
-
 public class ClientCommands {
 
     public static void load() {
@@ -87,7 +91,7 @@ public class ClientCommands {
                         return;
                     }
 
-                    int sign = voteChoice(args[0]);
+                    int sign = Utils.voteChoice(args[0]);
                     if (invalidVoteSign(player, sign))
                         return;
 
