@@ -29,7 +29,7 @@ dependencies {
 
     implementation("com.discord4j:discord4j-core:3.2.6")
     runtimeOnly("io.netty:netty-transport-native-epoll::linux-aarch_64")
-
+  implementation ("net.time4j:time4j-base:5.9.1")
     implementation("org.jline:jline-reader:3.21.0")
     implementation("org.jline:jline-console:3.21.0")
     implementation("org.jline:jline-terminal-jna:3.21.0")
