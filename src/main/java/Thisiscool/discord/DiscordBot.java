@@ -158,7 +158,7 @@ public class DiscordBot {
                     return;
 
                 if (event.getCustomId().equals("admin-request")) {
-                    var content = event.getValues().getFirst().split("-", 3);
+                    var content = event.getValues().get(0).split("-", 3);
                     if (content.length < 3)
                         return;
 
