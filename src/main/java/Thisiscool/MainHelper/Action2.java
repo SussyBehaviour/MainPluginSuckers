@@ -28,7 +28,7 @@ public interface Action2<V extends View, T> extends Cons2<V, T> {
     }
 
     static <V extends View, T> Action2<View, Object> openWith(Interface<?> next, StateKey<T> key) {
-        return both(hide(), (view, value) -> next.show(view.player, view.state.put(key, value), view));
+        return both(hide(), (view, value) -> next.show(view.player, view.state.put(key,value), view));
     }
 
     static <V extends View, T> Action2<View, Object> openWithout(Interface<?> next, StateKey<T> key) {

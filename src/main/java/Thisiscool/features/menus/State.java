@@ -13,7 +13,7 @@ public record State(ObjectMap<String, Object> map) {
         return new State(new ObjectMap<>()).put(key, value);
     }
 
-    public <T> State put(StateKey<T> key, T value) {
+    public <T> State put(StateKey<T> key, Object value) {
         map.put(key.name, value);
         return this;
     }
