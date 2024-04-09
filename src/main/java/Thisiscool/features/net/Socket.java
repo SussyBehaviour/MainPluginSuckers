@@ -2,6 +2,10 @@ package Thisiscool.features.net;
 
 import static Thisiscool.config.Config.*;
 
+import com.ospx.sock.EventBus.Request;
+import com.ospx.sock.EventBus.Response;
+import com.ospx.sock.Sock;
+
 import arc.func.Cons;
 import arc.util.Log;
 
