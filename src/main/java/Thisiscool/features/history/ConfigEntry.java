@@ -75,16 +75,19 @@ public class ConfigEntry implements HistoryEntry {
                     : Bundle.format("history.config.connect", player, info.lastName, block.emoji(),
                             Seq.with(points).toString(", "), Bundle.formatRelative(player, timestamp));
         } else {
-            message = switch (block) {
-                case LightBlock ignored -> Bundle.format("history.config.color", player, info.lastName, block.emoji(),
+            if (block instanceof LightBlock) {
+                message = Bundle.format("history.config.color", player, info.lastName, block.emoji(),
                         Tmp.c1.set((int) config), Bundle.formatRelative(player, timestamp));
-                case LogicBlock ignored -> Bundle.format("history.config.code", player, info.lastName, block.emoji(),
+            } else if (block instanceof LogicBlock) {
+                message = Bundle.format("history.config.code", player, info.lastName, block.emoji(),
                         Bundle.formatRelative(player, timestamp));
-                case CanvasBlock ignored -> Bundle.format("history.config.image", player, info.lastName, block.emoji(),
+            } else if (block instanceof CanvasBlock) {
+                message = Bundle.format("history.config.image", player, info.lastName, block.emoji(),
                         Bundle.formatRelative(player, timestamp));
-                default -> Bundle.format("history.config.default", player, info.lastName, block.emoji(),
+            } else {
+                message = Bundle.format("history.config.default", player, info.lastName, block.emoji(),
                         Bundle.formatRelative(player, timestamp));
-            };
+            }
         }
 
         return message;
