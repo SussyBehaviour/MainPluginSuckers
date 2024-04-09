@@ -3,7 +3,6 @@ package Thisiscool.MainHelper;
 import Thisiscool.features.menus.Interface;
 import Thisiscool.features.menus.Interface.View;
 import Thisiscool.features.menus.State.StateKey;
-import Thisiscool.features.menus.text.TextInput.TextInputView;
 import arc.func.Cons;
 import mindustry.gen.Call;
 
@@ -11,8 +10,8 @@ import mindustry.gen.Call;
 @SuppressWarnings("unchecked")
 public interface Action<V extends View> extends Cons<V> {
 
-    static <V extends View> Action<TextInputView> none() {
-        return hide();
+    static <V extends View> Action<V> none() {
+        return view -> {}; 
     }
 
     static <V extends View> Action<V> run(Runnable runnable) {

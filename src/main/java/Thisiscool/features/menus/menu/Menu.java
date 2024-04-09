@@ -1,8 +1,8 @@
 package Thisiscool.features.menus.menu;
 
+import Thisiscool.MainHelper.Action;
+import Thisiscool.MainHelper.Action2;
 import Thisiscool.MainHelper.Bundle;
-import Thisiscool.features.menus.Action;
-import Thisiscool.features.menus.Action2;
 import Thisiscool.features.menus.Interface;
 import Thisiscool.features.menus.Interface.View;
 import Thisiscool.features.menus.State;

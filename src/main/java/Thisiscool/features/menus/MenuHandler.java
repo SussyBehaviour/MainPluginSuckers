@@ -207,7 +207,7 @@ public class MenuHandler {
             input.defaultText("kick.reason.default");
             input.textLength(64);
 
-            input.closed(Action.back());
+            input.closed((Runnable) Action.back());
             input.result(text -> Admins.kick(target, input.player, input.state.get(DURATION), text));
         });
 
@@ -219,7 +219,7 @@ public class MenuHandler {
             input.defaultText("ban.reason.default");
             input.textLength(64);
 
-            input.closed(Action.back());
+            input.closed((Runnable) Action.back());
             input.result(text -> Admins.ban(target, input.player, input.state.get(DURATION), text));
         });
 

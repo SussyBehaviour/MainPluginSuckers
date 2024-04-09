@@ -1,6 +1,5 @@
 package Thisiscool.features.menus.menu;
-
-import Thisiscool.features.menus.Action;
+import Thisiscool.MainHelper.Action;
 import Thisiscool.features.menus.menu.Menu.MenuView;
 
 public record MenuOption(String button, Action<MenuView> action) {

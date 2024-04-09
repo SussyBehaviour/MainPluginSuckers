@@ -1,6 +1,6 @@
 package Thisiscool.features.menus.menu.impl;
 
-import Thisiscool.features.menus.Action;
+import Thisiscool.MainHelper.Action;
 import Thisiscool.features.menus.State;
 import Thisiscool.features.menus.State.StateKey;
 import Thisiscool.features.menus.menu.Menu;
