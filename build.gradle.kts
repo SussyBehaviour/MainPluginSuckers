@@ -34,13 +34,6 @@ dependencies {
     implementation("org.jline:jline-console:3.21.0")
     implementation("org.jline:jline-terminal-jna:3.21.0")
 
-    implementation("com.github.xzxadixzx.useful-stuffs:bundle:$usefulHash")
-    implementation("com.github.xzxadixzx.useful-stuffs:collections:$usefulHash")
-    implementation("com.github.xzxadixzx.useful-stuffs:commands:$usefulHash")
-    implementation("com.github.xzxadixzx.useful-stuffs:config:$usefulHash")
-    implementation("com.github.xzxadixzx.useful-stuffs:effect:$usefulHash")
-    implementation("com.github.xzxadixzx.useful-stuffs:menu:$usefulHash")
-    implementation("com.github.xzxadixzx.useful-stuffs:security:$usefulHash")
     compileOnly("com.github.anuken.arc:arc-core:v146")
     compileOnly("com.github.anuken.arc:arcnet:v146")
 
