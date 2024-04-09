@@ -29,28 +29,35 @@ public class SchemeSize {
             Call.clientPacketReliable("Subtitles", JsonIO.write(subtitles));
         });
 
-        if (!config.mode.isDefault) return;
+        if (!config.mode.isDefault)
+            return;
 
         netServer.addPacketHandler("fill", (player, text) -> {
-            if (!player.admin) return;
+            if (!player.admin)
+                return;
 
             var args = text.split(" ");
 
-            int cx = Strings.parseInt(args[3]), cy = Strings.parseInt(args[4]), width = Strings.parseInt(args[5]), height = Strings.parseInt(args[6]);
-            if (invalidArea(player, width, height, maxFillArea)) return;
+            int cx = Strings.parseInt(args[3]), cy = Strings.parseInt(args[4]), width = Strings.parseInt(args[5]),
+                    height = Strings.parseInt(args[6]);
+            if (invalidArea(player, width, height, maxFillArea))
+                return;
 
             Block floor = Find.block(args[0]), block = Find.block(args[1]), overlay = Find.block(args[2]);
             for (int x = cx; x < cx + width; x++)
-                for (int y = cy; y < cy + height; y++) edit(floor, block, overlay, x, y);
+                for (int y = cy; y < cy + height; y++)
+                    edit(floor, block, overlay, x, y);
         });
 
         netServer.addPacketHandler("brush", (player, text) -> {
-            if (!player.admin) return;
+            if (!player.admin)
+                return;
 
             var args = text.split(" ");
 
             int cx = Strings.parseInt(args[3]), cy = Strings.parseInt(args[4]), radius = Strings.parseInt(args[5]);
-            if (invalidArea(player, radius, maxFillArea)) return;
+            if (invalidArea(player, radius, maxFillArea))
+                return;
 
             Block floor = Find.block(args[0]), block = Find.block(args[1]), overlay = Find.block(args[2]);
             Geometry.circle(cx, cy, radius, (x, y) -> edit(floor, block, overlay, x, y));
@@ -59,11 +66,13 @@ public class SchemeSize {
 
     private static void edit(Block floor, Block block, Block overlay, int x, int y) {
         var tile = world.tile(x, y);
-        if (tile == null) return;
+        if (tile == null)
+            return;
 
         if ((floor != null && tile.floor() != floor) || (overlay != null && tile.overlay() != overlay))
             tile.setFloorNet(floor == null ? tile.floor() : floor, overlay == null ? tile.overlay() : overlay);
 
-        if (block != null && tile.block() != block) tile.setNet(block);
+        if (block != null && tile.block() != block)
+            tile.setNet(block);
     }
 }

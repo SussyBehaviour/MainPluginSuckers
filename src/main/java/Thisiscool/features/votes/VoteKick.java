@@ -21,9 +21,11 @@ public class VoteKick extends VoteSession {
 
     @Override
     public void vote(Player player, int sign) {
-        if (alreadyVoted(player, this) || invalidVoteTarget(player, target)) return;
+        if (alreadyVoted(player, this) || invalidVoteTarget(player, target))
+            return;
 
-        Bundle.send(sign == 1 ? "commands.votekick.yes" : "commands.votekick.no", player.coloredName(), target.coloredName(), reason, votes() + sign, votesRequired());
+        Bundle.send(sign == 1 ? "commands.votekick.yes" : "commands.votekick.no", player.coloredName(),
+                target.coloredName(), reason, votes() + sign, votesRequired());
         super.vote(player, sign);
     }
 
@@ -39,7 +41,8 @@ public class VoteKick extends VoteSession {
     @Override
     public void success() {
         stop();
-        Groups.player.each(player -> Bundle.send(player, "commands.votekick.success", target.coloredName(), Bundle.formatDuration(player, kickDuration), reason));
+        Groups.player.each(player -> Bundle.send(player, "commands.votekick.success", target.coloredName(),
+                Bundle.formatDuration(player, kickDuration), reason));
 
         Admins.voteKick(initiator, target, votes, reason);
     }

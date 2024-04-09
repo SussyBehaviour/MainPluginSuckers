@@ -11,6 +11,7 @@ import useful.ConfigLoader;
 public class Config {
 
     public static Config config;
+
     public static void load() {
         config = ConfigLoader.load(Config.class, configFile);
         Log.info("Config loaded. (@)", dataDirectory.child(configFile).absolutePath());
@@ -47,51 +48,67 @@ public class Config {
     public enum Gamemode {
         attack("Attack"),
 
-        Towerdefense("Towerdefense Wars") {{
-            isDefault = false;
-            enableWaves = false;
-            enableSurrender = true;
-        }},
+        Towerdefense("Towerdefense Wars") {
+            {
+                isDefault = false;
+                enableWaves = false;
+                enableSurrender = true;
+            }
+        },
 
-        crawler("Crawler Arena") {{
-            isDefault = false;
-            enableWaves = false;
-        }},
+        crawler("Crawler Arena") {
+            {
+                isDefault = false;
+                enableWaves = false;
+            }
+        },
 
-        Football("Football") {{
-            enableWaves = false;
-            enableSurrender = true;
-        }},
+        Football("Football") {
+            {
+                enableWaves = false;
+                enableSurrender = true;
+            }
+        },
 
-        hexed("Hexed PvP") {{
-            isDefault = false;
-            enableRtv = false;
-            enableWaves = false;
-            enableVotekick = false;
-        }},
+        hexed("Hexed PvP") {
+            {
+                isDefault = false;
+                enableRtv = false;
+                enableWaves = false;
+                enableVotekick = false;
+            }
+        },
 
-        hub("Hub") {{
-            isDefault = false;
-            isMainServer = true;
-            enableRtv = false;
-            enableWaves = false;
-            enableVotekick = false;
-        }},
+        hub("Hub") {
+            {
+                isDefault = false;
+                isMainServer = true;
+                enableRtv = false;
+                enableWaves = false;
+                enableVotekick = false;
+            }
+        },
 
-        msgo("HungerGames") {{
-            isDefault = false;
-            enableRtv = false;
-            enableWaves = false;
-        }},
+        msgo("HungerGames") {
+            {
+                isDefault = false;
+                enableRtv = false;
+                enableWaves = false;
+            }
+        },
 
-        pvp("PvP") {{
-            enableWaves = false;
-            enableSurrender = true;
-        }},
+        pvp("PvP") {
+            {
+                enableWaves = false;
+                enableSurrender = true;
+            }
+        },
 
-        sandbox("Sandbox") {{
-            enableStrict = false;
-        }},
+        sandbox("Sandbox") {
+            {
+                enableStrict = false;
+            }
+        },
 
         survival("Survival"),
         tower("Tower Defense");

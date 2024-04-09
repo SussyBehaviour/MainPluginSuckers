@@ -20,10 +20,7 @@ import lombok.NoArgsConstructor;
         @Index(fields = @Field("uuid")),
         @Index(fields = @Field("ip")),
         @Index(fields = @Field("_id")),
-        @Index(
-                fields = @Field("unbanDate"),
-                options = @IndexOptions(expireAfterSeconds = 0)
-        )
+        @Index(fields = @Field("unbanDate"), options = @IndexOptions(expireAfterSeconds = 0))
 })
 @Data
 @Builder

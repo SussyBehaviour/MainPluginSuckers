@@ -62,12 +62,13 @@ public class Database {
     }
 
     public static PlayerData getPlayerDataOrCreate(String uuid) {
-        return Optional.ofNullable(datastore.find(PlayerData.class).filter(Filters.eq("uuid", uuid)).first()).orElseGet(() -> {
-            var data = new PlayerData(uuid);
-            data.generateID();
+        return Optional.ofNullable(datastore.find(PlayerData.class).filter(Filters.eq("uuid", uuid)).first())
+                .orElseGet(() -> {
+                    var data = new PlayerData(uuid);
+                    data.generateID();
 
-            return savePlayerData(data);
-        });
+                    return savePlayerData(data);
+                });
     }
 
     public static PlayerData savePlayerData(PlayerData data) {
@@ -103,8 +104,8 @@ public class Database {
     public static int generateNextID(String key) {
         return Optional.ofNullable(datastore.find(Counter.class)
                 .filter(Filters.eq("_id", key))
-                .modify(new ModifyOptions().returnDocument(ReturnDocument.AFTER), UpdateOperators.inc("value"))
-        ).orElseGet(() -> datastore.save(new Counter(key))).value;
+                .modify(new ModifyOptions().returnDocument(ReturnDocument.AFTER), UpdateOperators.inc("value")))
+                .orElseGet(() -> datastore.save(new Counter(key))).value;
     }
 
     // endregion

@@ -79,7 +79,10 @@ public class Checks {
     }
 
     public static boolean notKicked(PlayerInfo info) {
-        return check(netServer.admins.getKickTime(info.id, info.lastIP) < Time.millis() && !netServer.admins.isDosBlacklisted(info.lastIP), "This player wasn't kicked from the server.");
+        return check(
+                netServer.admins.getKickTime(info.id, info.lastIP) < Time.millis()
+                        && !netServer.admins.isDosBlacklisted(info.lastIP),
+                "This player wasn't kicked from the server.");
     }
 
     // endregion
@@ -98,7 +101,8 @@ public class Checks {
     }
 
     public static boolean notFound(Player player, UnitType type) {
-        return check(type == null || !available(type), player, "commands.unit-not-found", formatContents(content.units().select(Utils::available)));
+        return check(type == null || !available(type), player, "commands.unit-not-found",
+                formatContents(content.units().select(Utils::available)));
     }
 
     public static boolean notFound(Player player, Block block) {
@@ -114,7 +118,8 @@ public class Checks {
     }
 
     public static boolean notFoundCore(Player player, Block core) {
-        return check(core == null, player, "commands.core-not-found", formatContents(content.blocks().select(CoreBlock.class::isInstance)));
+        return check(core == null, player, "commands.core-not-found",
+                formatContents(content.blocks().select(CoreBlock.class::isInstance)));
     }
 
     public static boolean notFound(Player player, Map map) {
@@ -134,11 +139,14 @@ public class Checks {
     }
 
     public static boolean invalidVotekickTarget(Player player, Player target) {
-        return check(player == target, player, "commands.votekick.player-is-you") || check(target.admin, player, "commands.votekick.player-is-admin") || check(player.team() != target.team(), player, "commands.votekick.player-is-enemy");
+        return check(player == target, player, "commands.votekick.player-is-you")
+                || check(target.admin, player, "commands.votekick.player-is-admin")
+                || check(player.team() != target.team(), player, "commands.votekick.player-is-enemy");
     }
 
     public static boolean invalidVoteTarget(Player player, Player target) {
-        return check(player == target, player, "commands.vote.player-is-you") || check(player.team() != target.team(), player, "commands.vote.player-is-enemy");
+        return check(player == target, player, "commands.vote.player-is-you")
+                || check(player.team() != target.team(), player, "commands.vote.player-is-enemy");
     }
 
     public static boolean invalidSurrenderTeam(Player player) {
@@ -166,7 +174,8 @@ public class Checks {
     }
 
     public static boolean invalidArea(Player player, int width, int height, int maxArea) {
-        return check(width < 0 || height < 0 || width * height > maxArea, player, "commands.invalid-area-rect", maxArea);
+        return check(width < 0 || height < 0 || width * height > maxArea, player, "commands.invalid-area-rect",
+                maxArea);
     }
 
     public static boolean invalidArea(Player player, int radius, int maxArea) {
@@ -194,27 +203,30 @@ public class Checks {
 
     public static boolean noRole(SelectMenuInteractionEvent event, Seq<Long> roleIDs) {
         return check(event.getInteraction()
-                        .getMember()
-                        .map(member -> member.getRoleIds().stream().noneMatch(role -> roleIDs.contains(role.asLong())))
-                        .orElse(true),
+                .getMember()
+                .map(member -> member.getRoleIds().stream().noneMatch(role -> roleIDs.contains(role.asLong())))
+                .orElse(true),
                 () -> event.reply().withEmbeds(EmbedCreateSpec.builder()
                         .color(Color.CINNABAR)
                         .title("Missing Permissions")
-                        .description("You must have one of these roles to use this feature: " + formatRoles(roleIDs, "\n- "))
+                        .description(
+                                "You must have one of these roles to use this feature: " + formatRoles(roleIDs, "\n- "))
                         .build()).withEphemeral(true).subscribe());
     }
 
     public static boolean noRole(MessageContext context, Seq<Long> roleIDs) {
         return check(context.member()
                 .getRoleIds()
-                .stream().noneMatch(role -> roleIDs.contains(role.asLong())), context, "Missing Permissions", "You must have one of these roles to use this feature: @", formatRoles(roleIDs, "\n- "));
+                .stream().noneMatch(role -> roleIDs.contains(role.asLong())), context, "Missing Permissions",
+                "You must have one of these roles to use this feature: @", formatRoles(roleIDs, "\n- "));
     }
 
     public static boolean notMap(MessageContext context) {
         return check(context.message()
                 .getAttachments()
                 .stream()
-                .noneMatch(attachment -> attachment.getFilename().endsWith(mapExtension)), context, "Invalid Attachments", "You need to attach at least one **.@** file.", mapExtension);
+                .noneMatch(attachment -> attachment.getFilename().endsWith(mapExtension)), context,
+                "Invalid Attachments", "You need to attach at least one **.@** file.", mapExtension);
     }
 
     public static boolean notFound(MessageContext context, PlayerData data) {
@@ -226,7 +238,8 @@ public class Checks {
     }
 
     public static boolean notFound(MessageContext context, String server) {
-        return check(!discordConfig.serverToChannel.containsKey(server), context, "Server Not Found", "**Available servers:** @", Strings.join(", ", discordConfig.serverToChannel.keys()));
+        return check(!discordConfig.serverToChannel.containsKey(server), context, "Server Not Found",
+                "**Available servers:** @", Strings.join(", ", discordConfig.serverToChannel.keys()));
     }
 
     // endregion
@@ -245,7 +258,8 @@ public class Checks {
     }
 
     public static boolean invalidDuration(Request<EmbedResponse> request, Duration duration) {
-        return check(duration.isZero(), request, "Invalid Duration", "The provided duration is invalid. (Example: 1h, 30min)");
+        return check(duration.isZero(), request, "Invalid Duration",
+                "The provided duration is invalid. (Example: 1h, 30min)");
     }
 
     public static boolean notRemoved(Request<EmbedResponse> request, Map map) {
@@ -257,7 +271,10 @@ public class Checks {
     }
 
     public static boolean notKicked(Request<EmbedResponse> request, PlayerInfo info) {
-        return check(netServer.admins.getKickTime(info.id, info.lastIP) < Time.millis() && !netServer.admins.isDosBlacklisted(info.lastIP), request, "unkick Failed", "This player wasn't kicked from the server.");
+        return check(
+                netServer.admins.getKickTime(info.id, info.lastIP) < Time.millis()
+                        && !netServer.admins.isDosBlacklisted(info.lastIP),
+                request, "unkick Failed", "This player wasn't kicked from the server.");
     }
 
     public static boolean noRtv(Request<EmbedResponse> request) {
@@ -268,7 +285,8 @@ public class Checks {
     // region utils
 
     private static boolean check(boolean result, Runnable runnable) {
-        if (result) runnable.run();
+        if (result)
+            runnable.run();
         return result;
     }
 
@@ -280,11 +298,13 @@ public class Checks {
         return check(result, () -> Bundle.send(player, key, values));
     }
 
-    private static boolean check(boolean result, MessageContext context, String title, String content, Object... values) {
+    private static boolean check(boolean result, MessageContext context, String title, String content,
+            Object... values) {
         return check(result, () -> context.error(title, content, values).subscribe());
     }
 
-    private static boolean check(boolean result, Request<EmbedResponse> request, String title, String content, Object... values) {
+    private static boolean check(boolean result, Request<EmbedResponse> request, String title, String content,
+            Object... values) {
         return check(result, () -> Socket.respond(request, EmbedResponse.error(title).withContent(content, values)));
     }
 

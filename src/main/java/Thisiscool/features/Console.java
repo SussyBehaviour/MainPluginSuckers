@@ -83,8 +83,10 @@ public class Console {
 
             last = sign;
 
-            if (sign == '\n' || sign == '\r') flush();
-            else super.write(sign);
+            if (sign == '\n' || sign == '\r')
+                flush();
+            else
+                super.write(sign);
         }
 
         @Override

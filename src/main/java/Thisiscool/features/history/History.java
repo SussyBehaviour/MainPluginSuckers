@@ -20,18 +20,21 @@ public class History {
     }
 
     public static void put(Tile tile, HistoryEntry entry) {
-        if (tile == emptyTile) return;
+        if (tile == emptyTile)
+            return;
 
         tile.getLinkedTiles(other -> {
             var queue = get(other.array());
-            if (queue == null) return;
+            if (queue == null)
+                return;
 
             queue.add(entry);
         });
     }
 
     public static HistoryQueue get(int index) {
-        if (index < 0 || index >= history.length) return null;
+        if (index < 0 || index >= history.length)
+            return null;
 
         var queue = history[index];
         if (queue == null)

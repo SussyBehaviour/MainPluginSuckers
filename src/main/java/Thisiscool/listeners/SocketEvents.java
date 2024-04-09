@@ -44,16 +44,19 @@ public class SocketEvents {
         if (config.mode.isMainServer) {
             Socket.on(ServerMessageEvent.class, event -> {
                 var channel = discordConfig.serverToChannel.get(event.server);
-                if (channel == null) return;
+                if (channel == null)
+                    return;
 
                 DiscordIntegration.sendMessage(channel, "`" + event.name + ": " + event.message + "`");
             });
 
             Socket.on(ServerMessageEmbedEvent.class, event -> {
                 var channel = discordConfig.serverToChannel.get(event.server);
-                if (channel == null) return;
+                if (channel == null)
+                    return;
 
-                DiscordIntegration.sendMessageEmbed(channel, EmbedCreateSpec.builder().color(event.color).title(event.title).build());
+                DiscordIntegration.sendMessageEmbed(channel,
+                        EmbedCreateSpec.builder().color(event.color).title(event.title).build());
             });
 
             Socket.on(BanEvent.class, DiscordIntegration::sendBan);
@@ -64,7 +67,8 @@ public class SocketEvents {
         }
 
         Socket.on(DiscordMessageEvent.class, event -> {
-            if (!event.server.equals(config.mode.name())) return;
+            if (!event.server.equals(config.mode.name()))
+                return;
 
             if (event.role == null || event.color == null) {
                 Log.info("[Discord] @: @", event.name, event.message);
@@ -78,7 +82,8 @@ public class SocketEvents {
         Socket.on(BanEvent.class, event -> Groups.player.each(
                 player -> player.uuid().equals(event.ban.uuid) || player.ip().equals(event.ban.ip),
                 player -> {
-                    Admins.kickReason(player, event.ban.remaining(), event.ban.reason, "kick.banned-by-admin", event.ban.adminName).kick();
+                    Admins.kickReason(player, event.ban.remaining(), event.ban.reason, "kick.banned-by-admin",
+                            event.ban.adminName).kick();
                     Bundle.send("events.admin.ban", event.ban.adminName, player.coloredName(), event.ban.reason);
                 }));
 
@@ -94,7 +99,8 @@ public class SocketEvents {
 
         Socket.on(SetRankSyncEvent.class, event -> {
             var player = Find.playerByUUID(event.uuid);
-            if (player == null) return;
+            if (player == null)
+                return;
 
             var data = Cache.get(player);
             data.rank = event.rank;
@@ -103,20 +109,23 @@ public class SocketEvents {
         });
 
         Socket.on(ListRequest.class, request -> {
-            if (!request.server.equals(config.mode.name())) return;
+            if (!request.server.equals(config.mode.name()))
+                return;
 
             switch (request.type) {
-                case "maps" -> PageIterator.formatListResponse(request, availableMaps(), (builder, index, map) -> builder
-                        .append("**").append(index).append(".** ").append(map.plainName())
-                        .append("\n").append("Author: ").append(map.plainAuthor())
-                        .append("\n").append(map.width).append("x").append(map.height)
-                        .append("\n"));
+                case "maps" -> PageIterator.formatListResponse(request, availableMaps(),
+                        (builder, index, map) -> builder
+                                .append("**").append(index).append(".** ").append(map.plainName())
+                                .append("\n").append("Author: ").append(map.plainAuthor())
+                                .append("\n").append(map.width).append("x").append(map.height)
+                                .append("\n"));
 
-                case "players" -> PageIterator.formatListResponse(request, Groups.player.copy(new Seq<>()), (builder, index, player) -> builder
-                        .append("**").append(index).append(".** ").append(player.plainName())
-                        .append("\nID: ").append(Cache.get(player).id)
-                        .append("\nLanguage: ").append(player.locale)
-                        .append("\n"));
+                case "players" -> PageIterator.formatListResponse(request, Groups.player.copy(new Seq<>()),
+                        (builder, index, player) -> builder
+                                .append("**").append(index).append(".** ").append(player.plainName())
+                                .append("\nID: ").append(Cache.get(player).id)
+                                .append("\nLanguage: ").append(player.locale)
+                                .append("\n"));
 
                 default -> throw new IllegalStateException();
             }
@@ -124,22 +133,21 @@ public class SocketEvents {
 
         Socket.on(StatusRequest.class, request -> {
             if (request.server.equals(config.mode.name()))
-                Socket.respond(request, state.isPlaying() ?
-                        EmbedResponse.success("Server Running")
-                                .withField("Players:", String.valueOf(Groups.player.size()))
-                                .withField("Units:", String.valueOf(Groups.unit.size()))
-                                .withField("Map:", state.map.plainName())
-                                .withField("Wave:", String.valueOf(state.wave))
+                Socket.respond(request, state.isPlaying() ? EmbedResponse.success("Server Running")
+                        .withField("Players:", String.valueOf(Groups.player.size()))
+                        .withField("Units:", String.valueOf(Groups.unit.size()))
+                        .withField("Map:", state.map.plainName())
+                        .withField("Wave:", String.valueOf(state.wave))
+                        .withField("TPS:", String.valueOf(graphics.getFramesPerSecond()))
+                        .withField("RAM usage:", app.getJavaHeap() / 1024 / 1024 + " MB")
+                        : EmbedResponse.error("Server Offline")
                                 .withField("TPS:", String.valueOf(graphics.getFramesPerSecond()))
-                                .withField("RAM usage:", app.getJavaHeap() / 1024 / 1024 + " MB") :
-                        EmbedResponse.error("Server Offline")
-                                .withField("TPS:", String.valueOf(graphics.getFramesPerSecond()))
-                                .withField("RAM usage:", app.getJavaHeap() / 1024 / 1024 + " MB")
-                );
+                                .withField("RAM usage:", app.getJavaHeap() / 1024 / 1024 + " MB"));
         });
 
         Socket.on(ExitRequest.class, request -> {
-            if (!request.server.equals(config.mode.name())) return;
+            if (!request.server.equals(config.mode.name()))
+                return;
 
             netServer.kickAll(KickReason.serverRestarting);
             app.post(() -> System.exit(0));
@@ -148,10 +156,12 @@ public class SocketEvents {
         });
 
         Socket.on(ArtvRequest.class, request -> {
-            if (!request.server.equals(config.mode.name()) || noRtv(request)) return;
+            if (!request.server.equals(config.mode.name()) || noRtv(request))
+                return;
 
             var map = request.map == null ? maps.getNextMap(instance.lastMode, state.map) : Find.map(request.map);
-            if (notFound(request, map)) return;
+            if (notFound(request, map))
+                return;
 
             Bundle.send("commands.artv.info", request.admin);
             instance.play(false, () -> world.loadMap(map));
@@ -160,10 +170,12 @@ public class SocketEvents {
         });
 
         Socket.on(MapRequest.class, request -> {
-            if (!request.server.equals(config.mode.name())) return;
+            if (!request.server.equals(config.mode.name()))
+                return;
 
             var map = Find.map(request.map);
-            if (notFound(request, map)) return;
+            if (notFound(request, map))
+                return;
 
             Socket.respond(request, EmbedResponse.success(map.plainName())
                     .withField("Author:", map.plainAuthor())
@@ -173,7 +185,8 @@ public class SocketEvents {
         });
 
         Socket.on(UploadMapRequest.class, request -> {
-            if (!request.server.equals(config.mode.name())) return;
+            if (!request.server.equals(config.mode.name()))
+                return;
 
             var source = Fi.get(request.file);
             var file = customMapDirectory.child(source.name());
@@ -190,15 +203,18 @@ public class SocketEvents {
                         .withField("File:", file.name()));
             } catch (Exception error) {
                 file.delete();
-                Socket.respond(request, EmbedResponse.error("Invalid Map").withContent("**@** is not a valid map.", file.name()));
+                Socket.respond(request,
+                        EmbedResponse.error("Invalid Map").withContent("**@** is not a valid map.", file.name()));
             }
         });
 
         Socket.on(RemoveMapRequest.class, request -> {
-            if (!request.server.equals(config.mode.name())) return;
+            if (!request.server.equals(config.mode.name()))
+                return;
 
             var map = Find.map(request.map);
-            if (notFound(request, map) || notRemoved(request, map)) return;
+            if (notFound(request, map) || notRemoved(request, map))
+                return;
 
             maps.removeMap(map);
             maps.reload();
@@ -209,13 +225,16 @@ public class SocketEvents {
         });
 
         Socket.on(KickRequest.class, request -> {
-            if (!request.server.equals(config.mode.name())) return;
+            if (!request.server.equals(config.mode.name()))
+                return;
 
             var target = Find.player(request.player);
-            if (notFound(request, target)) return;
+            if (notFound(request, target))
+                return;
 
             var duration = parseDuration(request.duration);
-            if (invalidDuration(request, duration)) return;
+            if (invalidDuration(request, duration))
+                return;
 
             Admins.kick(target, request.admin, duration.toMillis(), request.reason);
             Socket.respond(request, EmbedResponse.success("Player Kicked")
@@ -225,26 +244,32 @@ public class SocketEvents {
         });
 
         Socket.on(unkickRequest.class, request -> {
-            if (!request.server.equals(config.mode.name())) return;
+            if (!request.server.equals(config.mode.name()))
+                return;
 
             var info = Find.playerInfo(request.player);
-            if (notFound(request, info) || notKicked(request, info)) return;
+            if (notFound(request, info) || notKicked(request, info))
+                return;
 
             info.lastKicked = 0L;
             netServer.admins.kickedIPs.remove(info.lastIP);
             netServer.admins.dosBlacklist.remove(info.lastIP);
 
-            Socket.respond(request, EmbedResponse.success("Player unkicked").withField("Player:", info.plainLastName()));
+            Socket.respond(request,
+                    EmbedResponse.success("Player unkicked").withField("Player:", info.plainLastName()));
         });
 
         Socket.on(BanRequest.class, request -> {
-            if (!request.server.equals(config.mode.name())) return;
+            if (!request.server.equals(config.mode.name()))
+                return;
 
             var info = Find.playerInfo(request.player);
-            if (notFound(request, info)) return;
+            if (notFound(request, info))
+                return;
 
             var duration = parseDuration(request.duration);
-            if (invalidDuration(request, duration)) return;
+            if (invalidDuration(request, duration))
+                return;
 
             Admins.ban(info, request.admin, duration.toMillis(), request.reason);
             Socket.respond(request, EmbedResponse.success("Player Banned")
@@ -254,13 +279,16 @@ public class SocketEvents {
         });
 
         Socket.on(UnbanRequest.class, request -> {
-            if (!request.server.equals(config.mode.name())) return;
+            if (!request.server.equals(config.mode.name()))
+                return;
 
             var info = Find.playerInfo(request.player);
-            if (notFound(request, info)) return;
+            if (notFound(request, info))
+                return;
 
             var ban = Database.removeBan(info.id, info.lastIP);
-            if (notBanned(request, ban)) return;
+            if (notBanned(request, ban))
+                return;
 
             Socket.respond(request, EmbedResponse.success("Player Unbanned").withField("Player:", ban.playerName));
         });
@@ -282,8 +310,8 @@ public class SocketEvents {
     }
 
     public record VoteKickEvent(String server, String target,
-                                String initiator, String reason,
-                                String votesFor, String votesAgainst) {
+            String initiator, String reason,
+            String votesFor, String votesAgainst) {
     }
 
     public record AdminRequestEvent(String server, PlayerData data) {

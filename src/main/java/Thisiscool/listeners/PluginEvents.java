@@ -48,14 +48,16 @@ import useful.Bundle;
 public class PluginEvents {
 
     public static void load() {
-        Events.on(ServerLoadEvent.class, event -> Socket.send(new ServerMessageEmbedEvent(config.mode.name(), "Server Launched", Color.SUMMER_SKY)));
+        Events.on(ServerLoadEvent.class, event -> Socket
+                .send(new ServerMessageEmbedEvent(config.mode.name(), "Server Launched", Color.SUMMER_SKY)));
 
         Events.on(PlayEvent.class, event -> {
             state.rules.showSpawns = true;
             state.rules.unitPayloadUpdate = true;
 
             state.rules.modeName = config.mode.displayName;
-            state.rules.revealedBlocks.addAll(Blocks.slagCentrifuge, Blocks.heatReactor, Blocks.scrapWall, Blocks.scrapWallLarge, Blocks.scrapWallHuge, Blocks.scrapWallGigantic, Blocks.thruster);
+            state.rules.revealedBlocks.addAll(Blocks.slagCentrifuge, Blocks.heatReactor, Blocks.scrapWall,
+                    Blocks.scrapWallLarge, Blocks.scrapWallHuge, Blocks.scrapWallGigantic, Blocks.thruster);
 
             if (state.rules.infiniteResources)
                 state.rules.revealedBlocks.addAll(Blocks.shieldProjector, Blocks.largeShieldProjector, Blocks.beamLink);
@@ -73,10 +75,12 @@ public class PluginEvents {
         });
 
         Events.on(TapEvent.class, event -> {
-            if (!History.enabled() || !Cache.get(event.player).history) return;
+            if (!History.enabled() || !Cache.get(event.player).history)
+                return;
 
             var queue = History.get(event.tile.array());
-            if (queue == null) return;
+            if (queue == null)
+                return;
 
             var builder = new StringBuilder();
             queue.each(entry -> builder.append("\n").append(entry.getMessage(event.player)));
@@ -88,7 +92,8 @@ public class PluginEvents {
         });
 
         Events.on(BlockBuildEndEvent.class, event -> {
-            if (event.unit == null || !event.unit.isPlayer()) return;
+            if (event.unit == null || !event.unit.isPlayer())
+                return;
 
             if (History.enabled() && event.tile.build != null)
                 History.put(event.tile, new BlockEntry(event));
@@ -101,24 +106,29 @@ public class PluginEvents {
         });
 
         Events.on(BuildRotateEvent.class, event -> {
-            if (event.unit == null || !event.unit.isPlayer()) return;
+            if (event.unit == null || !event.unit.isPlayer())
+                return;
 
             if (History.enabled())
                 History.put(event.build.tile, new RotateEntry(event));
         });
 
         Events.on(BuildSelectEvent.class, event -> {
-            if (event.breaking || event.builder == null || event.builder.buildPlan() == null || !event.builder.isPlayer())
+            if (event.breaking || event.builder == null || event.builder.buildPlan() == null
+                    || !event.builder.isPlayer())
                 return;
 
             Alerts.buildAlert(event);
         });
 
         Events.on(GeneratorPressureExplodeEvent.class, event -> app.post(() -> {
-            if (!Units.canCreate(event.build.team, UnitTypes.latum)) return;
+            if (!Units.canCreate(event.build.team, UnitTypes.latum))
+                return;
 
             Groups.unit.each(unit -> {
-                if (unit instanceof Payloadc payloadc && payloadc.payloads().contains(payload -> payload instanceof BuildPayload buildPayload && buildPayload.build.id == event.build.id)) {
+                if (unit instanceof Payloadc payloadc
+                        && payloadc.payloads().contains(payload -> payload instanceof BuildPayload buildPayload
+                                && buildPayload.build.id == event.build.id)) {
                     payloadc.payloads().clear();
                     payloadc.kill();
                 }
@@ -139,16 +149,16 @@ public class PluginEvents {
             Log.info("@ has connected. [@ / @]", event.player.plainName(), event.player.uuid(), data.id);
             Bundle.send("events.join", event.player.coloredName(), data.id);
 
-            Socket.send(new ServerMessageEmbedEvent(config.mode.name(), event.player.plainName() + " [" + data.id + "] joined", Color.MEDIUM_SEA_GREEN));
+            Socket.send(new ServerMessageEmbedEvent(config.mode.name(),
+                    event.player.plainName() + " [" + data.id + "] joined", Color.MEDIUM_SEA_GREEN));
 
             if (data.welcomeMessage)
                 MenuHandler.showWelcomeMenu(event.player);
             else if (data.discordLink)
                 Call.openURI(event.player.con, discordServerUrl);
 
-            Bundle.send(event.player, event.player.con.mobile ?
-                    "welcome.message.mobile" :
-                    "welcome.message", serverName.string(), discordServerUrl);
+            Bundle.send(event.player, event.player.con.mobile ? "welcome.message.mobile" : "welcome.message",
+                    serverName.string(), discordServerUrl);
         });
 
         Events.on(PlayerLeave.class, event -> {
@@ -160,10 +170,13 @@ public class PluginEvents {
             Log.info("@ has disconnected. [@ / @]", event.player.plainName(), event.player.uuid(), data.id);
             Bundle.send("events.leave", event.player.coloredName(), data.id);
 
-            if (vote != null) vote.left(event.player);
-            if (voteKick != null) voteKick.left(event.player);
+            if (vote != null)
+                vote.left(event.player);
+            if (voteKick != null)
+                voteKick.left(event.player);
 
-            Socket.send(new ServerMessageEmbedEvent(config.mode.name(), event.player.plainName() + " [" + data.id + "] left", Color.CINNABAR));
+            Socket.send(new ServerMessageEmbedEvent(config.mode.name(),
+                    event.player.plainName() + " [" + data.id + "] left", Color.CINNABAR));
         });
 
         instance.gameOverListener = event -> {
@@ -183,18 +196,22 @@ public class PluginEvents {
                     }
             });
 
-            if (config.mode == Gamemode.hexed || config.mode == Gamemode.msgo) return;
+            if (config.mode == Gamemode.hexed || config.mode == Gamemode.msgo)
+                return;
 
             if (state.rules.waves)
-                Log.info("Game over! Reached wave @ with @ players online on map @.", state.wave, Groups.player.size(), state.map.plainName());
+                Log.info("Game over! Reached wave @ with @ players online on map @.", state.wave, Groups.player.size(),
+                        state.map.plainName());
             else
-                Log.info("Game over! Team @ is victorious with @ players online on map @.", event.winner.name, Groups.player.size(), state.map.plainName());
+                Log.info("Game over! Team @ is victorious with @ players online on map @.", event.winner.name,
+                        Groups.player.size(), state.map.plainName());
 
             var map = maps.getNextMap(instance.lastMode, state.map);
             Log.info("Selected next map to be @.", map.plainName());
 
             if (state.rules.pvp)
-                Bundle.infoMessage("events.gameover.pvp", event.winner.coloredName(), map.name(), map.author(), roundExtraTime.num());
+                Bundle.infoMessage("events.gameover.pvp", event.winner.coloredName(), map.name(), map.author(),
+                        roundExtraTime.num());
             else
                 Bundle.infoMessage("events.gameover", map.name(), map.author(), roundExtraTime.num());
 

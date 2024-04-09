@@ -14,7 +14,6 @@ import discord4j.core.spec.MessageCreateFields.File;
 import discord4j.core.spec.MessageCreateMono;
 import discord4j.rest.util.Color;
 
-
 public record MessageContext(Message message, Member member, MessageChannel channel) {
 
     public MessageCreateMono success(String title, String content, Object... values) {
@@ -73,8 +72,10 @@ public record MessageContext(Message message, Member member, MessageChannel chan
             embed.title(response.title);
             embed.fields(response.fields.map(field -> Field.of(field.name(), field.value(), false)));
 
-            if (response.content != null) embed.description(response.content);
-            if (response.footer != null) embed.footer(response.footer, null);
+            if (response.content != null)
+                embed.description(response.content);
+            if (response.footer != null)
+                embed.footer(response.footer, null);
         }).withFiles(response.files.map(Fi::get).map(file -> File.of(file.name(), file.read()))).subscribe();
     }
 

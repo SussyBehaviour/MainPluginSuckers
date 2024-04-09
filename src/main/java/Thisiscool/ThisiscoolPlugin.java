@@ -41,8 +41,7 @@ public class ThisiscoolPlugin extends Plugin {
         Console.load();
         Config.load();
         DiscordConfig.load();
-        
-        // AntiVpn.load(); // https://discord.com/channels/1149629218146230332/1208099245937393714/1208110284338626590
+
         Bundle.load(getClass());
         Commands.load();
 

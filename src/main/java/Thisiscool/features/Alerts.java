@@ -33,7 +33,8 @@ public class Alerts {
     }
 
     public static void load() {
-        if (disabled()) return;
+        if (disabled())
+            return;
 
         dangerousBuildBlocks.put(Blocks.incinerator, () -> !state.rules.infiniteResources);
         dangerousBuildBlocks.put(Blocks.thoriumReactor, () -> state.rules.reactorExplosions);
@@ -44,25 +45,33 @@ public class Alerts {
     }
 
     public static void buildAlert(BuildSelectEvent event) {
-        if (disabled()) return;
+        if (disabled())
+            return;
 
-        if (isDangerousBlock(event.builder.buildPlan().block, event.team, event.tile) && alertsInterval.get(alertsTimer * 60f))
-            Bundle.send(player -> Cache.get(player).alerts, "alerts.dangerous-building", event.builder.getPlayer().coloredName(), event.builder.buildPlan().block.emoji(), event.tile.x, event.tile.y);
+        if (isDangerousBlock(event.builder.buildPlan().block, event.team, event.tile)
+                && alertsInterval.get(alertsTimer * 60f))
+            Bundle.send(player -> Cache.get(player).alerts, "alerts.dangerous-building",
+                    event.builder.getPlayer().coloredName(), event.builder.buildPlan().block.emoji(), event.tile.x,
+                    event.tile.y);
     }
 
     public static void depositAlert(DepositEvent event) {
-        if (disabled()) return;
+        if (disabled())
+            return;
 
         if (isDangerousDeposit(event.tile, event.tile.team, event.item))
-            Bundle.send(player -> Cache.get(player).alerts, "alerts.dangerous-deposit", event.player.coloredName(), event.item.emoji(), event.tile.block.emoji(), event.tile.tileX(), event.tile.tileY());
+            Bundle.send(player -> Cache.get(player).alerts, "alerts.dangerous-deposit", event.player.coloredName(),
+                    event.item.emoji(), event.tile.block.emoji(), event.tile.tileX(), event.tile.tileY());
     }
 
     private static boolean isDangerousBlock(Block block, Team team, Tile tile) {
-        return dangerousBuildBlocks.containsKey(block) && dangerousBuildBlocks.get(block).get() && isNearCore(team, tile);
+        return dangerousBuildBlocks.containsKey(block) && dangerousBuildBlocks.get(block).get()
+                && isNearCore(team, tile);
     }
 
     private static boolean isDangerousDeposit(Building build, Team team, Item item) {
-        return dangerousDepositBlocks.containsKey(build.block) && dangerousDepositBlocks.get(build.block) == item && isNearCore(team, build);
+        return dangerousDepositBlocks.containsKey(build.block) && dangerousDepositBlocks.get(build.block) == item
+                && isNearCore(team, build);
     }
 
     private static boolean isNearCore(Team team, Position position) {

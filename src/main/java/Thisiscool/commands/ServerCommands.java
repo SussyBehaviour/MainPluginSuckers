@@ -47,21 +47,25 @@ public class ServerCommands {
         });
 
         serverHandler.register("host", "[map] [mode]", "Start server on selected map.", args -> {
-            if (alreadyHosting()) return;
+            if (alreadyHosting())
+                return;
 
             Gamemode mode;
             if (args.length > 1) {
                 mode = Find.mode(args[1]);
-                if (notFound(mode, args[1])) return;
+                if (notFound(mode, args[1]))
+                    return;
             } else {
-                mode = Optional.ofNullable(Find.mode(settings.getString("lastServerMode", ""))).orElse(Gamemode.survival);
+                mode = Optional.ofNullable(Find.mode(settings.getString("lastServerMode", "")))
+                        .orElse(Gamemode.survival);
                 Log.info("Default mode selected to be @.", mode.name());
             }
 
             Map map;
             if (args.length > 0) {
                 map = Find.map(args[0]);
-                if (notFound(map, args[0])) return;
+                if (notFound(map, args[0]))
+                    return;
             } else {
                 map = maps.getNextMap(mode, state.map);
                 Log.info("Randomized next map to be @.", map.name());
@@ -88,20 +92,24 @@ public class ServerCommands {
 
         serverHandler.register("kick", "<player> <duration> [reason...]", "Kick a player.", args -> {
             var target = Find.player(args[0]);
-            if (notFound(target, args[0])) return;
+            if (notFound(target, args[0]))
+                return;
 
             var duration = parseDuration(args[1]);
-            if (invalidDuration(duration)) return;
+            if (invalidDuration(duration))
+                return;
 
             var reason = args.length > 2 ? args[2] : "Not Specified";
             Admins.kick(target, "<Console>", duration.toMillis(), reason);
 
-            Log.info("Player @ has been kicked for @ for @.", target.plainName(), Bundle.formatDuration(duration), reason);
+            Log.info("Player @ has been kicked for @ for @.", target.plainName(), Bundle.formatDuration(duration),
+                    reason);
         });
 
         serverHandler.register("unkick", "<player...>", "unkick a player.", args -> {
             var info = Find.playerInfo(args[0]);
-            if (notFound(info, args[0]) || notKicked(info)) return;
+            if (notFound(info, args[0]) || notKicked(info))
+                return;
 
             info.lastKicked = 0L;
             netServer.admins.kickedIPs.remove(info.lastIP);
@@ -120,29 +128,35 @@ public class ServerCommands {
             Log.info("Kicked players: (@)", kicked.size);
             kicked.each((ip, time) -> {
                 var info = netServer.admins.findByIP(ip);
-                Log.info("  Name: @ / UUID: @ / IP: @ / Unban Date: @", info == null ? "unknown" : info.plainLastName(), info == null ? "unknown" : info.id, ip, Bundle.formatDateTime(time));
+                Log.info("  Name: @ / UUID: @ / IP: @ / Unban Date: @", info == null ? "unknown" : info.plainLastName(),
+                        info == null ? "unknown" : info.id, ip, Bundle.formatDateTime(time));
             });
         });
 
         serverHandler.register("ban", "<player> <duration> [reason...]", "Ban a player.", args -> {
             var info = Find.playerInfo(args[0]);
-            if (notFound(info, args[0])) return;
+            if (notFound(info, args[0]))
+                return;
 
             var duration = parseDuration(args[1]);
-            if (invalidDuration(duration)) return;
+            if (invalidDuration(duration))
+                return;
 
             var reason = args.length > 2 ? args[2] : "Not Specified";
             Admins.ban(info, "<Console>", duration.toMillis(), reason);
 
-            Log.info("Player @ has been banned for @ for @.", info.plainLastName(), Bundle.formatDuration(duration), reason);
+            Log.info("Player @ has been banned for @ for @.", info.plainLastName(), Bundle.formatDuration(duration),
+                    reason);
         });
 
         serverHandler.register("unban", "<player...>", "Unban a player.", args -> {
             var info = Find.playerInfo(args[0]);
-            if (notFound(info, args[0])) return;
+            if (notFound(info, args[0]))
+                return;
 
             var ban = Database.removeBan(info.id, info.lastIP);
-            if (notBanned(ban)) return;
+            if (notBanned(ban))
+                return;
 
             Log.info("Player @ has been unbanned.", ban.playerName);
         });
@@ -151,12 +165,14 @@ public class ServerCommands {
             var banned = Database.getBans();
 
             Log.info("Banned players: (@)", banned.size());
-            banned.forEach(ban -> Log.info("  Name: @ / UUID: @ / IP: @ / Unban Date: @", ban.playerName, ban.uuid, ban.ip, Bundle.formatDateTime(1, 2, ban.unbanDate)));
+            banned.forEach(ban -> Log.info("  Name: @ / UUID: @ / IP: @ / Unban Date: @", ban.playerName, ban.uuid,
+                    ban.ip, Bundle.formatDateTime(1, 2, ban.unbanDate)));
         });
 
         serverHandler.register("admin", "<add/fire> <player...>", "Make a player admin.", args -> {
             var info = Find.playerInfo(args[1]);
-            if (notFound(info, args[1])) return;
+            if (notFound(info, args[1]))
+                return;
 
             switch (args[0].toLowerCase()) {
                 case "add" -> {
@@ -192,7 +208,8 @@ public class ServerCommands {
 
         serverHandler.register("stats", "<player...>", "Look up a player stats.", args -> {
             var data = Find.playerData(args[0]);
-            if (notFound(data, args[0])) return;
+            if (notFound(data, args[0]))
+                return;
 
             Log.info("Player Stats");
             Log.info("  Name: @", data.plainName());
@@ -215,10 +232,12 @@ public class ServerCommands {
 
         serverHandler.register("setrank", "<player> <rank>", "Set a player's rank.", args -> {
             var data = Find.playerData(args[0]);
-            if (notFound(data, args[0])) return;
+            if (notFound(data, args[0]))
+                return;
 
             var rank = Find.rank(args[1]);
-            if (notFound(rank, args[1])) return;
+            if (notFound(rank, args[1]))
+                return;
 
             data.rank = rank;
 

@@ -15,7 +15,8 @@ public class VoteWaves extends VoteSession {
 
     @Override
     public void vote(Player player, int sign) {
-        Bundle.send(sign == 1 ? "commands.Waves.yes" : "commands.Waves.no", player.coloredName(), waves, votes() + sign, votesRequired());
+        Bundle.send(sign == 1 ? "commands.Waves.yes" : "commands.Waves.no", player.coloredName(), waves, votes() + sign,
+                votesRequired());
         super.vote(player, sign);
     }
 

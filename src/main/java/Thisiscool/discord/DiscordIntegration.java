@@ -35,7 +35,8 @@ import useful.Bundle;
 public class DiscordIntegration {
 
     public static void sendBan(BanEvent event) {
-        if (!connected) return;
+        if (!connected)
+            return;
 
         banChannel.createMessage(EmbedCreateSpec.builder()
                 .color(Color.CINNABAR)
@@ -49,7 +50,8 @@ public class DiscordIntegration {
     }
 
     public static void sendVoteKick(VoteKickEvent event) {
-        if (!connected) return;
+        if (!connected)
+            return;
 
         votekickChannel.createMessage(EmbedCreateSpec.builder()
                 .color(Color.MOON_YELLOW)
@@ -64,7 +66,8 @@ public class DiscordIntegration {
     }
 
     public static void sendAdminRequest(AdminRequestEvent event) {
-        if (!connected) return;
+        if (!connected)
+            return;
 
         adminChannel.createMessage(EmbedCreateSpec.builder()
                 .color(Color.BISMARK)
@@ -74,18 +77,21 @@ public class DiscordIntegration {
                 .addField("ID:", String.valueOf(event.data().id), false)
                 .footer(Gamemode.getDisplayName(event.server()), null)
                 .timestamp(Instant.now())
-                .build()
-        ).withComponents(ActionRow.of(SelectMenu.of("admin-request",
-                Option.of("Confirm", "confirm-" + event.server() + "-" + event.data().uuid).withDescription("Confirm this request.").withEmoji(ReactionEmoji.unicode("✅")),
-                Option.of("Deny", "deny-" + event.server() + "-" + event.data().uuid).withDescription("Deny this request.").withEmoji(ReactionEmoji.unicode("❌"))
-        ))).subscribe();
+                .build()).withComponents(ActionRow.of(
+                        SelectMenu.of("admin-request",
+                                Option.of("Confirm", "confirm-" + event.server() + "-" + event.data().uuid)
+                                        .withDescription("Confirm this request.").withEmoji(ReactionEmoji.unicode("✅")),
+                                Option.of("Deny", "deny-" + event.server() + "-" + event.data().uuid)
+                                        .withDescription("Deny this request.").withEmoji(ReactionEmoji.unicode("❌")))))
+                .subscribe();
     }
 
     public static void confirm(SelectMenuInteractionEvent event, String server, String uuid) {
         Socket.send(new AdminRequestConfirmEvent(server, uuid));
 
         var data = Database.getPlayerData(uuid);
-        if (data == null) return; // Just in case
+        if (data == null)
+            return; // Just in case
 
         event.edit().withEmbeds(EmbedCreateSpec.builder()
                 .color(Color.MEDIUM_SEA_GREEN)
@@ -102,7 +108,8 @@ public class DiscordIntegration {
         Socket.send(new AdminRequestDenyEvent(server, uuid));
 
         var data = Database.getPlayerData(uuid);
-        if (data == null) return; // Just in case
+        if (data == null)
+            return; // Just in case
 
         event.edit().withEmbeds(EmbedCreateSpec.builder()
                 .color(Color.CINNABAR)
@@ -117,7 +124,8 @@ public class DiscordIntegration {
 
     public static void confirm(String uuid) {
         var info = netServer.admins.getInfoOptional(uuid);
-        if (info == null) return;
+        if (info == null)
+            return;
 
         var player = Find.playerByUUID(info.id);
         if (player != null) {
@@ -130,7 +138,8 @@ public class DiscordIntegration {
 
     public static void deny(String uuid) {
         var info = netServer.admins.getInfoOptional(uuid);
-        if (info == null) return;
+        if (info == null)
+            return;
 
         var player = Find.playerByUUID(info.id);
         if (player != null) {

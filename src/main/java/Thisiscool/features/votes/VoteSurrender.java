@@ -8,7 +8,7 @@ import mindustry.game.Team;
 import mindustry.gen.Player;
 import useful.Bundle;
 
-public class VoteSurrender extends VoteSession{
+public class VoteSurrender extends VoteSession {
 
     public final Team team;
 
@@ -17,9 +17,11 @@ public class VoteSurrender extends VoteSession{
     }
 
     public void vote(Player player, int sign) {
-        if (otherSurrenderTeam(player, team)) return;
+        if (otherSurrenderTeam(player, team))
+            return;
 
-        Bundle.send(sign == 1 ? "commands.surrender.yes" : "commands.surrender.no", player.coloredName(), team.coloredName(), votes() + sign, votesRequired());
+        Bundle.send(sign == 1 ? "commands.surrender.yes" : "commands.surrender.no", player.coloredName(),
+                team.coloredName(), votes() + sign, votesRequired());
         super.vote(player, sign);
     }
 

@@ -1,5 +1,10 @@
 package Thisiscool.utils;
 
+import static Thisiscool.PluginVars.*;
+import static mindustry.Vars.*;
+
+import java.time.Duration;
+
 import arc.files.Fi;
 import arc.func.Cons3;
 import arc.struct.Seq;
@@ -13,11 +18,6 @@ import mindustry.type.UnitType;
 import mindustry.world.Block;
 import useful.Commands;
 import useful.Commands.Command;
-
-import java.time.Duration;
-
-import static Thisiscool.PluginVars.*;
-import static mindustry.Vars.*;
 
 public class Utils {
 
@@ -86,7 +86,8 @@ public class Utils {
 
         while (matcher.find()) {
             long amount = Strings.parseLong(matcher.group(1), 0);
-            if (amount <= 0) continue;
+            if (amount <= 0)
+                continue;
 
             for (var tuple : durationPatterns) {
                 if (tuple.getT1().matcher(matcher.group(2).toLowerCase()).matches()) {
@@ -120,7 +121,8 @@ public class Utils {
         var builder = new StringBuilder();
 
         for (int i = maxPerPage * (page - 1); i < Math.min(maxPerPage * page, values.size); i++) {
-            if (!builder.isEmpty()) builder.append("\n");
+            if (!builder.isEmpty())
+                builder.append("\n");
             formatter.get(builder, i + 1, values.get(i));
         }
 

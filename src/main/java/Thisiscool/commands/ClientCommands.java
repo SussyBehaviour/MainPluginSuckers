@@ -41,7 +41,8 @@ public class ClientCommands {
                     netServer.sendWorldData(player);
                 });
 
-        Commands.create("t").register((args, player) -> Translator.translate(other -> other.team() == player.team(), player, args[0], "commands.t.chat", player.team().color, player.coloredName()));
+        Commands.create("t").register((args, player) -> Translator.translate(other -> other.team() == player.team(),
+                player, args[0], "commands.t.chat", player.team().color, player.coloredName()));
         Commands.create("players").register(PageIterator::players);
 
         Commands.create("settings")
@@ -50,13 +51,16 @@ public class ClientCommands {
 
         Commands.create("hub")
                 .enabled(!config.hubIp.isEmpty())
-                .register((args, player) -> net.pingHost(config.hubIp, config.hubPort, host -> Call.connect(player.con, config.hubIp, config.hubPort), e -> Bundle.send(player, "commands.hub.error")));
+                .register((args, player) -> net.pingHost(config.hubIp, config.hubPort,
+                        host -> Call.connect(player.con, config.hubIp, config.hubPort),
+                        e -> Bundle.send(player, "commands.hub.error")));
 
         Commands.create("stats")
                 .welcomeMessage(true)
                 .register((args, player) -> {
                     var target = args.length > 0 ? Find.player(args[0]) : player;
-                    if (notFound(player, target)) return;
+                    if (notFound(player, target))
+                        return;
 
                     MenuHandler.showStatsMenu(player, target, Cache.get(target));
                 });
@@ -64,10 +68,12 @@ public class ClientCommands {
         Commands.create("votekick")
                 .cooldown(300000L)
                 .register((args, player) -> {
-                    if (votekickDisabled(player) || alreadyVoting(player, voteKick)) return;
+                    if (votekickDisabled(player) || alreadyVoting(player, voteKick))
+                        return;
 
                     var target = Find.player(args[0]);
-                    if (notFound(player, target) || invalidVotekickTarget(player, target)) return;
+                    if (notFound(player, target) || invalidVotekickTarget(player, target))
+                        return;
 
                     voteKick = new VoteKick(player, target, args[1]);
                     voteKick.vote(player, 1);
@@ -75,17 +81,20 @@ public class ClientCommands {
 
         Commands.create("vote")
                 .register((args, player) -> {
-                    if (notVoting(player, voteKick)) return;
+                    if (notVoting(player, voteKick))
+                        return;
 
                     if (args[0].equalsIgnoreCase("c") || args[0].equalsIgnoreCase("cancel")) {
-                        if (notAdmin(player)) return;
+                        if (notAdmin(player))
+                            return;
 
                         voteKick.cancel(player);
                         return;
                     }
 
                     int sign = voteChoice(args[0]);
-                    if (invalidVoteSign(player, sign)) return;
+                    if (invalidVoteSign(player, sign))
+                        return;
 
                     voteKick.vote(player, sign);
                 });
@@ -93,7 +102,8 @@ public class ClientCommands {
         Commands.hidden("wink")
                 .cooldown(300000L)
                 .register((args, player) -> {
-                    if (alreadyAdmin(player)) return;
+                    if (alreadyAdmin(player))
+                        return;
 
                     MenuHandler.showConfirmMenu(player, "commands.login.confirm", () -> {
                         if (!Socket.isConnected()) {
@@ -111,10 +121,12 @@ public class ClientCommands {
                 .cooldown(60000L)
                 .welcomeMessage(true)
                 .register((args, player) -> {
-                    if (alreadyVoting(player, vote)) return;
+                    if (alreadyVoting(player, vote))
+                        return;
 
                     var map = args.length > 0 ? Find.map(args[0]) : maps.getNextMap(instance.lastMode, state.map);
-                    if (notFound(player, map)) return;
+                    if (notFound(player, map))
+                        return;
 
                     vote = new VoteRtv(map);
                     vote.vote(player, 1);
@@ -129,10 +141,12 @@ public class ClientCommands {
                 .cooldown(60000L)
                 .welcomeMessage(true)
                 .register((args, player) -> {
-                    if (alreadyVoting(player, vote)) return;
+                    if (alreadyVoting(player, vote))
+                        return;
 
                     int amount = args.length > 0 ? Strings.parseInt(args[0]) : 1;
-                    if (invalidAmount(player, amount, 1, maxWavesAmount)) return;
+                    if (invalidAmount(player, amount, 1, maxWavesAmount))
+                        return;
 
                     vote = new VoteWaves(amount);
                     vote.vote(player, 1);
@@ -143,7 +157,8 @@ public class ClientCommands {
                 .cooldown(180000L)
                 .welcomeMessage(true)
                 .register((args, player) -> {
-                    if (alreadyVoting(player, vote) || invalidSurrenderTeam(player)) return;
+                    if (alreadyVoting(player, vote) || invalidSurrenderTeam(player))
+                        return;
 
                     vote = new VoteSurrender(player.team());
                     vote.vote(player, 1);

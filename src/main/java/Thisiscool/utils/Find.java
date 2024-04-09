@@ -1,35 +1,44 @@
 package Thisiscool.utils;
 
-import arc.files.Fi;
-import arc.func.Boolf;
-import arc.struct.Seq;
-import arc.util.*;
-import Thisiscool.database.*;
-import Thisiscool.database.models.PlayerData;
-import Thisiscool.features.Ranks.Rank;
-import mindustry.ctype.*;
-import mindustry.game.*;
-import mindustry.gen.*;
-import mindustry.maps.Map;
-import mindustry.net.Administration.PlayerInfo;
-import mindustry.type.*;
-import mindustry.world.Block;
-import mindustry.world.blocks.storage.CoreBlock;
+import static Thisiscool.utils.Utils.*;
+import static mindustry.Vars.*;
 
 import java.util.Optional;
 
-import static Thisiscool.utils.Utils.*;
-import static mindustry.Vars.*;
+import Thisiscool.database.Cache;
+import Thisiscool.database.Database;
+import Thisiscool.database.models.PlayerData;
+import Thisiscool.features.Ranks.Rank;
+import arc.files.Fi;
+import arc.func.Boolf;
+import arc.struct.Seq;
+import arc.util.Strings;
+import arc.util.Structs;
+import mindustry.ctype.ContentType;
+import mindustry.ctype.UnlockableContent;
+import mindustry.game.Gamemode;
+import mindustry.game.Team;
+import mindustry.gen.Groups;
+import mindustry.gen.Player;
+import mindustry.maps.Map;
+import mindustry.net.Administration.PlayerInfo;
+import mindustry.type.Item;
+import mindustry.type.StatusEffect;
+import mindustry.type.UnitType;
+import mindustry.world.Block;
+import mindustry.world.blocks.storage.CoreBlock;
 
 public class Find {
 
     public static Player player(String input) {
         if (canParseID(input)) {
             var player = Groups.player.getByID(parseID(input));
-            if (player != null) return player;
+            if (player != null)
+                return player;
 
             var data = Cache.get(parseID(input));
-            if (data != null) return playerByUUID(data.uuid);
+            if (data != null)
+                return playerByUUID(data.uuid);
         }
 
         return Groups.player.find(player -> deepEquals(player.name, input));
@@ -41,25 +50,30 @@ public class Find {
 
     public static PlayerInfo playerInfo(String input) {
         var player = player(input);
-        if (player != null) return player.getInfo();
+        if (player != null)
+            return player.getInfo();
 
         if (canParseID(input)) {
             var data = Database.getPlayerData(parseID(input));
-            if (data != null) return netServer.admins.getInfoOptional(data.uuid);
+            if (data != null)
+                return netServer.admins.getInfoOptional(data.uuid);
         }
 
-        return Optional.ofNullable(netServer.admins.getInfoOptional(input)).orElseGet(() -> netServer.admins.findByIP(input));
+        return Optional.ofNullable(netServer.admins.getInfoOptional(input))
+                .orElseGet(() -> netServer.admins.findByIP(input));
     }
 
     public static PlayerData playerData(String input) {
         var player = player(input);
-        if (player != null) return Cache.get(player);
+        if (player != null)
+            return Cache.get(player);
 
         return canParseID(input) ? Database.getPlayerData(parseID(input)) : Database.getPlayerData(input);
     }
 
     public static Team team(String input) {
-        return canParseID(input) ? Team.get(parseID(input)) : Structs.find(Team.all, team -> team.name.equalsIgnoreCase(input));
+        return canParseID(input) ? Team.get(parseID(input))
+                : Structs.find(Team.all, team -> team.name.equalsIgnoreCase(input));
     }
 
     public static UnitType unit(String input) {

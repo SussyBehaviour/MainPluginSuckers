@@ -19,7 +19,8 @@ public class Translator {
     public static void translate(String text, String from, String to, Cons<String> result) {
         Http.post(translationApiUrl, "tl=" + to + "&sl=" + from + "&q=" + Strings.encode(text))
                 .error(throwable -> result.get(""))
-                .submit(response -> result.get(new JsonReader().parse(response.getResultAsString()).child().child().asString()));
+                .submit(response -> result
+                        .get(new JsonReader().parse(response.getResultAsString()).child().child().asString()));
     }
 
     public static void translate(Player from, String text) {
@@ -39,7 +40,8 @@ public class Translator {
                 return;
             }
 
-            translate(text, "auto", data.language.code, translated -> result.get(player, translated.isEmpty() ? text : text + " [white]([lightgray]" + translated + "[])"));
+            translate(text, "auto", data.language.code, translated -> result.get(player,
+                    translated.isEmpty() ? text : text + " [white]([lightgray]" + translated + "[])"));
         });
     }
 }
