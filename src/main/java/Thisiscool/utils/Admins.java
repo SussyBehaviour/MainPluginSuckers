@@ -8,9 +8,9 @@ import java.util.Date;
 
 import Thisiscool.database.Database;
 import Thisiscool.database.models.Ban;
-import Thisiscool.features.net.Socket;
-import Thisiscool.listeners.SocketEvents.BanEvent;
-import Thisiscool.listeners.SocketEvents.VoteKickEvent;
+import Thisiscool.features.net.LegenderyCum;
+import Thisiscool.listeners.LegenderyCumEvents.BanEvent;
+import Thisiscool.listeners.LegenderyCumEvents.VoteKickEvent;
 import arc.struct.ObjectIntMap;
 import arc.util.Log;
 import arc.util.Strings;
@@ -98,7 +98,7 @@ public class Admins {
         ban.generateID();
         ban.generatePlayerID();
 
-        Socket.send(new BanEvent(config.mode.name(), Database.addBan(ban)));
+        LegenderyCum.send(new BanEvent(config.mode.name(), Database.addBan(ban)));
     }
 
     public static void voteKick(Player initiator, Player target, ObjectIntMap<Player> votes, String reason) {
@@ -121,7 +121,7 @@ public class Admins {
 
         kickReason(target, kickDuration, reason, "kick.vote-kicked", initiator.coloredName(), votesFor, votesAgainst)
                 .kick(kickDuration);
-        Socket.send(new VoteKickEvent(
+        LegenderyCum.send(new VoteKickEvent(
                 config.mode.name(),
                 target.plainName() + " [" + Database.getPlayerData(target).id + "]",
                 initiator.plainName() + " [" + Database.getPlayerData(initiator).id + "]",

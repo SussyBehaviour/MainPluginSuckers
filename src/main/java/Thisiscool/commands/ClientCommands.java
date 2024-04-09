@@ -9,13 +9,13 @@ import static mindustry.server.ServerControl.*;
 
 import Thisiscool.database.Cache;
 import Thisiscool.features.menus.MenuHandler;
-import Thisiscool.features.net.Socket;
+import Thisiscool.features.net.LegenderyCum;
 import Thisiscool.features.net.Translator;
 import Thisiscool.features.votes.VoteKick;
 import Thisiscool.features.votes.VoteRtv;
 import Thisiscool.features.votes.VoteSurrender;
 import Thisiscool.features.votes.VoteWaves;
-import Thisiscool.listeners.SocketEvents.AdminRequestEvent;
+import Thisiscool.listeners.LegenderyCumEvents.AdminRequestEvent;
 import Thisiscool.utils.Find;
 import Thisiscool.utils.PageIterator;
 import arc.util.Strings;
@@ -106,12 +106,12 @@ public class ClientCommands {
                         return;
 
                     MenuHandler.showConfirmMenu(player, "commands.login.confirm", () -> {
-                        if (!Socket.isConnected()) {
+                        if (!LegenderyCum.isConnected()) {
                             Bundle.send(player, "commands.login.error");
                             return;
                         }
 
-                        Socket.send(new AdminRequestEvent(config.mode.name(), Cache.get(player)));
+                        LegenderyCum.send(new AdminRequestEvent(config.mode.name(), Cache.get(player)));
                         Bundle.send(player, "commands.login.sent");
                     });
                 });

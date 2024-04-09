@@ -14,8 +14,8 @@ import java.util.Optional;
 import Thisiscool.database.Cache;
 import Thisiscool.database.Database;
 import Thisiscool.features.Ranks;
-import Thisiscool.features.net.Socket;
-import Thisiscool.listeners.SocketEvents.ServerMessageEvent;
+import Thisiscool.features.net.LegenderyCum;
+import Thisiscool.listeners.LegenderyCumEvents.ServerMessageEvent;
 import Thisiscool.utils.Admins;
 import Thisiscool.utils.Find;
 import arc.util.CommandHandler;
@@ -87,7 +87,7 @@ public class ServerCommands {
             Log.info("&fi@: &fr&lw@", "&lcServer", "&lw" + args[0]);
             Bundle.send("commands.say.chat", args[0]);
 
-            Socket.send(new ServerMessageEvent(config.mode.name(), "Server", stripDiscord(args[0])));
+            LegenderyCum.send(new ServerMessageEvent(config.mode.name(), "Server", stripDiscord(args[0])));
         });
 
         serverHandler.register("kick", "<player> <duration> [reason...]", "Kick a player.", args -> {

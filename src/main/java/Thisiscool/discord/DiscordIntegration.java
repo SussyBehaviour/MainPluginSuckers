@@ -10,12 +10,12 @@ import java.util.Collections;
 
 import Thisiscool.config.Config.Gamemode;
 import Thisiscool.database.Database;
-import Thisiscool.features.net.Socket;
-import Thisiscool.listeners.SocketEvents.AdminRequestConfirmEvent;
-import Thisiscool.listeners.SocketEvents.AdminRequestDenyEvent;
-import Thisiscool.listeners.SocketEvents.AdminRequestEvent;
-import Thisiscool.listeners.SocketEvents.BanEvent;
-import Thisiscool.listeners.SocketEvents.VoteKickEvent;
+import Thisiscool.features.net.LegenderyCum;
+import Thisiscool.listeners.LegenderyCumEvents.AdminRequestConfirmEvent;
+import Thisiscool.listeners.LegenderyCumEvents.AdminRequestDenyEvent;
+import Thisiscool.listeners.LegenderyCumEvents.AdminRequestEvent;
+import Thisiscool.listeners.LegenderyCumEvents.BanEvent;
+import Thisiscool.listeners.LegenderyCumEvents.VoteKickEvent;
 import Thisiscool.utils.Find;
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;
@@ -87,7 +87,7 @@ public class DiscordIntegration {
     }
 
     public static void confirm(SelectMenuInteractionEvent event, String server, String uuid) {
-        Socket.send(new AdminRequestConfirmEvent(server, uuid));
+        LegenderyCum.send(new AdminRequestConfirmEvent(server, uuid));
 
         var data = Database.getPlayerData(uuid);
         if (data == null)
@@ -105,7 +105,7 @@ public class DiscordIntegration {
     }
 
     public static void deny(SelectMenuInteractionEvent event, String server, String uuid) {
-        Socket.send(new AdminRequestDenyEvent(server, uuid));
+        LegenderyCum.send(new AdminRequestDenyEvent(server, uuid));
 
         var data = Database.getPlayerData(uuid);
         if (data == null)

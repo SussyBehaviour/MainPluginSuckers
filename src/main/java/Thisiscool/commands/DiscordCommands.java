@@ -9,18 +9,18 @@ import java.time.Duration;
 
 import Thisiscool.database.Database;
 import Thisiscool.discord.MessageContext;
-import Thisiscool.features.net.Socket;
-import Thisiscool.listeners.SocketEvents.ArtvRequest;
-import Thisiscool.listeners.SocketEvents.BanRequest;
-import Thisiscool.listeners.SocketEvents.ExitRequest;
-import Thisiscool.listeners.SocketEvents.KickRequest;
-import Thisiscool.listeners.SocketEvents.MapRequest;
-import Thisiscool.listeners.SocketEvents.RemoveMapRequest;
-import Thisiscool.listeners.SocketEvents.SetRankSyncEvent;
-import Thisiscool.listeners.SocketEvents.StatusRequest;
-import Thisiscool.listeners.SocketEvents.UnbanRequest;
-import Thisiscool.listeners.SocketEvents.UploadMapRequest;
-import Thisiscool.listeners.SocketEvents.unkickRequest;
+import Thisiscool.features.net.LegenderyCum;
+import Thisiscool.listeners.LegenderyCumEvents.ArtvRequest;
+import Thisiscool.listeners.LegenderyCumEvents.BanRequest;
+import Thisiscool.listeners.LegenderyCumEvents.ExitRequest;
+import Thisiscool.listeners.LegenderyCumEvents.KickRequest;
+import Thisiscool.listeners.LegenderyCumEvents.MapRequest;
+import Thisiscool.listeners.LegenderyCumEvents.RemoveMapRequest;
+import Thisiscool.listeners.LegenderyCumEvents.SetRankSyncEvent;
+import Thisiscool.listeners.LegenderyCumEvents.StatusRequest;
+import Thisiscool.listeners.LegenderyCumEvents.UnbanRequest;
+import Thisiscool.listeners.LegenderyCumEvents.UploadMapRequest;
+import Thisiscool.listeners.LegenderyCumEvents.unkickRequest;
 import Thisiscool.utils.Find;
 import Thisiscool.utils.PageIterator;
 import arc.util.CommandHandler;
@@ -53,7 +53,7 @@ public class DiscordCommands {
             if (notFound(context, server))
                 return;
 
-            Socket.request(new StatusRequest(server), context::reply, context::timeout);
+            LegenderyCum.request(new StatusRequest(server), context::reply, context::timeout);
         });
 
         discordHandler.<MessageContext>register("exit", "<server>", "Exit the server application.", (args, context) -> {
@@ -64,7 +64,7 @@ public class DiscordCommands {
             if (notFound(context, server))
                 return;
 
-            Socket.request(new ExitRequest(server), context::reply, context::timeout);
+            LegenderyCum.request(new ExitRequest(server), context::reply, context::timeout);
         });
 
         discordHandler.<MessageContext>register("artv", "<server> [map...]", "Force map change.", (args, context) -> {
@@ -75,7 +75,7 @@ public class DiscordCommands {
             if (notFound(context, server))
                 return;
 
-            Socket.request(new ArtvRequest(server, args.length > 1 ? args[1] : null, context.member().getDisplayName()),
+            LegenderyCum.request(new ArtvRequest(server, args.length > 1 ? args[1] : null, context.member().getDisplayName()),
                     context::reply, context::timeout);
         });
 
@@ -84,7 +84,7 @@ public class DiscordCommands {
             if (notFound(context, server))
                 return;
 
-            Socket.request(new MapRequest(server, args[1]), context::reply, context::timeout);
+            LegenderyCum.request(new MapRequest(server, args[1]), context::reply, context::timeout);
         });
 
         discordHandler.<MessageContext>register("uploadmap", "<server>", "Upload a map to the server.",
@@ -104,7 +104,7 @@ public class DiscordCommands {
                                 var file = tmpDirectory.child(attachment.getFilename());
                                 file.writeBytes(response.getResult());
 
-                                Socket.request(new UploadMapRequest(server, file.absolutePath()), context::reply,
+                                LegenderyCum.request(new UploadMapRequest(server, file.absolutePath()), context::reply,
                                         context::timeout);
                             }));
                 });
@@ -118,7 +118,7 @@ public class DiscordCommands {
                     if (notFound(context, server))
                         return;
 
-                    Socket.request(new RemoveMapRequest(server, args[1]), context::reply, context::timeout);
+                    LegenderyCum.request(new RemoveMapRequest(server, args[1]), context::reply, context::timeout);
                 });
 
         discordHandler.<MessageContext>register("kick", "<server> <player> <duration> [reason...]", "Kick a player.",
@@ -130,7 +130,7 @@ public class DiscordCommands {
                     if (notFound(context, server))
                         return;
 
-                    Socket.request(new KickRequest(server, args[1], args[2],
+                    LegenderyCum.request(new KickRequest(server, args[1], args[2],
                             args.length > 3 ? args[3] : "Not Specified", context.member().getDisplayName()),
                             context::reply, context::timeout);
                 });
@@ -144,7 +144,7 @@ public class DiscordCommands {
                     if (notFound(context, server))
                         return;
 
-                    Socket.request(new unkickRequest(server, args[1]), context::reply, context::timeout);
+                    LegenderyCum.request(new unkickRequest(server, args[1]), context::reply, context::timeout);
                 });
 
         discordHandler.<MessageContext>register("ban", "<server> <player> <duration> [reason...]", "Ban a player.",
@@ -156,7 +156,7 @@ public class DiscordCommands {
                     if (notFound(context, server))
                         return;
 
-                    Socket.request(new BanRequest(server, args[1], args[2], args.length > 3 ? args[3] : "Not Specified",
+                    LegenderyCum.request(new BanRequest(server, args[1], args[2], args.length > 3 ? args[3] : "Not Specified",
                             context.member().getDisplayName()), context::reply, context::timeout);
                 });
 
@@ -168,7 +168,7 @@ public class DiscordCommands {
             if (notFound(context, server))
                 return;
 
-            Socket.request(new UnbanRequest(server, args[1]), context::reply, context::timeout);
+            LegenderyCum.request(new UnbanRequest(server, args[1]), context::reply, context::timeout);
         });
 
         discordHandler.<MessageContext>register("stats", "<player...>", "Look up a player stats.", (args, context) -> {
@@ -216,7 +216,7 @@ public class DiscordCommands {
                     data.rank = rank;
                     Database.savePlayerData(data);
 
-                    Socket.send(new SetRankSyncEvent(data.uuid, rank));
+                    LegenderyCum.send(new SetRankSyncEvent(data.uuid, rank));
                     context.success(embed -> embed
                             .title("Rank Changed")
                             .addField("Player:", data.plainName(), false)

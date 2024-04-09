@@ -17,8 +17,8 @@ import Thisiscool.features.history.ConfigEntry;
 import Thisiscool.features.history.History;
 import Thisiscool.features.history.RotateEntry;
 import Thisiscool.features.menus.MenuHandler;
-import Thisiscool.features.net.Socket;
-import Thisiscool.listeners.SocketEvents.ServerMessageEmbedEvent;
+import Thisiscool.features.net.LegenderyCum;
+import Thisiscool.listeners.LegenderyCumEvents.ServerMessageEmbedEvent;
 import arc.Events;
 import arc.util.Log;
 import arc.util.Timer;
@@ -48,7 +48,7 @@ import useful.Bundle;
 public class PluginEvents {
 
     public static void load() {
-        Events.on(ServerLoadEvent.class, event -> Socket
+        Events.on(ServerLoadEvent.class, event -> LegenderyCum
                 .send(new ServerMessageEmbedEvent(config.mode.name(), "Server Launched", Color.SUMMER_SKY)));
 
         Events.on(PlayEvent.class, event -> {
@@ -149,7 +149,7 @@ public class PluginEvents {
             Log.info("@ has connected. [@ / @]", event.player.plainName(), event.player.uuid(), data.id);
             Bundle.send("events.join", event.player.coloredName(), data.id);
 
-            Socket.send(new ServerMessageEmbedEvent(config.mode.name(),
+            LegenderyCum.send(new ServerMessageEmbedEvent(config.mode.name(),
                     event.player.plainName() + " [" + data.id + "] joined", Color.MEDIUM_SEA_GREEN));
 
             if (data.welcomeMessage)
@@ -175,7 +175,7 @@ public class PluginEvents {
             if (voteKick != null)
                 voteKick.left(event.player);
 
-            Socket.send(new ServerMessageEmbedEvent(config.mode.name(),
+            LegenderyCum.send(new ServerMessageEmbedEvent(config.mode.name(),
                     event.player.plainName() + " [" + data.id + "] left", Color.CINNABAR));
         });
 

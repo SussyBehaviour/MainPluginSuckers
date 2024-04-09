@@ -6,9 +6,9 @@ import static Thisiscool.utils.Checks.*;
 
 import java.util.function.Predicate;
 
-import Thisiscool.features.net.Socket;
-import Thisiscool.listeners.SocketEvents.DiscordMessageEvent;
-import Thisiscool.listeners.SocketEvents.ListRequest;
+import Thisiscool.features.net.LegenderyCum;
+import Thisiscool.listeners.LegenderyCumEvents.DiscordMessageEvent;
+import Thisiscool.listeners.LegenderyCumEvents.ListRequest;
 import Thisiscool.utils.PageIterator;
 import arc.util.Log;
 import arc.util.Strings;
@@ -124,10 +124,10 @@ public class DiscordBot {
                         .zipWith(roles.map(Role::getColor)
                                 .filter(Predicate.not(Predicate.isEqual(Role.DEFAULT_COLOR)))
                                 .last(Color.WHITE))
-                        .switchIfEmpty(Mono.fromRunnable(() -> Socket
+                        .switchIfEmpty(Mono.fromRunnable(() -> LegenderyCum
                                 .send(new DiscordMessageEvent(server, member.getDisplayName(), message.getContent()))))
                         .subscribe(TupleUtils.consumer((role,
-                                color) -> Socket.send(new DiscordMessageEvent(server, role.getName(),
+                                color) -> LegenderyCum.send(new DiscordMessageEvent(server, role.getName(),
                                         Integer.toHexString(color.getRGB()), member.getDisplayName(),
                                         message.getContent()))));
             });
@@ -137,7 +137,7 @@ public class DiscordBot {
                 if (content.length < 3)
                     return;
 
-                Socket.request(new ListRequest(content[0], content[1], Strings.parseInt(content[2])), response -> {
+                LegenderyCum.request(new ListRequest(content[0], content[1], Strings.parseInt(content[2])), response -> {
                     var embed = EmbedCreateSpec.builder();
 
                     switch (content[0]) {

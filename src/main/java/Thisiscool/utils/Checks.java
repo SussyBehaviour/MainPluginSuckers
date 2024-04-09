@@ -14,9 +14,9 @@ import Thisiscool.database.models.Ban;
 import Thisiscool.database.models.PlayerData;
 import Thisiscool.discord.MessageContext;
 import Thisiscool.features.Ranks.Rank;
-import Thisiscool.features.net.Socket;
+import Thisiscool.features.net.LegenderyCum;
 import Thisiscool.features.votes.VoteSession;
-import Thisiscool.listeners.SocketEvents.EmbedResponse;
+import Thisiscool.listeners.LegenderyCumEvents.EmbedResponse;
 import arc.files.Fi;
 import arc.struct.Seq;
 import arc.util.Log;
@@ -304,7 +304,7 @@ public class Checks {
 
     private static boolean check(boolean result, Request<EmbedResponse> request, String title, String content,
             Object... values) {
-        return check(result, () -> Socket.respond(request, EmbedResponse.error(title).withContent(content, values)));
+        return check(result, () -> LegenderyCum.respond(request, EmbedResponse.error(title).withContent(content, values)));
     }
 
     // endregion

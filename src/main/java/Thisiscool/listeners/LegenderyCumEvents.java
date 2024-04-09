@@ -17,7 +17,7 @@ import Thisiscool.database.models.PlayerData;
 import Thisiscool.discord.DiscordIntegration;
 import Thisiscool.features.Ranks;
 import Thisiscool.features.Ranks.Rank;
-import Thisiscool.features.net.Socket;
+import Thisiscool.features.net.LegenderyCum;
 import Thisiscool.utils.Admins;
 import Thisiscool.utils.Find;
 import Thisiscool.utils.PageIterator;
@@ -36,11 +36,11 @@ import mindustry.io.MapIO;
 import mindustry.net.Packets.KickReason;
 import useful.Bundle;
 
-public class SocketEvents {
+public class LegenderyCumEvents {
 
     public static void load() {
         if (config.mode.isMainServer) {
-            Socket.on(ServerMessageEvent.class, event -> {
+            LegenderyCum.on(ServerMessageEvent.class, event -> {
                 var channel = discordConfig.serverToChannel.get(event.server);
                 if (channel == null)
                     return;
@@ -48,7 +48,7 @@ public class SocketEvents {
                 DiscordIntegration.sendMessage(channel, "`" + event.name + ": " + event.message + "`");
             });
 
-            Socket.on(ServerMessageEmbedEvent.class, event -> {
+            LegenderyCum.on(ServerMessageEmbedEvent.class, event -> {
                 var channel = discordConfig.serverToChannel.get(event.server);
                 if (channel == null)
                     return;
@@ -57,14 +57,14 @@ public class SocketEvents {
                         EmbedCreateSpec.builder().color(event.color).title(event.title).build());
             });
 
-            Socket.on(BanEvent.class, DiscordIntegration::sendBan);
-            Socket.on(VoteKickEvent.class, DiscordIntegration::sendVoteKick);
-            Socket.on(AdminRequestEvent.class, DiscordIntegration::sendAdminRequest);
+            LegenderyCum.on(BanEvent.class, DiscordIntegration::sendBan);
+            LegenderyCum.on(VoteKickEvent.class, DiscordIntegration::sendVoteKick);
+            LegenderyCum.on(AdminRequestEvent.class, DiscordIntegration::sendAdminRequest);
 
             Timer.schedule(DiscordIntegration::updateActivity, 60f, 60f);
         }
 
-        Socket.on(DiscordMessageEvent.class, event -> {
+        LegenderyCum.on(DiscordMessageEvent.class, event -> {
             if (!event.server.equals(config.mode.name()))
                 return;
 
@@ -77,7 +77,7 @@ public class SocketEvents {
             }
         });
 
-        Socket.on(BanEvent.class, event -> Groups.player.each(
+        LegenderyCum.on(BanEvent.class, event -> Groups.player.each(
                 player -> player.uuid().equals(event.ban.uuid) || player.ip().equals(event.ban.ip),
                 player -> {
                     Admins.kickReason(player, event.ban.remaining(), event.ban.reason, "kick.banned-by-admin",
@@ -85,17 +85,17 @@ public class SocketEvents {
                     Bundle.send("events.admin.ban", event.ban.adminName, player.coloredName(), event.ban.reason);
                 }));
 
-        Socket.on(AdminRequestConfirmEvent.class, event -> {
+        LegenderyCum.on(AdminRequestConfirmEvent.class, event -> {
             if (event.server.equals(config.mode.name()))
                 DiscordIntegration.confirm(event.uuid);
         });
 
-        Socket.on(AdminRequestDenyEvent.class, event -> {
+        LegenderyCum.on(AdminRequestDenyEvent.class, event -> {
             if (event.server.equals(config.mode.name()))
                 DiscordIntegration.deny(event.uuid);
         });
 
-        Socket.on(SetRankSyncEvent.class, event -> {
+        LegenderyCum.on(SetRankSyncEvent.class, event -> {
             var player = Find.playerByUUID(event.uuid);
             if (player == null)
                 return;
@@ -106,7 +106,7 @@ public class SocketEvents {
             Ranks.name(player, data);
         });
 
-        Socket.on(ListRequest.class, request -> {
+        LegenderyCum.on(ListRequest.class, request -> {
             if (!request.server.equals(config.mode.name()))
                 return;
 
@@ -129,9 +129,9 @@ public class SocketEvents {
             }
         });
 
-        Socket.on(StatusRequest.class, request -> {
+        LegenderyCum.on(StatusRequest.class, request -> {
             if (request.server.equals(config.mode.name()))
-                Socket.respond(request, state.isPlaying() ? EmbedResponse.success("Server Running")
+                LegenderyCum.respond(request, state.isPlaying() ? EmbedResponse.success("Server Running")
                         .withField("Players:", String.valueOf(Groups.player.size()))
                         .withField("Units:", String.valueOf(Groups.unit.size()))
                         .withField("Map:", state.map.plainName())
@@ -143,17 +143,17 @@ public class SocketEvents {
                                 .withField("RAM usage:", app.getJavaHeap() / 1024 / 1024 + " MB"));
         });
 
-        Socket.on(ExitRequest.class, request -> {
+        LegenderyCum.on(ExitRequest.class, request -> {
             if (!request.server.equals(config.mode.name()))
                 return;
 
             netServer.kickAll(KickReason.serverRestarting);
             app.post(() -> System.exit(0));
 
-            Socket.respond(request, EmbedResponse.success("Server Exited"));
+            LegenderyCum.respond(request, EmbedResponse.success("Server Exited"));
         });
 
-        Socket.on(ArtvRequest.class, request -> {
+        LegenderyCum.on(ArtvRequest.class, request -> {
             if (!request.server.equals(config.mode.name()) || noRtv(request))
                 return;
 
@@ -164,10 +164,10 @@ public class SocketEvents {
             Bundle.send("commands.artv.info", request.admin);
             instance.play(false, () -> world.loadMap(map));
 
-            Socket.respond(request, EmbedResponse.success("Map Changed").withField("Map:", map.plainName()));
+            LegenderyCum.respond(request, EmbedResponse.success("Map Changed").withField("Map:", map.plainName()));
         });
 
-        Socket.on(MapRequest.class, request -> {
+        LegenderyCum.on(MapRequest.class, request -> {
             if (!request.server.equals(config.mode.name()))
                 return;
 
@@ -175,14 +175,14 @@ public class SocketEvents {
             if (notFound(request, map))
                 return;
 
-            Socket.respond(request, EmbedResponse.success(map.plainName())
+            LegenderyCum.respond(request, EmbedResponse.success(map.plainName())
                     .withField("Author:", map.plainAuthor())
                     .withField("Description:", map.plainDescription())
                     .withFooter("@x@", map.width, map.height)
                     .withFile(map.file.absolutePath()));
         });
 
-        Socket.on(UploadMapRequest.class, request -> {
+        LegenderyCum.on(UploadMapRequest.class, request -> {
             if (!request.server.equals(config.mode.name()))
                 return;
 
@@ -196,17 +196,17 @@ public class SocketEvents {
                 var map = MapIO.createMap(file, true);
                 maps.reload();
 
-                Socket.respond(request, EmbedResponse.success("Map Uploaded")
+                LegenderyCum.respond(request, EmbedResponse.success("Map Uploaded")
                         .withField("Map:", map.name())
                         .withField("File:", file.name()));
             } catch (Exception error) {
                 file.delete();
-                Socket.respond(request,
+                LegenderyCum.respond(request,
                         EmbedResponse.error("Invalid Map").withContent("**@** is not a valid map.", file.name()));
             }
         });
 
-        Socket.on(RemoveMapRequest.class, request -> {
+        LegenderyCum.on(RemoveMapRequest.class, request -> {
             if (!request.server.equals(config.mode.name()))
                 return;
 
@@ -217,12 +217,12 @@ public class SocketEvents {
             maps.removeMap(map);
             maps.reload();
 
-            Socket.respond(request, EmbedResponse.success("Map Removed")
+            LegenderyCum.respond(request, EmbedResponse.success("Map Removed")
                     .withField("Map:", map.name())
                     .withField("File:", map.file.name()));
         });
 
-        Socket.on(KickRequest.class, request -> {
+        LegenderyCum.on(KickRequest.class, request -> {
             if (!request.server.equals(config.mode.name()))
                 return;
 
@@ -235,13 +235,13 @@ public class SocketEvents {
                 return;
 
             Admins.kick(target, request.admin, duration.toMillis(), request.reason);
-            Socket.respond(request, EmbedResponse.success("Player Kicked")
+            LegenderyCum.respond(request, EmbedResponse.success("Player Kicked")
                     .withField("Player:", target.plainName())
                     .withField("Duration:", Bundle.formatDuration(duration))
                     .withField("Reason:", request.reason));
         });
 
-        Socket.on(unkickRequest.class, request -> {
+        LegenderyCum.on(unkickRequest.class, request -> {
             if (!request.server.equals(config.mode.name()))
                 return;
 
@@ -253,11 +253,11 @@ public class SocketEvents {
             netServer.admins.kickedIPs.remove(info.lastIP);
             netServer.admins.dosBlacklist.remove(info.lastIP);
 
-            Socket.respond(request,
+            LegenderyCum.respond(request,
                     EmbedResponse.success("Player unkicked").withField("Player:", info.plainLastName()));
         });
 
-        Socket.on(BanRequest.class, request -> {
+        LegenderyCum.on(BanRequest.class, request -> {
             if (!request.server.equals(config.mode.name()))
                 return;
 
@@ -270,13 +270,13 @@ public class SocketEvents {
                 return;
 
             Admins.ban(info, request.admin, duration.toMillis(), request.reason);
-            Socket.respond(request, EmbedResponse.success("Player Banned")
+            LegenderyCum.respond(request, EmbedResponse.success("Player Banned")
                     .withField("Player:", info.plainLastName())
                     .withField("Duration:", Bundle.formatDuration(duration))
                     .withField("Reason:", request.reason));
         });
 
-        Socket.on(UnbanRequest.class, request -> {
+        LegenderyCum.on(UnbanRequest.class, request -> {
             if (!request.server.equals(config.mode.name()))
                 return;
 
@@ -288,7 +288,7 @@ public class SocketEvents {
             if (notBanned(request, ban))
                 return;
 
-            Socket.respond(request, EmbedResponse.success("Player Unbanned").withField("Player:", ban.playerName));
+            LegenderyCum.respond(request, EmbedResponse.success("Player Unbanned").withField("Player:", ban.playerName));
         });
     }
 

@@ -16,10 +16,10 @@ import Thisiscool.features.Alerts;
 import Thisiscool.features.Console;
 import Thisiscool.features.SchemeSize;
 import Thisiscool.features.menus.MenuHandler;
-import Thisiscool.features.net.Socket;
+import Thisiscool.features.net.LegenderyCum;
+import Thisiscool.listeners.LegenderyCumEvents;
 import Thisiscool.listeners.NetHandlers;
 import Thisiscool.listeners.PluginEvents;
-import Thisiscool.listeners.SocketEvents;
 import arc.util.CommandHandler;
 import arc.util.Log;
 import arc.util.Time;
@@ -50,10 +50,10 @@ public class ThisiscoolPlugin extends Plugin {
         SchemeSize.load();
 
         Database.connect();
-        Socket.connect();
+        LegenderyCum.connect();
 
         PluginEvents.load();
-        SocketEvents.load();
+        LegenderyCumEvents.load();
 
         if (config.mode.isMainServer) {
             DiscordBot.connect();

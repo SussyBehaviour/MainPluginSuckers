@@ -1,6 +1,6 @@
 package Thisiscool.discord;
 
-import Thisiscool.listeners.SocketEvents.EmbedResponse;
+import Thisiscool.listeners.LegenderyCumEvents.EmbedResponse;
 import arc.files.Fi;
 import arc.func.Cons;
 import arc.util.Strings;

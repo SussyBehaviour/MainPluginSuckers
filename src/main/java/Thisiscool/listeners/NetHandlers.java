@@ -8,9 +8,9 @@ import static mindustry.Vars.*;
 
 import Thisiscool.database.Cache;
 import Thisiscool.features.menus.MenuHandler;
-import Thisiscool.features.net.Socket;
+import Thisiscool.features.net.LegenderyCum;
 import Thisiscool.features.net.Translator;
-import Thisiscool.listeners.SocketEvents.ServerMessageEvent;
+import Thisiscool.listeners.LegenderyCumEvents.ServerMessageEvent;
 import Thisiscool.utils.Admins;
 import arc.Events;
 import arc.struct.Seq;
@@ -41,7 +41,7 @@ public class NetHandlers {
             Log.info("&fi@: @", "&lc" + from.plainName(), "&lw" + message);
             Translator.translate(from, message);
 
-            Socket.send(
+            LegenderyCum.send(
                     new ServerMessageEvent(config.mode.name(), stripDiscord(from.plainName()), stripDiscord(message)));
             return null;
         }

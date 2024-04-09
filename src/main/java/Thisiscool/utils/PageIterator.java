@@ -6,9 +6,9 @@ import static Thisiscool.utils.Utils.*;
 import Thisiscool.database.Cache;
 import Thisiscool.discord.MessageContext;
 import Thisiscool.features.menus.MenuHandler;
-import Thisiscool.features.net.Socket;
-import Thisiscool.listeners.SocketEvents.ListRequest;
-import Thisiscool.listeners.SocketEvents.ListResponse;
+import Thisiscool.features.net.LegenderyCum;
+import Thisiscool.listeners.LegenderyCumEvents.ListRequest;
+import Thisiscool.listeners.LegenderyCumEvents.ListResponse;
 import arc.func.Cons2;
 import arc.func.Cons3;
 import arc.func.Prov;
@@ -80,7 +80,7 @@ public class PageIterator {
         if (Checks.notFound(context, server))
             return;
 
-        Socket.request(new ListRequest(type, server, 1), response -> context
+        LegenderyCum.request(new ListRequest(type, server, 1), response -> context
                 .reply(embed -> formatter.get(embed, response))
                 .withComponents(createPageButtons(type, server, response))
                 .subscribe(), context::timeout);
@@ -94,7 +94,7 @@ public class PageIterator {
         if (page < 1 || page > pages)
             return;
 
-        Socket.respond(request, new ListResponse(formatList(values, page, formatter), page, pages, values.size));
+        LegenderyCum.respond(request, new ListResponse(formatList(values, page, formatter), page, pages, values.size));
     }
 
     public static void formatMapsPage(Builder embed, ListResponse response) {
