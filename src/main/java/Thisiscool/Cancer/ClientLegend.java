@@ -1,7 +1,9 @@
 package Thisiscool.Cancer;
+
 import java.nio.channels.ClosedSelectorException;
 
 import arc.net.Client;
+import arc.net.Connection;
 import arc.net.DcReason;
 import arc.net.NetListener;
 import arc.util.Log;
@@ -9,7 +11,6 @@ import arc.util.Threads;
 import arc.util.Timer;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import reactor.netty.Connection;
 
 @Getter
 public class ClientLegend extends Legend {

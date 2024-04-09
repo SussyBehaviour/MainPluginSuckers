@@ -5,11 +5,11 @@ import java.nio.channels.ClosedSelectorException;
 import arc.net.Connection;
 import arc.net.DcReason;
 import arc.net.NetListener;
+import arc.net.Server;
 import arc.util.Log;
 import arc.util.Threads;
 import lombok.Getter;
 import lombok.SneakyThrows;
-import mindustry.ui.dialogs.JoinDialog.Server;
 
 @Getter
 public class ServerLegend extends Legend {

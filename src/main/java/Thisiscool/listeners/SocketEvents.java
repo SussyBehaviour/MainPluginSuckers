@@ -8,9 +8,8 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.server.ServerControl.*;
 
-import com.ospx.sock.EventBus.Request;
-import com.ospx.sock.EventBus.Response;
-
+import Thisiscool.Cancer.EventBus.Request;
+import Thisiscool.Cancer.EventBus.Response;
 import Thisiscool.database.Cache;
 import Thisiscool.database.Database;
 import Thisiscool.database.models.Ban;

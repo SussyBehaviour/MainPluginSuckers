@@ -25,7 +25,6 @@ dependencies {
         exclude(group = "com.github.Anuken.Arc")
     }
 
-    implementation("com.github.osp54:Sock:ed404a96ff")
     implementation("dev.morphia.morphia:morphia-core:2.3.8")
 
     implementation("com.discord4j:discord4j-core:3.2.6")

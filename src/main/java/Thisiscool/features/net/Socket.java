@@ -2,20 +2,19 @@ package Thisiscool.features.net;
 
 import static Thisiscool.config.Config.*;
 
-import com.ospx.sock.EventBus.Request;
-import com.ospx.sock.EventBus.Response;
-import com.ospx.sock.Sock;
-
+import Thisiscool.Cancer.EventBus.Request;
+import Thisiscool.Cancer.EventBus.Response;
+import Thisiscool.Cancer.Legend;
 import arc.func.Cons;
 import arc.util.Log;
 
 public class Socket {
 
-    public static Sock socket;
+    public static Legend socket;
 
     public static void connect() {
         try {
-            socket = Sock.create(config.sockPort, config.mode.isMainServer);
+            socket = Legend.create(config.sockPort, config.mode.isMainServer);
             socket.connect();
         } catch (Exception e) {
             Log.err("Failed to connect socket", e);

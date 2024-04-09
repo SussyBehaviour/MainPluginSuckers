@@ -9,8 +9,7 @@ import static mindustry.net.Administration.Config.*;
 
 import java.time.Duration;
 
-import com.ospx.sock.EventBus.Request;
-
+import Thisiscool.Cancer.EventBus.Request;
 import Thisiscool.database.models.Ban;
 import Thisiscool.database.models.PlayerData;
 import Thisiscool.discord.MessageContext;
