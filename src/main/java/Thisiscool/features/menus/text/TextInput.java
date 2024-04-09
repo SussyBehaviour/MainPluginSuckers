@@ -4,7 +4,6 @@ import Thisiscool.MainHelper.Action;
 import Thisiscool.MainHelper.Action2;
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.features.menus.Interface;
-import Thisiscool.features.menus.Interface.View;
 import Thisiscool.features.menus.State;
 import Thisiscool.features.menus.State.StateKey;
 import Thisiscool.features.menus.text.TextInput.TextInputView;
@@ -63,7 +62,7 @@ public class TextInput extends Interface<TextInputView> {
         return (TextInput) super.transform(view -> transformer.get(view, view.state.get(key1), view.state.get(key2)));
     }
 
-    public class TextInputView extends View {
+    public class TextInputView extends Interface.View {
         public String title = "";
         public String content = "";
 
