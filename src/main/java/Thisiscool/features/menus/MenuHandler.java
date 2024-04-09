@@ -172,11 +172,6 @@ public class MenuHandler {
 
             input.result(text -> {
                 var duration = parseDuration(text);
-                if (duration.isZero()) {
-                    invalidDurationMenu.open(input);
-                    return;
-                }
-
                 kickReasonInput.open(input, DURATION, duration.toMillis());
             });
         });
@@ -190,11 +185,6 @@ public class MenuHandler {
 
             input.result(text -> {
                 var duration = parseDuration(text);
-                if (duration.isZero()) {
-                    invalidDurationMenu.open(input);
-                    return;
-                }
-
                 banReasonInput.open(input, DURATION, duration.toMillis());
             });
         });

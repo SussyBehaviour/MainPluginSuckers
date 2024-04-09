@@ -4,7 +4,6 @@ import Thisiscool.MainHelper.Action;
 import Thisiscool.MainHelper.Action2;
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.features.menus.Interface;
-import Thisiscool.features.menus.Interface.View;
 import Thisiscool.features.menus.State;
 import Thisiscool.features.menus.State.StateKey;
 import Thisiscool.features.menus.menu.Menu.MenuView;
@@ -73,7 +72,7 @@ public class Menu extends Interface<MenuView> {
         return this;
     }
 
-    public class MenuView extends View {
+    public class MenuView extends Interface<MenuView>.View {
         public String title = "";
         public String content = "";
 
