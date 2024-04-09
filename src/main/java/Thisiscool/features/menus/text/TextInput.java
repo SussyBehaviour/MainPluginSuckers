@@ -1,8 +1,8 @@
 package Thisiscool.features.menus.text;
 
+import Thisiscool.MainHelper.Action;
+import Thisiscool.MainHelper.Action2;
 import Thisiscool.MainHelper.Bundle;
-import Thisiscool.features.menus.Action;
-import Thisiscool.features.menus.Action2;
 import Thisiscool.features.menus.Interface;
 import Thisiscool.features.menus.Interface.View;
 import Thisiscool.features.menus.State;
@@ -15,7 +15,8 @@ import arc.util.Strings;
 import mindustry.gen.Call;
 import mindustry.gen.Player;
 import mindustry.ui.Menus;
-public class TextInputView<T extends Interface<TextInputView<T>>> extends View<T> {
+
+public class TextInput extends Interface<TextInputView> {
 
     @Override
     public int register() {
@@ -62,7 +63,7 @@ public class TextInputView<T extends Interface<TextInputView<T>>> extends View<T
         return (TextInput) super.transform(view -> transformer.get(view, view.state.get(key1), view.state.get(key2)));
     }
 
-    public class TextInputView extends View<TextInput> {
+    public class TextInputView extends View {
         public String title = "";
         public String content = "";
 
