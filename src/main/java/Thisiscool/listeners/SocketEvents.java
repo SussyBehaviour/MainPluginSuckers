@@ -32,7 +32,6 @@ import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.rest.util.Color;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.var;
 import mindustry.gen.Groups;
 import mindustry.io.MapIO;
 import mindustry.net.Packets.KickReason;
