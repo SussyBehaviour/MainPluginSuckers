@@ -1,5 +1,6 @@
-package Thisiscool.features.menus;
+package Thisiscool.MainHelper;
 
+import Thisiscool.features.menus.Interface;
 import Thisiscool.features.menus.Interface.View;
 import Thisiscool.features.menus.State.StateKey;
 import arc.func.Cons;
@@ -9,28 +10,28 @@ import mindustry.gen.Call;
 @SuppressWarnings("unchecked")
 public interface Action<V extends View> extends Cons<V> {
 
-    static <V extends View> Action<V> none() {
-        return (Action<V>) hide();
+    static <V extends View> Action<View> none() {
+        return hide();
     }
 
     static <V extends View> Action<V> run(Runnable runnable) {
         return view -> runnable.run();
     }
 
-    static <V extends View> Action<V> open(Interface<?> next) {
-        return (Action<V>) both(hide(), next::open);
+    static <V extends View> Action<View> open(Interface<?> next) {
+        return both(hide(), next::open);
     }
 
-    static <V extends View, T> Action<V> openWith(Interface<?> next, StateKey<T> key, T value) {
-        return (Action<V>) both(hide(), view -> next.show(view.player, view.state.put(key, value), view));
+    static <V extends View, T> Action<View> openWith(Interface<?> next, StateKey<T> key, T value) {
+        return both(hide(), view -> next.show(view.player, view.state.put(key, value), view));
     }
 
-    static <V extends View, T> Action<V> openWithout(Interface<?> next, StateKey<T> key) {
-        return (Action<V>) both(hide(), view -> next.show(view.player, view.state.remove(key), view));
+    static <V extends View, T> Action<View> openWithout(Interface<?> next, StateKey<T> key) {
+        return both(hide(), view -> next.show(view.player, view.state.remove(key), view));
     }
 
-    static <V extends View> Action<V> back() {
-        return (Action<V>) both(hide(), view -> {
+    static <V extends View> Action<View> back() {
+        return both(hide(), view -> {
             if (view.parent == null) return;
             view.parent.getInterface().show(view.player, view.state, view.parent.parent);
         });
