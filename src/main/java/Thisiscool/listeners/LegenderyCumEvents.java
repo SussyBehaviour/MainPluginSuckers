@@ -176,6 +176,7 @@ public class LegenderyCumEvents {
                 return;
 
             var map = Find.map(request.map);
+            byte[] mapImageData = MapGenerator.renderMap(map);
             if (notFound(request, map))
                 return;
                 System.out.println("Preparing response for map: " + map.plainName() + 
@@ -184,10 +185,10 @@ public class LegenderyCumEvents {
                 "\nDimensions: " + map.width + "x" + map.height + 
                 "\nAttaching image and file.");
                 LegenderyCum.respond(request, EmbedResponse.success(map.plainName())
+                .withImage(mapImageData)
                 .withField("Author:", map.plainAuthor())
                 .withField("Description:", map.plainDescription())
                 .withFooter("@x@", map.width, map.height)
-                .withImage(MapGenerator.renderMap(map)) 
                 .withFile(map.file.absolutePath()));
         });
 
@@ -429,11 +430,14 @@ public class LegenderyCumEvents {
             this.footer = Strings.format(footer, args);
             return this;
         }
-        public EmbedResponse withImage(byte[] mapImageData) {
-            this.image = "data:image/png;base64," + Base64.getEncoder().encodeToString(mapImageData);
-            System.out.println("Image encoded: " + this.image);
+
+        public EmbedResponse withImage(byte[] imageData) {
+            String encodedImageData = Base64.getEncoder().encodeToString(imageData);
+            String imageDataUrl = "data:image/png;base64," + encodedImageData;
+            this.image = imageDataUrl;
             return this;
         }
+        
         public record Field(String name, String value) {
         }
     }
