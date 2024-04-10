@@ -191,11 +191,10 @@ public class DiscordCommands {
                                     - Attack: @
                                     - Towerdefense: @
                                     - Football: @
-                                    - Hexed: @
                                     - HungerGames: @
                                     - PvP: @
-                                    """, data.attackWins, data.TowerdefenseWins, data.FootballWins, data.hexedWins,
-                                    data.msgoWins, data.pvpWins),
+                                    """, data.attackWins, data.TowerdefenseWins, data.FootballWins,
+                                    data.HungerGamesWins, data.pvpWins),
                             false)
                     .addField("Total playtime:", Bundle.formatDuration(Duration.ofMinutes(data.playTime)), false))
                     .subscribe();

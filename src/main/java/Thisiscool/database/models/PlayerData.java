@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class PlayerData {
+   
     public String uuid;
     public String name = "<unknown>";
 
@@ -44,8 +45,7 @@ public class PlayerData {
     public int attackWins = 0;
     public int TowerdefenseWins = 0;
     public int FootballWins = 0;
-    public int hexedWins = 0;
-    public int msgoWins = 0;
+    public int HungerGamesWins = 0;
     public int pvpWins = 0;
 
     public Rank rank = Rank.player;

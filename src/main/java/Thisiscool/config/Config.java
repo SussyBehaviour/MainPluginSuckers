@@ -48,34 +48,18 @@ public class Config {
     public enum Gamemode {
         attack("Attack"),
 
-        Towerdefense("Towerdefense Wars") {
+        Towerdefense("Towerdefense") {
             {
                 isDefault = false;
-                enableWaves = false;
-                enableSurrender = true;
-            }
-        },
-
-        crawler("Crawler Arena") {
-            {
-                isDefault = false;
-                enableWaves = false;
+                enableWaves = true;
+                enableSurrender = false;
             }
         },
 
         Football("Football") {
             {
-                enableWaves = false;
+                enableWaves = true;
                 enableSurrender = true;
-            }
-        },
-
-        hexed("Hexed PvP") {
-            {
-                isDefault = false;
-                enableRtv = false;
-                enableWaves = false;
-                enableVotekick = false;
             }
         },
 
@@ -89,7 +73,7 @@ public class Config {
             }
         },
 
-        msgo("HungerGames") {
+        hunger("HungerGames") {
             {
                 isDefault = false;
                 enableRtv = false;
@@ -110,8 +94,7 @@ public class Config {
             }
         },
 
-        survival("Survival"),
-        tower("Tower Defense");
+        survival("Survival");
 
         public final String displayName;
 

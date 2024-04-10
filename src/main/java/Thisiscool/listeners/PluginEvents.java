@@ -8,10 +8,8 @@ import static mindustry.net.Administration.Config.*;
 import static mindustry.server.ServerControl.*;
 
 import Thisiscool.MainHelper.Bundle;
-import Thisiscool.config.Config.Gamemode;
 import Thisiscool.database.Cache;
 import Thisiscool.database.Database;
-import Thisiscool.features.Alerts;
 import Thisiscool.features.Ranks;
 import Thisiscool.features.history.BlockEntry;
 import Thisiscool.features.history.ConfigEntry;
@@ -25,14 +23,9 @@ import arc.util.Log;
 import arc.util.Timer;
 import discord4j.rest.util.Color;
 import mindustry.content.Blocks;
-import mindustry.content.UnitTypes;
-import mindustry.entities.Units;
 import mindustry.game.EventType.BlockBuildEndEvent;
 import mindustry.game.EventType.BuildRotateEvent;
-import mindustry.game.EventType.BuildSelectEvent;
 import mindustry.game.EventType.ConfigEvent;
-import mindustry.game.EventType.DepositEvent;
-import mindustry.game.EventType.GeneratorPressureExplodeEvent;
 import mindustry.game.EventType.PlayEvent;
 import mindustry.game.EventType.PlayerJoin;
 import mindustry.game.EventType.PlayerLeave;
@@ -42,8 +35,6 @@ import mindustry.game.EventType.WaveEvent;
 import mindustry.game.EventType.WorldLoadEvent;
 import mindustry.gen.Call;
 import mindustry.gen.Groups;
-import mindustry.gen.Payloadc;
-import mindustry.world.blocks.payloads.BuildPayload;
 
 public class PluginEvents {
 
@@ -62,18 +53,12 @@ public class PluginEvents {
             if (state.rules.infiniteResources)
                 state.rules.revealedBlocks.addAll(Blocks.shieldProjector, Blocks.largeShieldProjector, Blocks.beamLink);
         });
-
         Events.on(WaveEvent.class, event -> Groups.player.each(player -> Cache.get(player).wavesSurvived++));
-
         Events.on(WorldLoadEvent.class, event -> History.reset());
-
-        Events.on(DepositEvent.class, Alerts::depositAlert);
-
         Events.on(ConfigEvent.class, event -> {
             if (History.enabled() && event.player != null)
                 History.put(event.tile.tile, new ConfigEntry(event));
         });
-
         Events.on(TapEvent.class, event -> {
             if (!History.enabled() || !Cache.get(event.player).history)
                 return;
@@ -112,92 +97,49 @@ public class PluginEvents {
             if (History.enabled())
                 History.put(event.build.tile, new RotateEntry(event));
         });
-
-        Events.on(BuildSelectEvent.class, event -> {
-            if (event.breaking || event.builder == null || event.builder.buildPlan() == null
-                    || !event.builder.isPlayer())
-                return;
-
-            Alerts.buildAlert(event);
-        });
-
-        Events.on(GeneratorPressureExplodeEvent.class, event -> app.post(() -> {
-            if (!Units.canCreate(event.build.team, UnitTypes.latum))
-                return;
-
-            Groups.unit.each(unit -> {
-                if (unit instanceof Payloadc payloadc
-                        && payloadc.payloads().contains(payload -> payload instanceof BuildPayload buildPayload
-                                && buildPayload.build.id == event.build.id)) {
-                    payloadc.payloads().clear();
-                    payloadc.kill();
-                }
-            });
-
-            Call.spawnEffect(event.build.x, event.build.y, 0f, UnitTypes.latum);
-            UnitTypes.latum.spawn(event.build.team, event.build);
-        }));
-
         Events.on(PlayerJoin.class, event -> {
             var data = Database.getPlayerDataOrCreate(event.player.uuid());
-
             Cache.put(event.player, data);
             Ranks.name(event.player, data);
-
             app.post(() -> data.effects.join.get(event.player));
-
             Log.info("@ has connected. [@ / @]", event.player.plainName(), event.player.uuid(), data.id);
             Bundle.send("events.join", event.player.coloredName(), data.id);
-
             LegenderyCum.send(new ServerMessageEmbedEvent(config.mode.name(),
                     event.player.plainName() + " [" + data.id + "] joined", Color.MEDIUM_SEA_GREEN));
-
             if (data.welcomeMessage)
                 MenuHandler.showWelcomeMenu(event.player);
             else if (data.discordLink)
                 Call.openURI(event.player.con, discordServerUrl);
-
             Bundle.send(event.player, event.player.con.mobile ? "welcome.message.mobile" : "welcome.message",
                     serverName.string(), discordServerUrl);
         });
-
         Events.on(PlayerLeave.class, event -> {
             var data = Cache.remove(event.player);
             Database.savePlayerData(data);
-
             data.effects.leave.get(event.player);
-
             Log.info("@ has disconnected. [@ / @]", event.player.plainName(), event.player.uuid(), data.id);
             Bundle.send("events.leave", event.player.coloredName(), data.id);
-
             if (vote != null)
                 vote.left(event.player);
             if (voteKick != null)
                 voteKick.left(event.player);
-
             LegenderyCum.send(new ServerMessageEmbedEvent(config.mode.name(),
                     event.player.plainName() + " [" + data.id + "] left", Color.CINNABAR));
         });
-
         instance.gameOverListener = event -> {
             Groups.player.each(player -> {
                 var data = Cache.get(player);
                 data.gamesPlayed++;
-
                 if (player.team() == event.winner)
                     switch (config.mode) {
                         case attack -> data.attackWins++;
                         case Towerdefense -> data.TowerdefenseWins++;
                         case Football -> data.FootballWins++;
-                        case hexed -> data.hexedWins++;
-                        case msgo -> data.msgoWins++;
+                        case hunger -> data.HungerGamesWins++;
                         case pvp -> data.pvpWins++;
                         default -> throw new IllegalArgumentException("Unexpected value: " + config.mode);
                     }
             });
-
-            if (config.mode == Gamemode.hexed || config.mode == Gamemode.msgo)
-                return;
 
             if (state.rules.waves)
                 Log.info("Game over! Reached wave @ with @ players online on map @.", state.wave, Groups.player.size(),
@@ -219,9 +161,6 @@ public class PluginEvents {
 
             instance.play(() -> world.loadMap(map, map.applyRules(instance.lastMode)));
         };
-
-        Timer.schedule(() -> mainExecutor.submit(System::gc), 60f, 60f);
-
         Timer.schedule(() -> Groups.player.each(player -> {
             if (player.unit().moving())
                 Cache.get(player).effects.move.get(player);

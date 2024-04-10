@@ -72,8 +72,8 @@ public class MenuHandler {
             menu.title("stats.title");
             menu.content("stats.content", target.coloredName(), data.id, data.rank.name(menu.player),
                     data.rank.description(menu.player), data.blocksPlaced, data.blocksBroken, data.gamesPlayed,
-                    data.wavesSurvived, data.attackWins, data.TowerdefenseWins, data.FootballWins, data.hexedWins,
-                    data.msgoWins, data.pvpWins, Bundle.formatDuration(menu.player, Duration.ofMinutes(data.playTime)));
+                    data.wavesSurvived, data.attackWins, data.TowerdefenseWins, data.FootballWins,
+                    data.HungerGamesWins, data.pvpWins, Bundle.formatDuration(menu.player, Duration.ofMinutes(data.playTime)));
 
             menu.option("stats.requirements.show", Action.open(requirementsMenu)).row();
             menu.option("ui.button.close");

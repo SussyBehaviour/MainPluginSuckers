@@ -66,7 +66,7 @@ public class LegenderyCumEvents {
         }
 
         LegenderyCum.on(DiscordMessageEvent.class, event -> {
-            if (!event.server.equals(config.mode.name()))
+            if (!event.server.equals(config.mode.displayName))
                 return;
 
             if (event.role == null || event.color == null) {
@@ -87,12 +87,12 @@ public class LegenderyCumEvents {
                 }));
 
         LegenderyCum.on(AdminRequestConfirmEvent.class, event -> {
-            if (event.server.equals(config.mode.name()))
+            if (event.server.equals(config.mode.displayName))
                 DiscordIntegration.confirm(event.uuid);
         });
 
         LegenderyCum.on(AdminRequestDenyEvent.class, event -> {
-            if (event.server.equals(config.mode.name()))
+            if (event.server.equals(config.mode.displayName))
                 DiscordIntegration.deny(event.uuid);
         });
 
@@ -108,7 +108,7 @@ public class LegenderyCumEvents {
         });
 
         LegenderyCum.on(ListRequest.class, request -> {
-            if (!request.server.equals(config.mode.name()))
+            if (!request.server.equals(config.mode.displayName))
                 return;
 
             switch (request.type) {
@@ -131,7 +131,7 @@ public class LegenderyCumEvents {
         });
 
         LegenderyCum.on(StatusRequest.class, request -> {
-            if (request.server.equals(config.mode.name()))
+            if (request.server.equals(config.mode.displayName))
                 LegenderyCum.respond(request, state.isPlaying() ? EmbedResponse.success("Server Running")
                         .withField("Players:", String.valueOf(Groups.player.size()))
                         .withField("Units:", String.valueOf(Groups.unit.size()))
@@ -145,7 +145,7 @@ public class LegenderyCumEvents {
         });
 
         LegenderyCum.on(ExitRequest.class, request -> {
-            if (!request.server.equals(config.mode.name()))
+            if (!request.server.equals(config.mode.displayName))
                 return;
 
             netServer.kickAll(KickReason.serverRestarting);
@@ -155,7 +155,7 @@ public class LegenderyCumEvents {
         });
 
         LegenderyCum.on(ArtvRequest.class, request -> {
-            if (!request.server.equals(config.mode.name()) || noRtv(request))
+            if (!request.server.equals(config.mode.displayName) || noRtv(request))
                 return;
 
             var map = request.map == null ? maps.getNextMap(instance.lastMode, state.map) : Find.map(request.map);
@@ -169,7 +169,7 @@ public class LegenderyCumEvents {
         });
 
         LegenderyCum.on(MapRequest.class, request -> {
-            if (!request.server.equals(config.mode.name()))
+            if (!request.server.equals(config.mode.displayName))
                 return;
 
             var map = Find.map(request.map);
@@ -184,13 +184,12 @@ public class LegenderyCumEvents {
         });
 
         LegenderyCum.on(UploadMapRequest.class, request -> {
-            if (!request.server.equals(config.mode.name()))
+            if (!request.server.equals(config.mode.displayName))
                 return;
 
             var source = Fi.get(request.file);
             var file = customMapDirectory.child(source.name());
 
-            // Перезаписываем содержимое из одного файла в другой
             file.writeBytes(source.readBytes());
 
             try {
@@ -208,7 +207,7 @@ public class LegenderyCumEvents {
         });
 
         LegenderyCum.on(RemoveMapRequest.class, request -> {
-            if (!request.server.equals(config.mode.name()))
+            if (!request.server.equals(config.mode.displayName))
                 return;
 
             var map = Find.map(request.map);
@@ -224,7 +223,7 @@ public class LegenderyCumEvents {
         });
 
         LegenderyCum.on(KickRequest.class, request -> {
-            if (!request.server.equals(config.mode.name()))
+            if (!request.server.equals(config.mode.displayName))
                 return;
 
             var target = Find.player(request.player);
@@ -243,7 +242,7 @@ public class LegenderyCumEvents {
         });
 
         LegenderyCum.on(unkickRequest.class, request -> {
-            if (!request.server.equals(config.mode.name()))
+            if (!request.server.equals(config.mode.displayName))
                 return;
 
             var info = Find.playerInfo(request.player);
@@ -259,7 +258,7 @@ public class LegenderyCumEvents {
         });
 
         LegenderyCum.on(BanRequest.class, request -> {
-            if (!request.server.equals(config.mode.name()))
+            if (!request.server.equals(config.mode.displayName))
                 return;
 
             var info = Find.playerInfo(request.player);
@@ -278,7 +277,7 @@ public class LegenderyCumEvents {
         });
 
         LegenderyCum.on(UnbanRequest.class, request -> {
-            if (!request.server.equals(config.mode.name()))
+            if (!request.server.equals(config.mode.displayName))
                 return;
 
             var info = Find.playerInfo(request.player);

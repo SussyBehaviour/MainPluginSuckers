@@ -223,10 +223,9 @@ public class ServerCommands {
             Log.info("  Waves survived: @", data.wavesSurvived);
             Log.info("  Wins:");
             Log.info("  - Attack: @", data.attackWins);
-            Log.info("  - Towerdefense: @", data.hexedWins);
-            Log.info("  - Football: @", data.hexedWins);
-            Log.info("  - Hexed: @", data.hexedWins);
-            Log.info("  - HungerGames: @", data.hexedWins);
+            Log.info("  - Towerdefense: @", data.TowerdefenseWins);
+            Log.info("  - Football: @", data.FootballWins);
+            Log.info("  - HungerGames: @", data.HungerGamesWins);
             Log.info("  - PvP: @", data.pvpWins);
             Log.info("  Total playtime: @", Bundle.formatDuration(Duration.ofMinutes(data.playTime)));
         });

@@ -60,7 +60,7 @@ public class ThisiscoolPlugin extends Plugin {
             DiscordCommands.load();
         }
 
-        Version.build = -1;
+        Version.build = 146;
 
         net.handleServer(Connect.class, NetHandlers::connect);
         net.handleServer(ConnectPacket.class, NetHandlers::connect);
