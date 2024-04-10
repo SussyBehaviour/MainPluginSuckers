@@ -3,6 +3,7 @@ package Thisiscool.utils;
 import static Thisiscool.utils.Utils.*;
 import static mindustry.Vars.*;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import Thisiscool.database.Cache;
@@ -12,6 +13,7 @@ import Thisiscool.features.Ranks.Rank;
 import arc.files.Fi;
 import arc.func.Boolf;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Strings;
 import arc.util.Structs;
 import mindustry.ctype.ContentType;
@@ -106,9 +108,17 @@ public class Find {
     }
 
     public static Gamemode mode(String input) {
-        return findArray(input, Gamemode.values(), mode -> mode.name().equalsIgnoreCase(input));
+        Log.info("Attempting to find mode for input: @.", input);
+        // Log all Gamemode values
+        Log.info("Available game modes: @.", Arrays.toString(Gamemode.values()));
+        Gamemode result = findArray(input, Gamemode.values(), mode -> mode.name().equalsIgnoreCase(input));
+        if (result != null) {
+            Log.info("Found mode: @ for input: @.", result.name(), input);
+        } else {
+            Log.info("Mode not found for input: @.", input);
+        }
+        return result;
     }
-
     public static Rank rank(String input) {
         return findArray(input, Rank.values(), rank -> rank.name().equalsIgnoreCase(input));
     }

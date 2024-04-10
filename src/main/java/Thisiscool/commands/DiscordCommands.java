@@ -9,6 +9,7 @@ import java.time.Duration;
 
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.database.Database;
+import Thisiscool.database.models.Ban;
 import Thisiscool.discord.MessageContext;
 import Thisiscool.features.net.LegenderyCum;
 import Thisiscool.listeners.LegenderyCumEvents.ArtvRequest;
@@ -27,7 +28,6 @@ import Thisiscool.utils.PageIterator;
 import arc.util.CommandHandler;
 import arc.util.Http;
 import arc.util.Strings;
-
 
 public class DiscordCommands {
 
@@ -74,7 +74,8 @@ public class DiscordCommands {
             if (notFound(context, server))
                 return;
 
-            LegenderyCum.request(new ArtvRequest(server, args.length > 1 ? args[1] : null, context.member().getDisplayName()),
+            LegenderyCum.request(
+                    new ArtvRequest(server, args.length > 1 ? args[1] : null, context.member().getDisplayName()),
                     context::reply, context::timeout);
         });
         discordHandler.<MessageContext>register("map", "<server> <map...>", "Map", (args, context) -> {
@@ -153,8 +154,10 @@ public class DiscordCommands {
                     if (notFound(context, server))
                         return;
 
-                    LegenderyCum.request(new BanRequest(server, args[1], args[2], args.length > 3 ? args[3] : "Not Specified",
-                            context.member().getDisplayName()), context::reply, context::timeout);
+                    LegenderyCum.request(
+                            new BanRequest(server, args[1], args[2], args.length > 3 ? args[3] : "Not Specified",
+                                    context.member().getDisplayName()),
+                            context::reply, context::timeout);
                 });
 
         discordHandler.<MessageContext>register("unban", "<server> <player...>", "Unban a player.", (args, context) -> {
@@ -171,27 +174,43 @@ public class DiscordCommands {
             var data = Find.playerData(args[0]);
             if (notFound(context, data))
                 return;
-            context.info(embed -> embed
-                    .title("Player Stats")
-                    .addField("Player:", data.plainName(), false)
-                    .addField("ID:", String.valueOf(data.id), false)
-                    .addField("Rank:", data.rank.name(), false)
-                    .addField("Blocks placed:", String.valueOf(data.blocksPlaced), false)
-                    .addField("Blocks broken:", String.valueOf(data.blocksBroken), false)
-                    .addField("Games played:", String.valueOf(data.gamesPlayed), false)
-                    .addField("Waves survived:", String.valueOf(data.wavesSurvived), false)
-                    .addField("Wins:",
-                            Strings.format("""
-                                    - Attack: @
-                                    - Towerdefense: @
-                                    - Football: @
-                                    - HungerGames: @
-                                    - PvP: @
-                                    """, data.attackWins, data.TowerdefenseWins, data.FootballWins,
-                                    data.HungerGamesWins, data.pvpWins),
-                            false)
-                    .addField("Total playtime:", Bundle.formatDuration(Duration.ofMinutes(data.playTime)), false))
-                    .subscribe();
+
+            // Start building the embed message
+            context.info(embed -> {
+                embed.title("Player Stats")
+                        .addField("Player:", data.plainName(), false)
+                        .addField("ID:", String.valueOf(data.id), false)
+                        .addField("Rank:", data.rank.name(), false)
+                        .addField("Blocks placed:", String.valueOf(data.blocksPlaced), false)
+                        .addField("Blocks broken:", String.valueOf(data.blocksBroken), false)
+                        .addField("Games played:", String.valueOf(data.gamesPlayed), false)
+                        .addField("Waves survived:", String.valueOf(data.wavesSurvived), false)
+                        .addField("Wins:",
+                                Strings.format("""
+                                        - Attack: @
+                                        - Towerdefense: @
+                                        - Football: @
+                                        - HungerGames: @
+                                        - PvP: @
+                                        """, data.attackWins, data.TowerdefenseWins, data.FootballWins,
+                                        data.HungerGamesWins, data.pvpWins),
+                                false)
+                        .addField("Total playtime:", Bundle.formatDuration(Duration.ofMinutes(data.playTime)), false);
+
+                // Check if the user has the admin role and add additional fields
+                if (!noRole(context, discordConfig.adminRoleIDs)) {
+                    embed.addField("Admin-only field:", "This is visible only to admins.", false);
+                    embed.addField("UUIDs", data.uuid, false);
+                    Ban ban = Database.getBanByUUID(data.uuid);
+                    if (ban != null) {
+                        embed.addField("Unban Date:", ban.getUnbanDate().toString(), false);
+                        embed.addField("IP:", ban.getIp(), false);
+                    } else {
+                        embed.addField("Unban Date:", "N/A", false);
+                        embed.addField("IP:", "N/A", false);
+                    }
+                }
+            }).subscribe();
         });
         discordHandler.<MessageContext>register("setrank", "<player> <rank>", "Set a player's rank.",
                 (args, context) -> {

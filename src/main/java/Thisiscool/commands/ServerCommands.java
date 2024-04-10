@@ -4,9 +4,12 @@ import static Thisiscool.PluginVars.*;
 import static Thisiscool.config.Config.*;
 import static Thisiscool.utils.Checks.*;
 import static Thisiscool.utils.Utils.*;
+import static arc.Core.*;
 import static mindustry.Vars.*;
+import static mindustry.server.ServerControl.*;
 
 import java.time.Duration;
+import java.util.Optional;
 
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.database.Cache;
@@ -19,12 +22,70 @@ import Thisiscool.utils.Find;
 import arc.util.CommandHandler;
 import arc.util.Log;
 import arc.util.Time;
+import mindustry.core.GameState.State;
+import mindustry.game.Gamemode;
+import mindustry.maps.Map;
+import mindustry.net.Packets.KickReason;
 
 
 public class ServerCommands {
 
     public static void load(CommandHandler handler) {
         serverHandler = handler;
+
+        serverHandler.register("exit", "Exit the server application.", args -> {
+            netServer.kickAll(KickReason.serverRestarting);
+            app.post(() -> System.exit(0));
+
+            Log.info("Server exited.");
+        });
+
+        serverHandler.register("stop", "Stop hosting the server.", args -> {
+            net.closeServer();
+            state.set(State.menu);
+
+            Log.info("Server stopped.");
+        });
+
+        serverHandler.register("host", "[map] [mode]", "Start server on selected map.", args -> {
+            if (alreadyHosting())
+                return;
+
+            Gamemode mode;
+            if (args.length > 1) {
+                mode = Find.mode(args[1]);
+                if (notFound(mode, args[1])) {
+                    Log.info("Mode @ not found, defaulting to survival.", args[1]);
+                    return;
+                }
+                Log.info("Mode set to @ from command arguments.", mode.name());
+            } else {
+                mode = Optional.ofNullable(Find.mode(settings.getString("lastServerMode", "")))
+                        .orElse(Gamemode.survival);
+                Log.info("Default mode selected to be @.", mode.name());
+            }
+            Map map;
+            if (args.length > 0) {
+                map = Find.map(args[0]);
+                if (notFound(map, args[0]))
+                    return;
+            } else {
+                map = maps.getNextMap(mode, state.map);
+                Log.info("Randomized next map to be @.", map.name());
+            }
+
+            settings.put("lastServerMode", mode.name());
+
+            app.post(() -> {
+                Log.info("Loading map...");
+                instance.lastMode = mode;
+                instance.play(false, () -> world.loadMap(map));
+                Log.info("Map loaded.");
+
+                netServer.openServer();
+            });
+        });
+
         serverHandler.register("say", "<message...>", "Send a message to all players.", args -> {
             Log.info("&fi@: &fr&lw@", "&lcServer", "&lw" + args[0]);
             Bundle.send("commands.say.chat", args[0]);

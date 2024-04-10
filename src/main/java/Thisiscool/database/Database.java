@@ -97,7 +97,9 @@ public class Database {
     public static List<Ban> getBans() {
         return datastore.find(Ban.class).stream().toList();
     }
-
+    public static Ban getBanByUUID(String uuid) {
+        return datastore.find(Ban.class).filter(Filters.eq("uuid", uuid)).first();
+    }
     // endregion
     // region ID
 
