@@ -8,6 +8,8 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.server.ServerControl.*;
 
+import java.util.Base64;
+
 import Thisiscool.Cancer.EventBus.Request;
 import Thisiscool.Cancer.EventBus.Response;
 import Thisiscool.MainHelper.Bundle;
@@ -176,7 +178,11 @@ public class LegenderyCumEvents {
             var map = Find.map(request.map);
             if (notFound(request, map))
                 return;
-
+                System.out.println("Preparing response for map: " + map.plainName() + 
+                "\nAuthor: " + map.plainAuthor() + 
+                "\nDescription: " + map.plainDescription() + 
+                "\nDimensions: " + map.width + "x" + map.height + 
+                "\nAttaching image and file.");
             LegenderyCum.respond(request, EmbedResponse.success(map.plainName())
                     .withField("Author:", map.plainAuthor())
                     .withField("Description:", map.plainDescription())
@@ -394,7 +400,7 @@ public class LegenderyCumEvents {
         public final String title;
         public final Seq<Field> fields = new Seq<>(0);
         public final Seq<String> files = new Seq<>(0);
-
+        public String image;
         public @Nullable String content;
         public @Nullable String footer;
         public static EmbedResponse success(String title) {
@@ -409,7 +415,11 @@ public class LegenderyCumEvents {
             this.fields.add(new Field(name, value));
             return this;
         }
-
+        public EmbedResponse withImage(byte[] mapImageData) {
+            this.image = "data:image/png;base64," + Base64.getEncoder().encodeToString(mapImageData);
+            System.out.println("Image encoded: " + this.image); // Add this line
+            return this;
+        }
         public EmbedResponse withFile(String file) {
             this.files.add(file);
             return this;
@@ -426,9 +436,6 @@ public class LegenderyCumEvents {
         }
 
         public record Field(String name, String value) {
-        }
-        public EmbedResponse withImage(byte[] imageData) {
-            return this;
         }
     }
 }
