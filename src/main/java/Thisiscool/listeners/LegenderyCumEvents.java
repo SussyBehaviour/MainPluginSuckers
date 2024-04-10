@@ -174,24 +174,20 @@ public class LegenderyCumEvents {
         LegenderyCum.on(MapRequest.class, request -> {
             if (!request.server.equals(config.mode.displayName))
                 return;
-
+        
             var map = Find.map(request.map);
             byte[] mapImageData = MapGenerator.renderMap(map);
             if (notFound(request, map))
                 return;
-                System.out.println("Preparing response for map: " + map.plainName() + 
-                "\nAuthor: " + map.plainAuthor() + 
-                "\nDescription: " + map.plainDescription() + 
-                "\nDimensions: " + map.width + "x" + map.height + 
-                "\nAttaching image and file.");
-                LegenderyCum.respond(request, EmbedResponse.success(map.plainName())
-                .withImage(mapImageData)
+            String base64ImageData = Base64.getEncoder().encodeToString(mapImageData);
+            String imageDataUrl = "data:image/png;base64," + base64ImageData;
+            LegenderyCum.respond(request, EmbedResponse.success(map.plainName())
+                .withImage(imageDataUrl) 
                 .withField("Author:", map.plainAuthor())
                 .withField("Description:", map.plainDescription())
                 .withFooter("@x@", map.width, map.height)
                 .withFile(map.file.absolutePath()));
         });
-
         LegenderyCum.on(UploadMapRequest.class, request -> {
             if (!request.server.equals(config.mode.displayName))
                 return;
@@ -394,7 +390,6 @@ public class LegenderyCumEvents {
     public static class UnbanRequest extends Request<EmbedResponse> {
         public final String server, player;
     }
-
     @RequiredArgsConstructor
     public static class EmbedResponse extends Response {
         public final Color color;
@@ -403,15 +398,17 @@ public class LegenderyCumEvents {
         public final Seq<String> files = new Seq<>(0);
         public @Nullable String content;
         public @Nullable String footer;
-        public @Nullable String image;
+        // Add a field for the image URL
+        public @Nullable String imageUrl;
+    
         public static EmbedResponse success(String title) {
             return new EmbedResponse(Color.MEDIUM_SEA_GREEN, title);
         }
-
+    
         public static EmbedResponse error(String title) {
             return new EmbedResponse(Color.CINNABAR, title);
         }
-
+    
         public EmbedResponse withField(String name, String value) {
             this.fields.add(new Field(name, value));
             return this;
@@ -420,25 +417,25 @@ public class LegenderyCumEvents {
             this.files.add(file);
             return this;
         }
-
+    
         public EmbedResponse withContent(String content, Object... args) {
             this.content = Strings.format(content, args);
             return this;
         }
-
+    
         public EmbedResponse withFooter(String footer, Object... args) {
             this.footer = Strings.format(footer, args);
             return this;
         }
-
-        public EmbedResponse withImage(byte[] imageData) {
-            String encodedImageData = Base64.getEncoder().encodeToString(imageData);
-            String imageDataUrl = "data:image/png;base64," + encodedImageData;
-            this.image = imageDataUrl;
+    
+        // Add the withImage method
+        public EmbedResponse withImage(String imageUrl) {
+            this.imageUrl = imageUrl;
             return this;
         }
-        
+    
         public record Field(String name, String value) {
         }
     }
+
 }
