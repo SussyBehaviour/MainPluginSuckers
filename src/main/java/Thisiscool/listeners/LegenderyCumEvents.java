@@ -183,12 +183,12 @@ public class LegenderyCumEvents {
                 "\nDescription: " + map.plainDescription() + 
                 "\nDimensions: " + map.width + "x" + map.height + 
                 "\nAttaching image and file.");
-            LegenderyCum.respond(request, EmbedResponse.success(map.plainName())
-                    .withField("Author:", map.plainAuthor())
-                    .withField("Description:", map.plainDescription())
-                    .withFooter("@x@", map.width, map.height)
-                    .withImage(MapGenerator.renderMap(map))
-                    .withFile(map.file.absolutePath()));
+                LegenderyCum.respond(request, EmbedResponse.success(map.plainName())
+                .withField("Author:", map.plainAuthor())
+                .withField("Description:", map.plainDescription())
+                .withFooter("@x@", map.width, map.height)
+                .withImage(MapGenerator.renderMap(map)) 
+                .withFile(map.file.absolutePath()));
         });
 
         LegenderyCum.on(UploadMapRequest.class, request -> {
@@ -400,9 +400,9 @@ public class LegenderyCumEvents {
         public final String title;
         public final Seq<Field> fields = new Seq<>(0);
         public final Seq<String> files = new Seq<>(0);
-        public String image;
         public @Nullable String content;
         public @Nullable String footer;
+        public @Nullable String image;
         public static EmbedResponse success(String title) {
             return new EmbedResponse(Color.MEDIUM_SEA_GREEN, title);
         }
@@ -413,11 +413,6 @@ public class LegenderyCumEvents {
 
         public EmbedResponse withField(String name, String value) {
             this.fields.add(new Field(name, value));
-            return this;
-        }
-        public EmbedResponse withImage(byte[] mapImageData) {
-            this.image = "data:image/png;base64," + Base64.getEncoder().encodeToString(mapImageData);
-            System.out.println("Image encoded: " + this.image); // Add this line
             return this;
         }
         public EmbedResponse withFile(String file) {
@@ -434,7 +429,11 @@ public class LegenderyCumEvents {
             this.footer = Strings.format(footer, args);
             return this;
         }
-
+        public EmbedResponse withImage(byte[] mapImageData) {
+            this.image = "data:image/png;base64," + Base64.getEncoder().encodeToString(mapImageData);
+            System.out.println("Image encoded: " + this.image);
+            return this;
+        }
         public record Field(String name, String value) {
         }
     }
