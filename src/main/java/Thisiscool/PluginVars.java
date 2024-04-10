@@ -6,6 +6,7 @@ import static mindustry.Vars.*;
 import java.time.temporal.ChronoUnit;
 import java.util.regex.Pattern;
 
+import Thisiscool.features.votes.Report;
 import Thisiscool.features.votes.VoteKick;
 import Thisiscool.features.votes.VoteSession;
 import arc.struct.Seq;
@@ -64,6 +65,6 @@ public class PluginVars {
     public static VoteSession vote;
 
     public static VoteKick voteKick;
-
+    public static Report report;
     public static CommandHandler serverHandler, discordHandler;
 }

@@ -21,6 +21,7 @@ import Thisiscool.features.Ranks.Rank;
 import Thisiscool.features.net.LegenderyCum;
 import Thisiscool.utils.Admins;
 import Thisiscool.utils.Find;
+import Thisiscool.utils.MapGenerator;
 import Thisiscool.utils.PageIterator;
 import arc.files.Fi;
 import arc.struct.Seq;
@@ -180,6 +181,7 @@ public class LegenderyCumEvents {
                     .withField("Author:", map.plainAuthor())
                     .withField("Description:", map.plainDescription())
                     .withFooter("@x@", map.width, map.height)
+                    .withImage(MapGenerator.renderMap(map))
                     .withFile(map.file.absolutePath()));
         });
 
@@ -395,7 +397,6 @@ public class LegenderyCumEvents {
 
         public @Nullable String content;
         public @Nullable String footer;
-
         public static EmbedResponse success(String title) {
             return new EmbedResponse(Color.MEDIUM_SEA_GREEN, title);
         }
@@ -425,6 +426,9 @@ public class LegenderyCumEvents {
         }
 
         public record Field(String name, String value) {
+        }
+        public EmbedResponse withImage(byte[] imageData) {
+            return this;
         }
     }
 }

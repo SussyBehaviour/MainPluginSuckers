@@ -26,10 +26,12 @@ public class DiscordConfig {
     public long adminChannelID = 0L;
 
     public long votekickChannelID = 0L;
-
+    public long reportChannelID = 0L;
     public Seq<Long> adminRoleIDs = Seq.with(0L);
 
     public Seq<Long> mapReviewerRoleIDs = Seq.with(0L);
 
+    public Long ReportRoleID= 0L;
+    
     public ObjectMap<String, Long> serverToChannel = ObjectMap.of("server", 0L);
 }

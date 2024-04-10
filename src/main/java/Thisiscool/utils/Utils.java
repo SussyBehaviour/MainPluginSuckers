@@ -12,6 +12,7 @@ import arc.func.Cons3;
 import arc.struct.Seq;
 import arc.util.Strings;
 import arc.util.Structs;
+import mindustry.Vars;
 import mindustry.ctype.UnlockableContent;
 import mindustry.game.Team;
 import mindustry.gen.Player;
@@ -144,4 +145,8 @@ public class Utils {
     }
 
     // endregion
+    //Miss
+    public static Fi getRootFolder() {
+        return Vars.mods.getMod("Mainpluginsuckers").root;
+    }
 }

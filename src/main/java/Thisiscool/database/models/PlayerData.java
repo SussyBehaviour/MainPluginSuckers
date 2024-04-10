@@ -48,7 +48,7 @@ public class PlayerData {
     public int HungerGamesWins = 0;
     public int pvpWins = 0;
 
-    public Rank rank = Rank.player;
+    public Rank rank = Rank.member;
 
     public PlayerData(String uuid) {
         this.uuid = uuid;

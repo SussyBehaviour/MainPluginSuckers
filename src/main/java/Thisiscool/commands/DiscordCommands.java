@@ -56,7 +56,6 @@ public class DiscordCommands {
 
             LegenderyCum.request(new StatusRequest(server), context::reply, context::timeout);
         });
-
         discordHandler.<MessageContext>register("exit", "<server>", "Exit the server application.", (args, context) -> {
             if (noRole(context, discordConfig.adminRoleIDs))
                 return;
@@ -67,7 +66,6 @@ public class DiscordCommands {
 
             LegenderyCum.request(new ExitRequest(server), context::reply, context::timeout);
         });
-
         discordHandler.<MessageContext>register("artv", "<server> [map...]", "Force map change.", (args, context) -> {
             if (noRole(context, discordConfig.adminRoleIDs))
                 return;
@@ -79,7 +77,6 @@ public class DiscordCommands {
             LegenderyCum.request(new ArtvRequest(server, args.length > 1 ? args[1] : null, context.member().getDisplayName()),
                     context::reply, context::timeout);
         });
-
         discordHandler.<MessageContext>register("map", "<server> <map...>", "Map", (args, context) -> {
             var server = args[0];
             if (notFound(context, server))
@@ -87,7 +84,6 @@ public class DiscordCommands {
 
             LegenderyCum.request(new MapRequest(server, args[1]), context::reply, context::timeout);
         });
-
         discordHandler.<MessageContext>register("uploadmap", "<server>", "Upload a map to the server.",
                 (args, context) -> {
                     if (noRole(context, discordConfig.mapReviewerRoleIDs) || notMap(context))
@@ -171,12 +167,10 @@ public class DiscordCommands {
 
             LegenderyCum.request(new UnbanRequest(server, args[1]), context::reply, context::timeout);
         });
-
-        discordHandler.<MessageContext>register("stats", "<player...>", "Look up a player stats.", (args, context) -> {
+        discordHandler.<MessageContext>register("info", "<player...>", "Look up a player stats.", (args, context) -> {
             var data = Find.playerData(args[0]);
             if (notFound(context, data))
                 return;
-
             context.info(embed -> embed
                     .title("Player Stats")
                     .addField("Player:", data.plainName(), false)
@@ -199,7 +193,6 @@ public class DiscordCommands {
                     .addField("Total playtime:", Bundle.formatDuration(Duration.ofMinutes(data.playTime)), false))
                     .subscribe();
         });
-
         discordHandler.<MessageContext>register("setrank", "<player> <rank>", "Set a player's rank.",
                 (args, context) -> {
                     if (noRole(context, discordConfig.adminRoleIDs))

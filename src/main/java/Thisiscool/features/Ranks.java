@@ -17,37 +17,37 @@ public class Ranks {
 
     @NoArgsConstructor
     public enum Rank {
-        player,
+        member,
 
-        active(player) {
+        juniorseer(member) {
             {
                 tag = "[#00ffff]<[white]\uE800[]>[] ";
                 requirements = new Requirements(320, 12500, 25, 50);
             }
         },
 
-        hyperActive(active) {
+        goodseer(juniorseer) {
             {
                 tag = "[#00ff00]<[white]\uE813[]>[] ";
                 requirements = new Requirements(800, 25000, 50, 100);
             }
         },
 
-        veteran(hyperActive) {
+        smartseer(goodseer) {
             {
                 tag = "[#ffff00]<[white]\uE809[]>[] ";
                 requirements = new Requirements(2000, 50000, 100, 200);
             }
         },
 
-        outsider(veteran) {
+        outsider(smartseer) {
             {
                 tag = "[#ff8000]<[white]\uE810[]>[] ";
                 requirements = new Requirements(5000, 100000, 200, 400);
             }
         },
 
-        seers(outsider) {
+        ThemegaSeer(outsider) {
             {
                 tag = "[#ff0000]<[white]\uE871[]>[] ";
                 requirements = new Requirements(10000, 250000, 500, 1000);
@@ -60,7 +60,7 @@ public class Ranks {
             }
         },
 
-        sage {
+        Powerfulone{
             {
                 tag = "[accent]<[white]\uF6AA[]>[] ";
             }

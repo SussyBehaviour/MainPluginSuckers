@@ -12,6 +12,7 @@ import Thisiscool.database.Cache;
 import Thisiscool.features.menus.MenuHandler;
 import Thisiscool.features.net.LegenderyCum;
 import Thisiscool.features.net.Translator;
+import Thisiscool.features.votes.Report;
 import Thisiscool.features.votes.VoteKick;
 import Thisiscool.features.votes.VoteRtv;
 import Thisiscool.features.votes.VoteSurrender;
@@ -22,6 +23,7 @@ import Thisiscool.utils.PageIterator;
 import Thisiscool.utils.Utils;
 import arc.util.Strings;
 import mindustry.gen.Call;
+
 public class ClientCommands {
 
     public static void load() {
@@ -161,6 +163,14 @@ public class ClientCommands {
 
                     vote = new VoteSurrender(player.team());
                     vote.vote(player, 1);
+                });
+        Commands.create("report")
+                .cooldown(60000L)
+                .register((args, player) -> {
+                var target = Find.player(args[0]);
+                if (notFound(player, target) || invalidVotekickTarget(player, target))
+                return;
+                report = new Report(player, target, args[1]);
                 });
     }
 }

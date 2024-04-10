@@ -43,7 +43,7 @@ public class DiscordBot {
     public static GuildMessageChannel banChannel;
     public static GuildMessageChannel adminChannel;
     public static GuildMessageChannel votekickChannel;
-
+    public static GuildMessageChannel reportChannel;
     public static boolean connected;
 
     public static void connect() {
@@ -74,7 +74,8 @@ public class DiscordBot {
                     .ofType(GuildMessageChannel.class).block();
             votekickChannel = gateway.getChannelById(Snowflake.of(discordConfig.votekickChannelID))
                     .ofType(GuildMessageChannel.class).block();
-
+            reportChannel = gateway.getChannelById(Snowflake.of(discordConfig.reportChannelID))
+                    .ofType(GuildMessageChannel.class).block();
             gateway.on(MessageCreateEvent.class).subscribe(event -> {
                 var message = event.getMessage();
                 if (message.getContent().isEmpty())

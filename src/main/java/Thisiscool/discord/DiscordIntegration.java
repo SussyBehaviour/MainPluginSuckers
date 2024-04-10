@@ -7,11 +7,14 @@ import static mindustry.Vars.*;
 
 import java.time.Instant;
 import java.util.Collections;
+import java.util.Random;
 
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.config.Config.Gamemode;
+import Thisiscool.config.DiscordConfig;
 import Thisiscool.database.Database;
 import Thisiscool.features.net.LegenderyCum;
+import Thisiscool.features.votes.Report;
 import Thisiscool.listeners.LegenderyCumEvents.AdminRequestConfirmEvent;
 import Thisiscool.listeners.LegenderyCumEvents.AdminRequestDenyEvent;
 import Thisiscool.listeners.LegenderyCumEvents.AdminRequestEvent;
@@ -40,7 +43,7 @@ public class DiscordIntegration {
             return;
 
         banChannel.createMessage(EmbedCreateSpec.builder()
-                .color(Color.CINNABAR)
+                .color(getRandomColor())
                 .title("Ban")
                 .addField("Player:", event.ban().playerName + " [" + event.ban().playerID + "]", false)
                 .addField("Admin:", event.ban().adminName, false)
@@ -55,14 +58,28 @@ public class DiscordIntegration {
             return;
 
         votekickChannel.createMessage(EmbedCreateSpec.builder()
-                .color(Color.MOON_YELLOW)
+                .color(getRandomColor())
                 .title("Vote Kick")
-                .addField("Target:", event.target(), false)
-                .addField("Initiator:", event.initiator(), false)
+                .addField("Kicked Player:", event.target(), false)
+                .addField("Kick started By:", event.initiator(), false)
                 .addField("Reason:", event.reason(), false)
                 .addField("Votes For:", event.votesFor(), false)
                 .addField("Votes Against:", event.votesAgainst(), false)
                 .footer(Gamemode.getDisplayName(event.server()), null)
+                .timestamp(Instant.now()).build()).subscribe();
+    }
+    public static void sendReport(Report event) {
+        if (!connected)
+            return;
+            long h = DiscordConfig.discordConfig.ReportRoleID;
+        reportChannel.createMessage("@" + h).subscribe();
+        reportChannel.createMessage(EmbedCreateSpec.builder()
+                .color(getRandomColor())
+                .title("Reported")
+                .addField("Reported player:", event.target.coloredName(), false)
+                .addField("Reported by:", event.initiator.coloredName(), false)
+                .addField("Reason:", event.reason, false)
+                .footer(Gamemode.getDisplayName(event.server), null)
                 .timestamp(Instant.now()).build()).subscribe();
     }
 
@@ -71,7 +88,7 @@ public class DiscordIntegration {
             return;
 
         adminChannel.createMessage(EmbedCreateSpec.builder()
-                .color(Color.BISMARK)
+                .color(getRandomColor())
                 .title("Admin Request")
                 .description("Select the desired option to confirm or deny the request. Confirm only your requests!")
                 .addField("Player:", event.data().plainName(), false)
@@ -95,7 +112,7 @@ public class DiscordIntegration {
             return; // Just in case
 
         event.edit().withEmbeds(EmbedCreateSpec.builder()
-                .color(Color.MEDIUM_SEA_GREEN)
+                .color(getRandomColor())
                 .title("Admin Request Confirmed")
                 .addField("Player:", data.plainName(), false)
                 .addField("ID:", String.valueOf(data.id), false)
@@ -113,7 +130,7 @@ public class DiscordIntegration {
             return; // Just in case
 
         event.edit().withEmbeds(EmbedCreateSpec.builder()
-                .color(Color.CINNABAR)
+                .color(getRandomColor())
                 .title("Admin Request Denied")
                 .addField("Player:", data.plainName(), false)
                 .addField("ID:", String.valueOf(data.id), false)
@@ -175,5 +192,9 @@ public class DiscordIntegration {
                     .ofType(GuildMessageChannel.class)
                     .flatMap(channel -> channel.createMessage(embed))
                     .subscribe();
+    }
+    public static Color getRandomColor() {
+        Random random = new Random();
+        return Color.of(random.nextInt(256), random.nextInt(256), random.nextInt(256));
     }
 }
