@@ -30,7 +30,7 @@ import arc.util.Tmp;
 import mindustry.content.Fx;
 import mindustry.gen.Player;
 import mindustry.graphics.Pal;
-@SuppressWarnings("unchecked")
+
 public class MenuHandler {
 
     // region menu

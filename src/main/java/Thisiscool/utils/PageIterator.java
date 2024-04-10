@@ -39,13 +39,6 @@ public class PageIterator {
         client(args, player, "maps", Utils::availableMaps, (builder, index, map) -> builder.append(
                 Bundle.format("commands.maps.map", player, index, map.name(), map.author(), map.width, map.height)));
     }
-
-    public static void saves(String[] args, Player player) {
-        client(args, player, "saves", Utils::availableSaves,
-                (builder, index, save) -> builder.append(Bundle.format("commands.saves.save", player, index,
-                        save.nameWithoutExtension(), Bundle.formatDateTime(player, save.lastModified()))));
-    }
-
     public static void players(String[] args, Player player) {
         client(args, player, "players", () -> Groups.player.copy(new Seq<>()),
                 (builder, index, other) -> builder.append(Bundle.format("commands.players.player", player,

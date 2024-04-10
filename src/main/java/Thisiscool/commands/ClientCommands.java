@@ -45,7 +45,6 @@ public class ClientCommands {
         Commands.create("t").register((args, player) -> Translator.translate(other -> other.team() == player.team(),
                 player, args[0], "commands.t.chat", player.team().color, player.coloredName()));
         Commands.create("players").register(PageIterator::players);
-
         Commands.create("settings")
                 .welcomeMessage(true)
                 .register((args, player) -> MenuHandler.showSettingsMenu(player));
@@ -167,10 +166,14 @@ public class ClientCommands {
         Commands.create("report")
                 .cooldown(60000L)
                 .register((args, player) -> {
-                var target = Find.player(args[0]);
-                if (notFound(player, target) || invalidVotekickTarget(player, target))
-                return;
-                report = new Report(player, target, args[1]);
+                    if (args.length < 2) {
+                    Call.sendMessage("Please use correct arguments","-[red]"+"Player to Report+[cyan]Reason", player);
+                        return;
+                    }    
+                    var target = Find.player(args[0]);
+                    if (notFound(player, target))
+                        return;
+                    report = new Report(player, target, args[1]);
                 });
     }
 }
