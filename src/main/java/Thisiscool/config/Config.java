@@ -46,7 +46,8 @@ public class Config {
     public Gamemode mode = hub;
 
     public enum Gamemode {
-        attack("Attack"),
+        survival("Survival"),
+
 
         Towerdefense("Towerdefense") {
             {
@@ -65,7 +66,7 @@ public class Config {
 
         hub("Hub") {
             {
-                isDefault = false;
+                isDefault = true;
                 isMainServer = true;
                 enableRtv = false;
                 enableWaves = false;
@@ -94,7 +95,7 @@ public class Config {
             }
         },
 
-        survival("Survival");
+        attack("Attack");
 
         public final String displayName;
 
