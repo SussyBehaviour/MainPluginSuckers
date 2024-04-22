@@ -1,7 +1,6 @@
 package Thisiscool;
 
 import static java.time.temporal.ChronoUnit.*;
-import static mindustry.Vars.*;
 
 import java.time.temporal.ChronoUnit;
 import java.util.regex.Pattern;
@@ -18,7 +17,6 @@ public class PluginVars {
     public static final float voteRatio = 0.55f;
     public static final int voteDuration = 50;
     public static final int kickDuration = 30 * 60 * 1000;
-    public static final int alertsDistance = 16 * tilesize, alertsTimer = 3;
     public static final int maxWavesAmount = 5;
     public static final int maxGiveAmount = 100000;
     public static final int maxSpawnAmount = 25;
@@ -30,7 +28,7 @@ public class PluginVars {
     public static final int mindustryVersion = Version.build;
     public static final String configFile = "config.json";
     public static final String discordConfigFile = "discord-config.json";
-    public static final String discordServerUrl = "https://discord.com/invite/CGdkm69";
+    public static final String discordServerUrl = "https://discord.gg/vaGBFkvCwg";
     public static final String translationApiUrl = "https://clients5.google.com/translate_a/t?client=dict-chrome-ex&dt=t";
     public static final Pattern durationPattern = Pattern.compile("(\\d+)\\s*?([a-zA-Zа-яА-Я]+)");
     @SuppressWarnings("unchecked")
