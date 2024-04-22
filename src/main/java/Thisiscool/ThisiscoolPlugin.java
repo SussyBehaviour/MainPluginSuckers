@@ -1,6 +1,5 @@
 package Thisiscool;
 
-import static Thisiscool.config.Config.*;
 import static Thisiscool.utils.Utils.*;
 import static mindustry.Vars.*;
 
@@ -37,40 +36,27 @@ public class ThisiscoolPlugin extends Plugin {
     public void init() {
         Log.info("Loading Thisiscool plugin.");
         Time.mark();
-
         Console.load();
         Config.load();
         DiscordConfig.load();
-
         Bundle.load(getClass());
         Commands.load();
-
         Alerts.load();
         MenuHandler.load();
         SchemeSize.load();
-
         Database.connect();
         LegenderyCum.connect();
-
         PluginEvents.load();
         LegenderyCumEvents.load();
-
-        if (config.mode.isMainServer) {
-            DiscordBot.connect();
-            DiscordCommands.load();
-        }
-
+        DiscordBot.connect();
+        DiscordCommands.load();
         Version.build = 146;
-
         net.handleServer(Connect.class, NetHandlers::connect);
         net.handleServer(ConnectPacket.class, NetHandlers::connect);
         net.handleServer(AdminRequestCallPacket.class, NetHandlers::adminRequest);
-
         netServer.admins.addChatFilter(NetHandlers::chat);
         netServer.invalidHandler = NetHandlers::invalidResponse;
-
         maps.setMapProvider((mode, map) -> availableMaps().random(map));
-
         Log.info("Thisiscool plugin loaded in @ ms.", Time.elapsed());
     }
 

@@ -15,12 +15,10 @@ public class Config {
     public static void load() {
         config = ConfigLoader.load(Config.class, configFile);
         Log.info("Config loaded. (@)", dataDirectory.child(configFile).absolutePath());
-
         allowCustomClients.set(true);
         showConnectMessages.set(false);
         antiSpam.set(true);
         autoPause.set(false);
-
         interactRateWindow.set(1);
         interactRateLimit.set(25);
         interactRateKick.set(50);
@@ -30,21 +28,14 @@ public class Config {
         snapshotInterval.set(200);
         roundExtraTime.set(10);
         maxLogLength.set(1024 * 1024);
-
         strict.set(config.mode.enableStrict);
         enableVotekick.set(config.mode.enableVotekick);
     }
-
     public String hubIp = "Thisiscool.net";
-
     public int hubPort = 6567;
-
     public int sockPort = 8306;
-
     public String mongoUrl = "url";
-
     public Gamemode mode = hub;
-
     public enum Gamemode {
         survival("Survival"),
 
@@ -114,6 +105,9 @@ public class Config {
 
         public static String getDisplayName(String name) {
             return Gamemode.valueOf(name).displayName;
+        }
+        public static Gamemode getMode() {
+            return config.mode;
         }
     }
 }

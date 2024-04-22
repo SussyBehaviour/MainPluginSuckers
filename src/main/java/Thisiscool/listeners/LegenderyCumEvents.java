@@ -43,7 +43,6 @@ import mindustry.net.Packets.KickReason;
 public class LegenderyCumEvents {
 
     public static void load() {
-        if (config.mode.isMainServer) {
             LegenderyCum.on(ServerMessageEvent.class, event -> {
                 var channel = discordConfig.serverToChannel.get(event.server);
                 if (channel == null)
@@ -51,7 +50,6 @@ public class LegenderyCumEvents {
 
                 DiscordIntegration.sendMessage(channel, "`" + event.name + ": " + event.message + "`");
             });
-
             LegenderyCum.on(ServerMessageEmbedEvent.class, event -> {
                 var channel = discordConfig.serverToChannel.get(event.server);
                 if (channel == null)
@@ -60,14 +58,10 @@ public class LegenderyCumEvents {
                 DiscordIntegration.sendMessageEmbed(channel,
                         EmbedCreateSpec.builder().color(event.color).title(event.title).build());
             });
-
             LegenderyCum.on(BanEvent.class, DiscordIntegration::sendBan);
             LegenderyCum.on(VoteKickEvent.class, DiscordIntegration::sendVoteKick);
             LegenderyCum.on(AdminRequestEvent.class, DiscordIntegration::sendAdminRequest);
-
             Timer.schedule(DiscordIntegration::updateActivity, 60f, 60f);
-        }
-
         LegenderyCum.on(DiscordMessageEvent.class, event -> {
             if (!event.server.equals(config.mode.displayName))
                 return;
@@ -80,7 +74,6 @@ public class LegenderyCumEvents {
                 Bundle.send("discord.chat.role", event.color, event.role, event.name, event.message);
             }
         });
-
         LegenderyCum.on(BanEvent.class, event -> Groups.player.each(
                 player -> player.uuid().equals(event.ban.uuid) || player.ip().equals(event.ban.ip),
                 player -> {
@@ -88,25 +81,20 @@ public class LegenderyCumEvents {
                             event.ban.adminName).kick();
                     Bundle.send("events.admin.ban", event.ban.adminName, player.coloredName(), event.ban.reason);
                 }));
-
         LegenderyCum.on(AdminRequestConfirmEvent.class, event -> {
             if (event.server.equals(config.mode.displayName))
                 DiscordIntegration.confirm(event.uuid);
         });
-
         LegenderyCum.on(AdminRequestDenyEvent.class, event -> {
             if (event.server.equals(config.mode.displayName))
                 DiscordIntegration.deny(event.uuid);
         });
-
         LegenderyCum.on(SetRankSyncEvent.class, event -> {
             var player = Find.playerByUUID(event.uuid);
             if (player == null)
                 return;
-
             var data = Cache.get(player);
             data.rank = event.rank;
-
             Ranks.name(player, data);
         });
 
@@ -433,7 +421,6 @@ public class LegenderyCumEvents {
             this.imageUrl = imageUrl;
             return this;
         }
-    
         public record Field(String name, String value) {
         }
     }

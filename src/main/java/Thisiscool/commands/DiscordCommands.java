@@ -8,6 +8,8 @@ import static mindustry.Vars.*;
 import java.time.Duration;
 
 import Thisiscool.MainHelper.Bundle;
+import Thisiscool.config.Config;
+import Thisiscool.config.Config.Gamemode;
 import Thisiscool.database.Database;
 import Thisiscool.database.models.Ban;
 import Thisiscool.discord.MessageContext;
@@ -33,7 +35,6 @@ public class DiscordCommands {
 
     public static void load() {
         discordHandler = new CommandHandler(discordConfig.prefix);
-
         discordHandler.<MessageContext>register("help", "List of all commands.", (args, context) -> {
             var builder = new StringBuilder();
             discordHandler.getCommandList()
@@ -43,17 +44,13 @@ public class DiscordCommands {
 
             context.info("All available commands:", builder.toString()).subscribe();
         });
-
         discordHandler.<MessageContext>register("maps", "<server>", "List of all maps of the server.",
                 PageIterator::maps);
         discordHandler.<MessageContext>register("players", "<server>", "List of all players of the server.",
                 PageIterator::players);
 
-        discordHandler.<MessageContext>register("status", "<server>", "Display server status.", (args, context) -> {
-            var server = args[0];
-            if (notFound(context, server))
-                return;
-
+        discordHandler.<MessageContext>register("status",  "Display server status.", (args, context) -> {
+            Gamemode server = Config.config.getMode();
             LegenderyCum.request(new StatusRequest(server), context::reply, context::timeout);
         });
         discordHandler.<MessageContext>register("exit", "<server>", "Exit the server application.", (args, context) -> {

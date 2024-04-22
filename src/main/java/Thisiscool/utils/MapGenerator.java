@@ -1,4 +1,3 @@
-
 package Thisiscool.utils;
 
 import static arc.util.io.Streams.*;

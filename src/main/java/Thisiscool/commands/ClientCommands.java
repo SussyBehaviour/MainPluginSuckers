@@ -30,7 +30,6 @@ public class ClientCommands {
         Commands.create("help")
                 .welcomeMessage(true)
                 .register(PageIterator::commands);
-
         Commands.create("discord")
                 .welcomeMessage(true)
                 .register((args, player) -> Call.openURI(player.con, discordServerUrl));
