@@ -21,9 +21,7 @@ import mindustry.type.UnitType;
 import mindustry.world.Block;
 
 public class Utils {
-
     // region common
-
     public static int voteChoice(String vote) {
         return switch (stripFooCharacters(vote.toLowerCase())) {
             case "y" -> 1;
@@ -101,6 +99,11 @@ public class Utils {
         return Duration.ofSeconds(seconds);
     }
 
+    // endregion
+    public static String runConsole(String cmd) {
+        cmd = cmd.replaceAll("->", "=>"); //my stupid java habits
+        return mods.getScripts().runConsole(cmd);
+    }
     // endregion
     // region format
 
