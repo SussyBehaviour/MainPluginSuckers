@@ -47,7 +47,7 @@ public class PlayerData {
     public int FootballWins = 0;
     public int HungerGamesWins = 0;
     public int pvpWins = 0;
-
+    public long DiscordId = 0;
     public Rank rank = Rank.Civilian;
 
     public PlayerData(String uuid) {
