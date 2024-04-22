@@ -17,6 +17,7 @@ import Thisiscool.StuffForUs.votes.VoteRtv;
 import Thisiscool.StuffForUs.votes.VoteSurrender;
 import Thisiscool.StuffForUs.votes.VoteWaves;
 import Thisiscool.database.Cache;
+import Thisiscool.database.Database;
 import Thisiscool.listeners.LegenderyCumEvents.AdminRequestEvent;
 import Thisiscool.utils.Find;
 import Thisiscool.utils.PageIterator;
@@ -164,15 +165,40 @@ public class ClientCommands {
                 });
         Commands.create("report")
                 .cooldown(60000L)
+                .welcomeMessage(true)
                 .register((args, player) -> {
                     if (args.length < 2) {
-                    Call.sendMessage("Please use correct arguments","-[red]"+"Player to Report+[cyan]Reason", player);
+                        Call.sendMessage("Please use correct arguments", "-[red]" + "Player to Report+[cyan]Reason",
+                                player);
                         return;
-                    }    
+                    }
                     var target = Find.player(args[0]);
                     if (notFound(player, target))
                         return;
                     report = new Report(player, target, args[1]);
+                });
+        Commands.create("link")
+                .cooldown(1000)
+                .welcomeMessage(true)
+                .register((args, player) -> {
+                    if (args.length < 1) {
+                        Call.sendMessage("Please use correct arguments", "-[red]Enter your link code from discord",
+                                player);
+                        return;
+                    }
+                    int code = Integer.parseInt(args[0]);
+                    if (Database.getPlayerData(player).DiscordId != null) {
+                        Call.sendMessage("[red]", "You are already linked to a discord account.", player);
+                        return; 
+                    }
+                    if (!DiscordCommands.playerLinkCodes.containsKey(code)) {
+                        Call.sendMessage("[red]", "Wrong code.", player);
+                    } else {
+                        Database.getPlayerData(player).DiscordId = DiscordCommands.playerLinkCodes.get(code).getId();
+                        Database.savePlayerData(Database.getPlayerData(player));
+                        Call.sendMessage("[green]", "You are linked to a discord account.", player);
+                        DiscordCommands.playerLinkCodes.remove(code);
+                    }
                 });
     }
 }

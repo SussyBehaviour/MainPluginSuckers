@@ -22,6 +22,7 @@ import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
 import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Role;
+import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.GuildMessageChannel;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.util.OrderUtil;
@@ -45,7 +46,14 @@ public class DiscordBot {
     public static GuildMessageChannel votekickChannel;
     public static GuildMessageChannel reportChannel;
     public static boolean connected;
-
+    public static Mono<String> getUserNameById(Snowflake userId) {
+        if (userId == null) {
+            return Mono.just("notlinked");
+        }
+        return gateway.getUserById(userId)
+                .map(User::getUsername)
+                .switchIfEmpty(Mono.just("notlinked"));
+    }
     public static void connect() {
         try {
             HttpResources.set(LoopResources.create("d4j-http", 4, true));

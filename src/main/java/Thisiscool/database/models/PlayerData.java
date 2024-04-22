@@ -10,6 +10,7 @@ import dev.morphia.annotations.Field;
 import dev.morphia.annotations.Id;
 import dev.morphia.annotations.Index;
 import dev.morphia.annotations.Indexes;
+import discord4j.common.util.Snowflake;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -47,7 +48,7 @@ public class PlayerData {
     public int FootballWins = 0;
     public int HungerGamesWins = 0;
     public int pvpWins = 0;
-    public long DiscordId = 0;
+    public Snowflake DiscordId = null;
     public Rank rank = Rank.Civilian;
 
     public PlayerData(String uuid) {
