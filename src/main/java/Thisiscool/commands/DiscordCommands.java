@@ -51,46 +51,31 @@ public class DiscordCommands {
 
         discordHandler.<MessageContext>register("status",  "Display server status.", (args, context) -> {
             Gamemode server = Config.getMode();
-            LegenderyCum.request(new StatusRequest(server), context::reply, context::timeout);
+            LegenderyCum.request(new StatusRequest(server.displayName), context::reply, context::timeout);
         });
-        discordHandler.<MessageContext>register("exit", "<server>", "Exit the server application.", (args, context) -> {
+        discordHandler.<MessageContext>register("exit","Exit the server application.", (args, context) -> {
             if (noRole(context, discordConfig.adminRoleIDs))
                 return;
-
-            var server = args[0];
-            if (notFound(context, server))
-                return;
-
-            LegenderyCum.request(new ExitRequest(server), context::reply, context::timeout);
+                Gamemode server = Config.getMode();
+            LegenderyCum.request(new ExitRequest(server.displayName), context::reply, context::timeout);
         });
-        discordHandler.<MessageContext>register("artv", "<server> [map...]", "Force map change.", (args, context) -> {
+        discordHandler.<MessageContext>register("artv", "[map...]", "Force map change.", (args, context) -> {
             if (noRole(context, discordConfig.adminRoleIDs))
                 return;
-
-            var server = args[0];
-            if (notFound(context, server))
-                return;
-
+            Gamemode server = Config.getMode();
             LegenderyCum.request(
-                    new ArtvRequest(server, args.length > 1 ? args[1] : null, context.member().getDisplayName()),
+                    new ArtvRequest(server.displayName, args.length > 0 ? args[0] : null, context.member().getDisplayName()),
                     context::reply, context::timeout);
         });
-        discordHandler.<MessageContext>register("map", "<server> <map...>", "Map", (args, context) -> {
-            var server = args[0];
-            if (notFound(context, server))
-                return;
-
-            LegenderyCum.request(new MapRequest(server, args[1]), context::reply, context::timeout);
+        discordHandler.<MessageContext>register("map", " <map...>", "Map", (args, context) -> {
+            Gamemode server = Config.getMode();
+            LegenderyCum.request(new MapRequest(server.displayName, args[0]), context::reply, context::timeout);
         });
         discordHandler.<MessageContext>register("uploadmap", "<server>", "Upload a map to the server.",
                 (args, context) -> {
                     if (noRole(context, discordConfig.mapReviewerRoleIDs) || notMap(context))
                         return;
-
-                    var server = args[0];
-                    if (notFound(context, server))
-                        return;
-
+                    Gamemode server = Config.getMode();
                     context.message()
                             .getAttachments()
                             .stream()
@@ -99,73 +84,53 @@ public class DiscordCommands {
                                 var file = tmpDirectory.child(attachment.getFilename());
                                 file.writeBytes(response.getResult());
 
-                                LegenderyCum.request(new UploadMapRequest(server, file.absolutePath()), context::reply,
+                                LegenderyCum.request(new UploadMapRequest(server.displayName, file.absolutePath()), context::reply,
                                         context::timeout);
                             }));
                 });
 
-        discordHandler.<MessageContext>register("removemap", "<server> <map...>", "Remove a map from the server.",
+        discordHandler.<MessageContext>register("removemap", " <map...>", "Remove a map from the server.",
                 (args, context) -> {
                     if (noRole(context, discordConfig.mapReviewerRoleIDs))
                         return;
-
-                    var server = args[0];
-                    if (notFound(context, server))
-                        return;
-
-                    LegenderyCum.request(new RemoveMapRequest(server, args[1]), context::reply, context::timeout);
+                    Gamemode server = Config.getMode();
+                    LegenderyCum.request(new RemoveMapRequest(server.displayName, args[0]), context::reply, context::timeout);
                 });
 
-        discordHandler.<MessageContext>register("kick", "<server> <player> <duration> [reason...]", "Kick a player.",
+        discordHandler.<MessageContext>register("kick", "<player> <duration> [reason...]", "Kick a player.",
                 (args, context) -> {
                     if (noRole(context, discordConfig.adminRoleIDs))
                         return;
-
-                    var server = args[0];
-                    if (notFound(context, server))
-                        return;
-
-                    LegenderyCum.request(new KickRequest(server, args[1], args[2],
-                            args.length > 3 ? args[3] : "Not Specified", context.member().getDisplayName()),
+                    Gamemode server = Config.getMode();
+                    LegenderyCum.request(new KickRequest(server.displayName, args[0], args[1],
+                            args.length > 2 ? args[2] : "Not Specified", context.member().getDisplayName()),
                             context::reply, context::timeout);
                 });
 
-        discordHandler.<MessageContext>register("unkick", "<server> <player...>", "unkick a player.",
+        discordHandler.<MessageContext>register("unkick", "<player...>", "unkick a player.",
                 (args, context) -> {
                     if (noRole(context, discordConfig.adminRoleIDs))
                         return;
-
-                    var server = args[0];
-                    if (notFound(context, server))
-                        return;
-
-                    LegenderyCum.request(new unkickRequest(server, args[1]), context::reply, context::timeout);
+                     Gamemode server = Config.getMode();
+                    LegenderyCum.request(new unkickRequest(server.displayName, args[0]), context::reply, context::timeout);
                 });
 
-        discordHandler.<MessageContext>register("ban", "<server> <player> <duration> [reason...]", "Ban a player.",
+        discordHandler.<MessageContext>register("ban", "<player> <duration> [reason...]", "Ban a player.",
                 (args, context) -> {
                     if (noRole(context, discordConfig.adminRoleIDs))
                         return;
-
-                    var server = args[0];
-                    if (notFound(context, server))
-                        return;
-
+                    Gamemode server = Config.getMode();
                     LegenderyCum.request(
-                            new BanRequest(server, args[1], args[2], args.length > 3 ? args[3] : "Not Specified",
+                            new BanRequest(server.displayName, args[0], args[1], args.length > 1 ? args[1] : "Not Specified",
                                     context.member().getDisplayName()),
                             context::reply, context::timeout);
                 });
 
-        discordHandler.<MessageContext>register("unban", "<server> <player...>", "Unban a player.", (args, context) -> {
+        discordHandler.<MessageContext>register("unban", "<player...>", "Unban a player.", (args, context) -> {
             if (noRole(context, discordConfig.adminRoleIDs))
                 return;
-
-            var server = args[0];
-            if (notFound(context, server))
-                return;
-
-            LegenderyCum.request(new UnbanRequest(server, args[1]), context::reply, context::timeout);
+            Gamemode server = Config.getMode();
+            LegenderyCum.request(new UnbanRequest(server.displayName, args[0]), context::reply, context::timeout);
         });
         discordHandler.<MessageContext>register("info", "<player...>", "Look up a player stats.", (args, context) -> {
             var data = Find.playerData(args[0]);
