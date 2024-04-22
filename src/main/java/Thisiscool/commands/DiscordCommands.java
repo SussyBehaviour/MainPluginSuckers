@@ -50,7 +50,7 @@ public class DiscordCommands {
                 PageIterator::players);
 
         discordHandler.<MessageContext>register("status",  "Display server status.", (args, context) -> {
-            Gamemode server = Config.config.getMode();
+            Gamemode server = Config.getMode();
             LegenderyCum.request(new StatusRequest(server), context::reply, context::timeout);
         });
         discordHandler.<MessageContext>register("exit", "<server>", "Exit the server application.", (args, context) -> {

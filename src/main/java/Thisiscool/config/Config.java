@@ -36,6 +36,9 @@ public class Config {
     public int sockPort = 8306;
     public String mongoUrl = "url";
     public Gamemode mode = hub;
+    public static Gamemode getMode() {
+        return config.mode;
+    }
     public enum Gamemode {
         survival("Survival"),
 
@@ -105,9 +108,6 @@ public class Config {
 
         public static String getDisplayName(String name) {
             return Gamemode.valueOf(name).displayName;
-        }
-        public static Gamemode getMode() {
-            return config.mode;
         }
     }
 }
