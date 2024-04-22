@@ -10,10 +10,10 @@ import static mindustry.Vars.*;
 import java.time.Duration;
 
 import Thisiscool.MainHelper.Bundle;
+import Thisiscool.StuffForUs.net.LegenderyCum;
 import Thisiscool.database.Cache;
 import Thisiscool.database.Database;
-import Thisiscool.features.Ranks;
-import Thisiscool.features.net.LegenderyCum;
+import Thisiscool.database.Ranks;
 import Thisiscool.listeners.LegenderyCumEvents.ServerMessageEvent;
 import Thisiscool.utils.Admins;
 import Thisiscool.utils.Find;

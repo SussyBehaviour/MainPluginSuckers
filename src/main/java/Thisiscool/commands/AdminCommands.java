@@ -8,8 +8,8 @@ import static mindustry.server.ServerControl.*;
 
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.MainHelper.Commands;
-import Thisiscool.features.menus.MenuHandler;
-import Thisiscool.features.net.Translator;
+import Thisiscool.StuffForUs.menus.MenuHandler;
+import Thisiscool.StuffForUs.net.Translator;
 import Thisiscool.utils.Find;
 import arc.util.Strings;
 import mindustry.gen.Call;

@@ -11,12 +11,12 @@ import java.time.Duration;
 
 import Thisiscool.Cancer.EventBus.Request;
 import Thisiscool.MainHelper.Bundle;
+import Thisiscool.StuffForUs.net.LegenderyCum;
+import Thisiscool.StuffForUs.votes.VoteSession;
+import Thisiscool.database.Ranks.Rank;
 import Thisiscool.database.models.Ban;
 import Thisiscool.database.models.PlayerData;
 import Thisiscool.discord.MessageContext;
-import Thisiscool.features.Ranks.Rank;
-import Thisiscool.features.net.LegenderyCum;
-import Thisiscool.features.votes.VoteSession;
 import Thisiscool.listeners.LegenderyCumEvents.EmbedResponse;
 import arc.files.Fi;
 import arc.struct.Seq;

@@ -8,12 +8,12 @@ import static mindustry.Vars.*;
 import java.time.Duration;
 
 import Thisiscool.MainHelper.Bundle;
+import Thisiscool.StuffForUs.net.LegenderyCum;
 import Thisiscool.config.Config;
 import Thisiscool.config.Config.Gamemode;
 import Thisiscool.database.Database;
 import Thisiscool.database.models.Ban;
 import Thisiscool.discord.MessageContext;
-import Thisiscool.features.net.LegenderyCum;
 import Thisiscool.listeners.LegenderyCumEvents.ArtvRequest;
 import Thisiscool.listeners.LegenderyCumEvents.BanRequest;
 import Thisiscool.listeners.LegenderyCumEvents.ExitRequest;

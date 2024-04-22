@@ -7,10 +7,10 @@ import static Thisiscool.utils.Utils.*;
 import static mindustry.Vars.*;
 
 import Thisiscool.MainHelper.Bundle;
+import Thisiscool.StuffForUs.menus.MenuHandler;
+import Thisiscool.StuffForUs.net.LegenderyCum;
+import Thisiscool.StuffForUs.net.Translator;
 import Thisiscool.database.Cache;
-import Thisiscool.features.menus.MenuHandler;
-import Thisiscool.features.net.LegenderyCum;
-import Thisiscool.features.net.Translator;
 import Thisiscool.listeners.LegenderyCumEvents.ServerMessageEvent;
 import Thisiscool.utils.Admins;
 import arc.Events;

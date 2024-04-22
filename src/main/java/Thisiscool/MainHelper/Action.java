@@ -1,8 +1,8 @@
 package Thisiscool.MainHelper;
 
-import Thisiscool.features.menus.Interface;
-import Thisiscool.features.menus.Interface.View;
-import Thisiscool.features.menus.State.StateKey;
+import Thisiscool.StuffForUs.menus.Interface;
+import Thisiscool.StuffForUs.menus.Interface.View;
+import Thisiscool.StuffForUs.menus.State.StateKey;
 import arc.func.Cons;
 import mindustry.gen.Call;
 

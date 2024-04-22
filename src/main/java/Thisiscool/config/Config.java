@@ -9,9 +9,7 @@ import Thisiscool.MainHelper.ConfigLoader;
 import arc.util.Log;
 
 public class Config {
-
     public static Config config;
-
     public static void load() {
         config = ConfigLoader.load(Config.class, configFile);
         Log.info("Config loaded. (@)", dataDirectory.child(configFile).absolutePath());

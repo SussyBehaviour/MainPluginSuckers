@@ -6,7 +6,7 @@ import static Thisiscool.utils.Checks.*;
 
 import java.util.function.Predicate;
 
-import Thisiscool.features.net.LegenderyCum;
+import Thisiscool.StuffForUs.net.LegenderyCum;
 import Thisiscool.listeners.LegenderyCumEvents.DiscordMessageEvent;
 import Thisiscool.listeners.LegenderyCumEvents.ListRequest;
 import Thisiscool.utils.PageIterator;

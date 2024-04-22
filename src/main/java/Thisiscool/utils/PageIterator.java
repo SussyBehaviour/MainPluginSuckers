@@ -4,10 +4,10 @@ import static Thisiscool.PluginVars.*;
 import static Thisiscool.utils.Utils.*;
 
 import Thisiscool.MainHelper.Bundle;
+import Thisiscool.StuffForUs.menus.MenuHandler;
+import Thisiscool.StuffForUs.net.LegenderyCum;
 import Thisiscool.database.Cache;
 import Thisiscool.discord.MessageContext;
-import Thisiscool.features.menus.MenuHandler;
-import Thisiscool.features.net.LegenderyCum;
 import Thisiscool.listeners.LegenderyCumEvents.ListRequest;
 import Thisiscool.listeners.LegenderyCumEvents.ListResponse;
 import arc.func.Cons2;

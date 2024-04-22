@@ -6,9 +6,9 @@ import static mindustry.Vars.*;
 import java.time.temporal.ChronoUnit;
 import java.util.regex.Pattern;
 
-import Thisiscool.features.votes.Report;
-import Thisiscool.features.votes.VoteKick;
-import Thisiscool.features.votes.VoteSession;
+import Thisiscool.StuffForUs.votes.Report;
+import Thisiscool.StuffForUs.votes.VoteKick;
+import Thisiscool.StuffForUs.votes.VoteSession;
 import arc.struct.Seq;
 import arc.util.CommandHandler;
 import mindustry.core.Version;

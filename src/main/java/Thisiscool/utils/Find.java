@@ -8,8 +8,8 @@ import java.util.Optional;
 
 import Thisiscool.database.Cache;
 import Thisiscool.database.Database;
+import Thisiscool.database.Ranks.Rank;
 import Thisiscool.database.models.PlayerData;
-import Thisiscool.features.Ranks.Rank;
 import arc.files.Fi;
 import arc.func.Boolf;
 import arc.struct.Seq;

@@ -10,11 +10,11 @@ import java.util.Collections;
 import java.util.Random;
 
 import Thisiscool.MainHelper.Bundle;
+import Thisiscool.StuffForUs.net.LegenderyCum;
+import Thisiscool.StuffForUs.votes.Report;
 import Thisiscool.config.Config.Gamemode;
 import Thisiscool.config.DiscordConfig;
 import Thisiscool.database.Database;
-import Thisiscool.features.net.LegenderyCum;
-import Thisiscool.features.votes.Report;
 import Thisiscool.listeners.LegenderyCumEvents.AdminRequestConfirmEvent;
 import Thisiscool.listeners.LegenderyCumEvents.AdminRequestDenyEvent;
 import Thisiscool.listeners.LegenderyCumEvents.AdminRequestEvent;

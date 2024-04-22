@@ -1,9 +1,9 @@
 package Thisiscool.database.models;
 
+import Thisiscool.StuffForUs.menus.MenuHandler.EffectsPack;
+import Thisiscool.StuffForUs.menus.MenuHandler.Language;
 import Thisiscool.database.Database;
-import Thisiscool.features.Ranks.Rank;
-import Thisiscool.features.menus.MenuHandler.EffectsPack;
-import Thisiscool.features.menus.MenuHandler.Language;
+import Thisiscool.database.Ranks.Rank;
 import arc.util.Strings;
 import dev.morphia.annotations.Entity;
 import dev.morphia.annotations.Field;
@@ -48,7 +48,7 @@ public class PlayerData {
     public int HungerGamesWins = 0;
     public int pvpWins = 0;
 
-    public Rank rank = Rank.member;
+    public Rank rank = Rank.Civilian;
 
     public PlayerData(String uuid) {
         this.uuid = uuid;

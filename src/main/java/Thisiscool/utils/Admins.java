@@ -8,9 +8,9 @@ import java.util.Date;
 
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.MainHelper.KickBuilder;
+import Thisiscool.StuffForUs.net.LegenderyCum;
 import Thisiscool.database.Database;
 import Thisiscool.database.models.Ban;
-import Thisiscool.features.net.LegenderyCum;
 import Thisiscool.listeners.LegenderyCumEvents.BanEvent;
 import Thisiscool.listeners.LegenderyCumEvents.VoteKickEvent;
 import arc.struct.ObjectIntMap;
