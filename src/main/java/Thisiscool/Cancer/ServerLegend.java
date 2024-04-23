@@ -75,17 +75,6 @@ public class ServerLegend extends Legend {
                 return;
             }
 
-            try {
-                if (!connection.getRemoteAddressTCP().getAddress().isLoopbackAddress()) {
-                    connection.close(DcReason.closed);
-                    return;
-                }
-            } catch (Exception e) {
-                Log.debug("[Legend Server] Null address obtained");
-                Log.debug(e);
-                return;
-            }
-
             server.sendToTCP(connection.getID(), new LegendName(name));
         }
 
