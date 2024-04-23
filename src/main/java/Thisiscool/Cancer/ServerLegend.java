@@ -54,7 +54,7 @@ public class ServerLegend extends Legend {
     public class ServerLegendListener implements NetListener {
         @Override
         public void connected(Connection connection) {
-            server.sendToTCP(connection.getID(), new LegendName(Config.config.getCurrentGameMode().displayName));
+            server.sendToTCP(connection.getID(), new LegendName(Config.getMode().displayName));
         }
 
         @Override

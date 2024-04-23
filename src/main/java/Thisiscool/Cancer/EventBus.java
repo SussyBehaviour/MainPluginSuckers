@@ -6,7 +6,6 @@ import arc.func.Cons;
 import arc.net.FrameworkMessage;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.Log;
 import arc.util.Nullable;
 import arc.util.Timer;
 import arc.util.Timer.Task;
@@ -26,7 +25,6 @@ public class EventBus {
     }
 
     public <T> EventSubscription<T> run(T value, Runnable listener) {
-        Log.info("Creating event subscription for value: " + value);
         return on((Class<T>) value.getClass(), event -> {
             if (event.equals(value))
                 listener.run();
@@ -34,7 +32,6 @@ public class EventBus {
     }
 
     public <T> EventSubscription<T> on(Class<T> type, Cons<T> listener) {
-        Log.info("Creating event subscription for type: " + type.getName());
         var listeners = events.get(type, Seq::new);
 
         var subscription = new EventSubscription<>(type, listener);
@@ -44,7 +41,6 @@ public class EventBus {
     }
 
     public <T extends Response> RequestSubscription<T> request(Request<T> request, Cons<T> listener) {
-        Log.info("Creating request subscription for request UUID: " + request.uuid);
         var subscription = new RequestSubscription<>(request.uuid, listener);
         requests.put(request.uuid, subscription);
 
@@ -52,7 +48,6 @@ public class EventBus {
     }
 
     public <T> void fire(T value) {
-        Log.info("Firing event: " + value);
         if (value instanceof FrameworkMessage) return;
 
         if (value instanceof Response response) {
@@ -132,7 +127,6 @@ public class EventBus {
 
         @Override
         public void call(Object value) {
-            Log.info("Calling event subscription for type: " + type.getName());
             listener.get((T) value);
         }
 
@@ -155,7 +149,7 @@ public class EventBus {
 
         @Override
         public boolean unsubscribe() {
-            Log.info("Unsubscribing event subscription for type: " + type.getName());
+
             if (task != null && task.isScheduled())
                 task.cancel(); // Cancel the expiration task just in case
 
@@ -177,7 +171,6 @@ public class EventBus {
 
         @Override
         public void call(Object value) {
-            Log.info("Calling request subscription for UUID: " + uuid);
             responses++;
             listener.get((T) value);
         }
@@ -201,7 +194,6 @@ public class EventBus {
 
         @Override
         public boolean unsubscribe() {
-            Log.info("Unsubscribing request subscription for UUID: " + uuid);
             if (task != null && task.isScheduled())
                 task.cancel(); // Cancel the expiration task just in case
 

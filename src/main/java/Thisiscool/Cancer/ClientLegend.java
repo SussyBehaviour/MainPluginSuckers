@@ -52,7 +52,7 @@ public class ClientLegend extends Legend {
                         Log.err(e);
                     }
                 });
-                client.connect(5000, "de-01.acenodes.co.uk", port);
+                client.connect(5000, "n1-uk.serphost.xyz", port);
                 Connected = true;
             } catch (Exception e) {
                 Log.err("Failed to connect to Legend server: " + e.getMessage());
@@ -81,7 +81,7 @@ public class ClientLegend extends Legend {
     public class ClientLegendListener implements NetListener {
         @Override
         public void connected(Connection connection) {
-            client.sendTCP(new LegendName(Config.config.getCurrentGameMode().displayName));
+            client.sendTCP(new LegendName(Config.getMode().displayName));
         }
     
         @Override
