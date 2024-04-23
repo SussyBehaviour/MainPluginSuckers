@@ -187,14 +187,14 @@ public class ClientCommands {
                         return;
                     }
                     int code = Integer.parseInt(args[0]);
-                    if (Database.getPlayerData(player).DiscordId != null) {
+                    if (Database.getPlayerData(player).DiscordId != 0) {
                         Call.sendMessage("[red]", "You are already linked to a discord account.", player);
                         return; 
                     }
                     if (!DiscordCommands.playerLinkCodes.containsKey(code)) {
                         Call.sendMessage("[red]", "Wrong code.", player);
                     } else {
-                        Database.getPlayerData(player).DiscordId = DiscordCommands.playerLinkCodes.get(code).getId();
+                        Database.getPlayerData(player).DiscordId = DiscordCommands.playerLinkCodes.get(code).getId().asLong();
                         Database.savePlayerData(Database.getPlayerData(player));
                         Call.sendMessage("[green]", "You are linked to a discord account.", player);
                         DiscordCommands.playerLinkCodes.remove(code);

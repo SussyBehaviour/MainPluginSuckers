@@ -46,11 +46,9 @@ public class DiscordBot {
     public static GuildMessageChannel votekickChannel;
     public static GuildMessageChannel reportChannel;
     public static boolean connected;
-    public static Mono<String> getUserNameById(Snowflake userId) {
-        if (userId == null) {
-            return Mono.just("notlinked");
-        }
-        return gateway.getUserById(userId)
+    public static Mono<String> getUserNameById(long userId) {
+        Snowflake snowflake = Snowflake.of(userId);
+        return gateway.getUserById(snowflake)
                 .map(User::getUsername)
                 .switchIfEmpty(Mono.just("notlinked"));
     }
