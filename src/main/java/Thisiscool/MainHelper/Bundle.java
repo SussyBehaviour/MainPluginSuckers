@@ -10,6 +10,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
+import org.ocpsoft.prettytime.PrettyTime;
+
 import arc.files.Fi;
 import arc.func.Boolf;
 import arc.struct.ObjectMap;
@@ -24,7 +26,6 @@ import mindustry.gen.Player;
 import mindustry.mod.Mod;
 import mindustry.net.NetConnection;
 import net.time4j.Moment;
-import net.time4j.PrettyTime;
 import net.time4j.format.TextWidth;
 import net.time4j.scale.TimeScale;
 import net.time4j.tz.Timezone;
