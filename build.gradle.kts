@@ -29,7 +29,7 @@ dependencies {
     implementation("org.ocpsoft.prettytime:prettytime:5.0.4.Final")
     compileOnly("com.github.anuken.arc:arc-core:v146")
     compileOnly("com.github.anuken.arc:arcnet:v146")
-implementation("net.time4j:time4j-pretty:5.0.7")
+  implementation("net.time4j:time4j-base:5.9.1")
     implementation("com.alibaba:fastjson:2.0.40")
 
     compileOnly("org.projectlombok:lombok:1.18.30")
