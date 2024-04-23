@@ -103,7 +103,7 @@ public class DiscordCommands {
                 case noCommand -> context.message().addReaction(ReactionEmoji.unicode("⚠")).subscribe();
             }
         });
-        discordHandler.<MessageContext>register("map", " <map...>", "Map", (args, context) -> {
+        discordHandler.<MessageContext>register("map", "<map...>", "Map", (args, context) -> {
             Gamemode server = Config.getMode();
             LegenderyCum.request(new MapRequest(server.displayName, args[0]), context::reply, context::timeout);
         });
@@ -126,7 +126,7 @@ public class DiscordCommands {
                             }));
                 });
 
-        discordHandler.<MessageContext>register("removemap", " <map...>", "Remove a map from the server.",
+        discordHandler.<MessageContext>register("removemap", "<map...>", "Remove a map from the server.",
                 (args, context) -> {
                     if (noRole(context, discordConfig.mapReviewerRoleIDs))
                         return;
