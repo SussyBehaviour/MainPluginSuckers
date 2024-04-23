@@ -33,12 +33,12 @@ public class Config {
     public int hubPort = 6567;
     public int sockPort = 8306;
     public String mongoUrl = "url";
-    public Gamemode mode = hub;
+    public Gamemode mode = Hub;
     public static Gamemode getMode() {
         return config.mode;
     }
     public enum Gamemode {
-        survival("Survival"),
+        Survival("Survival"),
 
 
         Towerdefense("Towerdefense") {
@@ -56,7 +56,7 @@ public class Config {
             }
         },
 
-        hub("Hub") {
+        Hub("Hub") {
             {
                 isDefault = true;
                 isMainServer = true;
@@ -66,7 +66,7 @@ public class Config {
             }
         },
 
-        hunger("HungerGames") {
+        Hunger("HungerGames") {
             {
                 isDefault = false;
                 enableRtv = false;
@@ -74,20 +74,20 @@ public class Config {
             }
         },
 
-        pvp("PvP") {
+        Pvp("PvP") {
             {
                 enableWaves = false;
                 enableSurrender = true;
             }
         },
 
-        sandbox("Sandbox") {
+        Sandbox("Sandbox") {
             {
                 enableStrict = false;
             }
         },
 
-        attack("Attack");
+        Attack("Attack");
 
         public final String displayName;
 

@@ -132,11 +132,11 @@ public class PluginEvents {
                 data.gamesPlayed++;
                 if (player.team() == event.winner)
                     switch (config.mode) {
-                        case attack -> data.attackWins++;
+                        case Attack -> data.attackWins++;
                         case Towerdefense -> data.TowerdefenseWins++;
                         case Football -> data.FootballWins++;
-                        case hunger -> data.HungerGamesWins++;
-                        case pvp -> data.pvpWins++;
+                        case Hunger -> data.HungerGamesWins++;
+                        case Pvp -> data.pvpWins++;
                         default -> throw new IllegalArgumentException("Unexpected value: " + config.mode);
                     }
             });
