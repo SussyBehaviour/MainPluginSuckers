@@ -111,7 +111,7 @@ public class ClientCommands {
                             return;
                         }
 
-                        LegenderyCum.send(new AdminRequestEvent(config.mode.name(), Cache.get(player)));
+                        LegenderyCum.send(new AdminRequestEvent(config.mode.displayName, Cache.get(player)));
                         Bundle.send(player, "commands.login.sent");
                     });
                 });
