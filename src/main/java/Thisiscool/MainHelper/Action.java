@@ -7,30 +7,30 @@ import arc.func.Cons;
 import mindustry.gen.Call;
 
 @FunctionalInterface
-@SuppressWarnings("unchecked")
+@SuppressWarnings("all")
 public interface Action<V extends View> extends Cons<V> {
 
     static <V extends View> Action<V> none() {
-        return view -> {}; 
+        return hide();
     }
 
     static <V extends View> Action<V> run(Runnable runnable) {
         return view -> runnable.run();
     }
 
-    static <V extends View> Action<View> open(Interface<?> next) {
+    static <V extends View> Action<V> open(Interface<?> next) {
         return both(hide(), next::open);
     }
 
-    static <V extends View, T> Action<View> openWith(Interface<?> next, StateKey<T> key, T value) {
+    static <V extends View, T> Action<V> openWith(Interface<?> next, StateKey<T> key, T value) {
         return both(hide(), view -> next.show(view.player, view.state.put(key, value), view));
     }
 
-    static <V extends View, T> Action<View> openWithout(Interface<?> next, StateKey<T> key) {
+    static <V extends View, T> Action<V> openWithout(Interface<?> next, StateKey<T> key) {
         return both(hide(), view -> next.show(view.player, view.state.remove(key), view));
     }
 
-    static <V extends View> Action<View> back() {
+    static <V extends View> Action<V> back() {
         return both(hide(), view -> {
             if (view.parent == null) return;
             view.parent.getInterface().show(view.player, view.state, view.parent.parent);

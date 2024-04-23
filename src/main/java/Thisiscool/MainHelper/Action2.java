@@ -3,16 +3,15 @@ package Thisiscool.MainHelper;
 import Thisiscool.StuffForUs.menus.Interface;
 import Thisiscool.StuffForUs.menus.Interface.View;
 import Thisiscool.StuffForUs.menus.State.StateKey;
-import Thisiscool.StuffForUs.menus.text.TextInput.TextInputView;
 import arc.func.Cons;
 import arc.func.Cons2;
 import mindustry.gen.Call;
 
 @FunctionalInterface
-@SuppressWarnings("unchecked")
+@SuppressWarnings("all")
 public interface Action2<V extends View, T> extends Cons2<V, T> {
 
-    static <V extends View, T> Action2<TextInputView, String> none() {
+    static <V extends View, T> Action2<V, T> none() {
         return hide();
     }
 
@@ -25,19 +24,18 @@ public interface Action2<V extends View, T> extends Cons2<V, T> {
     }
 
     static <V extends View, T> Action2<V, T> open(Interface<?> next) {
-        return (Action2<V, T>) both(hide(), (view, value) -> next.open(view));
+        return both(hide(), (view, value) -> next.open(view));
     }
 
-
-    static <V extends View, T> Action2<View, Object> openWith(Interface<?> next, StateKey<T> key) {
-        return both(hide(), (view, value) -> next.show(view.player, view.state.put(key,value), view));
+    static <V extends View, T> Action2<V, T> openWith(Interface<?> next, StateKey<T> key) {
+        return both(hide(), (view, value) -> next.show(view.player, view.state.put(key, value), view));
     }
 
-    static <V extends View, T> Action2<View, Object> openWithout(Interface<?> next, StateKey<T> key) {
+    static <V extends View, T> Action2<V, T> openWithout(Interface<?> next, StateKey<T> key) {
         return both(hide(), (view, value) -> next.show(view.player, view.state.remove(key), view));
     }
 
-    static <V extends View, T> Action2<View, Object> back() {
+    static <V extends View, T> Action2<V, T> back() {
         return both(hide(), (view, value) -> {
             if (view.parent == null) return;
             view.parent.getInterface().show(view.player, view.state, view.parent.parent);
