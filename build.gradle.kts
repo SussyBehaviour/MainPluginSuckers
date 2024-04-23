@@ -23,6 +23,7 @@ dependencies {
     implementation("dev.morphia.morphia:morphia-core:2.3.8")
     implementation("com.discord4j:discord4j-core:3.2.6")
     runtimeOnly("io.netty:netty-transport-native-epoll::linux-aarch_64")
+    implementation("net.time4j:time4j-all:5.0.7")
     implementation("org.jline:jline-reader:3.21.0")
     implementation("org.jline:jline-console:3.21.0")
     implementation("org.jline:jline-terminal-jna:3.21.0")
