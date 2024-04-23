@@ -42,7 +42,7 @@ public class NetHandlers {
             Translator.translate(from, message);
 
             LegenderyCum.send(
-                    new ServerMessageEvent(config.mode.name(), stripDiscord(from.plainName()), stripDiscord(message)));
+                    new ServerMessageEvent(config.mode.displayName, stripDiscord(from.plainName()), stripDiscord(message)));
             return null;
         }
 

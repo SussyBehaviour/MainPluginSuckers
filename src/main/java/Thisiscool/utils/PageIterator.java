@@ -6,6 +6,8 @@ import static Thisiscool.utils.Utils.*;
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.StuffForUs.menus.MenuHandler;
 import Thisiscool.StuffForUs.net.LegenderyCum;
+import Thisiscool.config.Config;
+import Thisiscool.config.Config.Gamemode;
 import Thisiscool.database.Cache;
 import Thisiscool.discord.MessageContext;
 import Thisiscool.listeners.LegenderyCumEvents.ListRequest;
@@ -70,13 +72,12 @@ public class PageIterator {
 
     private static void discord(String[] args, MessageContext context, String type,
             Cons2<Builder, ListResponse> formatter) {
-        var server = args[0];
-        if (Checks.notFound(context, server))
-            return;
+            Gamemode server = Config.getMode();
 
-        LegenderyCum.request(new ListRequest(type, server, 1), response -> context
+
+        LegenderyCum.request(new ListRequest(type, server.displayName, 1), response -> context
                 .reply(embed -> formatter.get(embed, response))
-                .withComponents(createPageButtons(type, server, response))
+                .withComponents(createPageButtons(type, server.displayName, response))
                 .subscribe(), context::timeout);
     }
 

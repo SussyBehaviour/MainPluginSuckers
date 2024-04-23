@@ -46,7 +46,7 @@ public class ServerCommands {
             Log.info("&fi@: &fr&lw@", "&lcServer", "&lw" + args[0]);
             Bundle.send("commands.say.chat", args[0]);
 
-            LegenderyCum.send(new ServerMessageEvent(config.mode.name(), "Server", stripDiscord(args[0])));
+            LegenderyCum.send(new ServerMessageEvent(config.mode.displayName, "Server", stripDiscord(args[0])));
         });
 
         serverHandler.register("kick", "<player> <duration> [reason...]", "Kick a player.", args -> {

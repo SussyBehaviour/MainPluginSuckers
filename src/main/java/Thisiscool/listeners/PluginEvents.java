@@ -40,7 +40,7 @@ public class PluginEvents {
 
     public static void load() {
         Events.on(ServerLoadEvent.class, event -> LegenderyCum
-                .send(new ServerMessageEmbedEvent(config.mode.name(), "Server Launched", Color.SUMMER_SKY)));
+                .send(new ServerMessageEmbedEvent(config.mode.displayName, "Server Launched", Color.SUMMER_SKY)));
 
         Events.on(PlayEvent.class, event -> {
             state.rules.showSpawns = true;
@@ -168,16 +168,18 @@ public class PluginEvents {
 
         Timer.schedule(() -> Groups.player.each(player -> {
             var data = Cache.get(player);
-            data.playTime++;
-
-            while (data.rank.checkNext(data.playTime, data.blocksPlaced, data.gamesPlayed, data.wavesSurvived)) {
-                data.rank = data.rank.next;
-
-                Ranks.name(player, data);
-                MenuHandler.showPromotionMenu(player, data);
+            if (data != null) {
+                data.playTime++;
+        
+                while (data.rank.checkNext(data.playTime, data.blocksPlaced, data.gamesPlayed, data.wavesSurvived)) {
+                    data.rank = data.rank.next;
+        
+                    Ranks.name(player, data);
+                    MenuHandler.showPromotionMenu(player, data);
+                }
+        
+                Database.savePlayerData(data);
             }
-
-            Database.savePlayerData(data);
         }), 60f, 60f);
     }
 }
