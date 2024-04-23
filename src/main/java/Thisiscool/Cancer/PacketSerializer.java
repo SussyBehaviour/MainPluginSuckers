@@ -12,16 +12,15 @@ import arc.net.FrameworkMessage.Ping;
 import arc.net.FrameworkMessage.RegisterTCP;
 import arc.net.FrameworkMessage.RegisterUDP;
 import arc.net.NetSerializer;
+import arc.util.Log;
 import lombok.Getter;
 
 @Getter
 public class PacketSerializer implements NetSerializer {
     protected final Legend Legend;
-
     public PacketSerializer(Legend Legend) {
         this.Legend = Legend;
     }
-
     @Override
     public void write(ByteBuffer buffer, Object value) {
         if (value instanceof FrameworkMessage message) {
@@ -35,12 +34,12 @@ public class PacketSerializer implements NetSerializer {
 
     @Override
     public Object read(ByteBuffer buffer) {
-        return switch (buffer.get()) {
+        Object result = switch (buffer.get()) {
             case -2 -> readFramework(buffer);
             case -1 -> readObject(buffer);
-
             default -> throw new IllegalStateException("Unexpected object type!");
         };
+        return result;
     }
 
     private void writeString(ByteBuffer buffer, String string) {
@@ -51,7 +50,6 @@ public class PacketSerializer implements NetSerializer {
     private String readString(ByteBuffer buffer) {
         var bytes = new byte[buffer.getInt()];
         buffer.get(bytes);
-
         return new String(bytes);
     }
 
@@ -82,20 +80,15 @@ public class PacketSerializer implements NetSerializer {
                 this.id = buffer.getInt();
                 this.isReply = buffer.get() == 1;
             }};
-
             case 1 -> FrameworkMessage.keepAlive;
             case 2 -> FrameworkMessage.discoverHost;
-
             case 3 -> new RegisterTCP() {{
                 this.connectionID = buffer.getInt();
             }};
-
             case 4 -> new RegisterUDP() {{
                 this.connectionID = buffer.getInt();
             }};
-
             case 5 -> new LegendName(readString(buffer));
-
             default -> throw new IllegalStateException("Unexpected framework message!");
         };
     }
@@ -103,8 +96,6 @@ public class PacketSerializer implements NetSerializer {
     private Object readObject(ByteBuffer buffer) {
         try {
             var type = Class.forName(readString(buffer));
-
-            // the current Legend isn't even subscribed to this class, ignore
             if (!(Response.class.isAssignableFrom(type) || Legend.getBus().contains(type))) {
                 skipRemaining(buffer);
                 return null;
@@ -115,6 +106,7 @@ public class PacketSerializer implements NetSerializer {
 
             return JSON.parseObject(bytes, type);
         } catch (ClassNotFoundException e) {
+            Log.err("Class not found during deserialization: " + e.getMessage());
             skipRemaining(buffer);
             return null;
         }

@@ -1,7 +1,10 @@
 package Thisiscool.Cancer;
 
 import java.nio.channels.ClosedSelectorException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import Thisiscool.config.Config;
 import arc.net.Client;
 import arc.net.Connection;
 import arc.net.DcReason;
@@ -16,61 +19,54 @@ import lombok.SneakyThrows;
 public class ClientLegend extends Legend {
     private final Client client;
     private final int port;
-
-    private boolean wasConnected;
+    private boolean Connected;
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     public ClientLegend(int port) {
         this.client = new Client(65536, 32768, serializer);
         this.port = port;
-
         this.client.addListener(new MainThreadListener(new ClientLegendListener()));
 
         Timer.schedule(() -> {
-            if (!wasConnected || isConnected()) return;
-
-            Log.info("[Legend Client] Trying to reconnect to Legend server...");
-
-            try {
-                connect();
-            } catch (Throwable e) {
-                Log.err(e);
+            if (!Connected && !isConnected()) {
+                try {
+                    connect();
+                } catch (Throwable e) {
+                    Log.err(e);
+                }
             }
         }, 30f, 30f);
     }
 
-    /**
-     * Connects to the server on a specified port
-     */
     @Override
     @SneakyThrows
     public void connect() {
-        Threads.daemon("Legend Client", () -> {
+        executorService.submit(() -> {
             try {
-                client.run();
-            } catch (ClosedSelectorException e) {
-                // ignore
-            } catch (Throwable e) {
-                Log.err(e);
+                Threads.daemon("Legend Client", () -> {
+                    try {
+                        client.run();
+                    } catch (ClosedSelectorException e) {
+                        // ignore
+                    } catch (Throwable e) {
+                        Log.err(e);
+                    }
+                });
+                client.connect(5000, "de-01.acenodes.co.uk", port);
+                Connected = true;
+            } catch (Exception e) {
+                Log.err("Failed to connect to Legend server: " + e.getMessage());
             }
         });
-
-        wasConnected = true;
-        client.connect(5000, "n1-uk.serphost.xyz", port);
     }
 
-    /**
-     * Disconnects from the server
-     */
     @Override
     @SneakyThrows
     public void disconnect() {
-        wasConnected = false;
+        Connected = false;
         client.close();
     }
 
-    /**
-     * Fires all listeners, then sends an object to the server
-     */
     @Override
     public void send(Object value) {
         bus.fire(value);
@@ -85,22 +81,18 @@ public class ClientLegend extends Legend {
     public class ClientLegendListener implements NetListener {
         @Override
         public void connected(Connection connection) {
-            client.sendTCP(new LegendName(name));
+            client.sendTCP(new LegendName(Config.config.getCurrentGameMode().displayName));
         }
-
+    
         @Override
         public void disconnected(Connection connection, DcReason reason) {
-            Log.info("[Legend Client] Disconnected from server @. (@)", connection, reason);
         }
-
         @Override
         public void received(Connection connection, Object object) {
             if (object instanceof LegendName name) {
                 connection.setName(name.name());
-                Log.info("[Legend Client] Connected to server @. (@)", connection, connection.getRemoteAddressTCP());
                 return;
             }
-
             bus.fire(object);
         }
     }
