@@ -55,7 +55,7 @@ public class ClientLegend extends Legend {
         });
 
         wasConnected = true;
-        client.connect(5000, "localhost", port);
+        client.connect(5000, "n1-uk.serphost.xyz", port);
     }
 
     /**
