@@ -163,19 +163,20 @@ public class ClientCommands {
                     vote = new VoteSurrender(player.team());
                     vote.vote(player, 1);
                 });
-        Commands.create("report")
-                .cooldown(60000L)
+                Commands.create("report")
                 .welcomeMessage(true)
+                .cooldown(60000L)
                 .register((args, player) -> {
                     if (args.length < 2) {
-                        Call.sendMessage("Please use correct arguments", "-[red]" + "Player to Report+[cyan]Reason",
-                                player);
+                        Call.sendMessage("Please use correct arguments","-[red]"+"Player to Report+[cyan]Reason", player);
+                        return;
+                    }    
+                    var target = Find.player(args[0]);
+                    if (notFound(player, target)) {
                         return;
                     }
-                    var target = Find.player(args[0]);
-                    if (notFound(player, target))
-                        return;
                     report = new Report(player, target, args[1]);
+                    Bundle.send(player, "commands.report.yes");
                 });
         Commands.create("link")
                 .cooldown(1000)

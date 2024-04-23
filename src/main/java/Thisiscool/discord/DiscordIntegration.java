@@ -11,7 +11,7 @@ import java.util.Random;
 
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.StuffForUs.net.LegenderyCum;
-import Thisiscool.StuffForUs.votes.Report;
+import Thisiscool.config.Config;
 import Thisiscool.config.Config.Gamemode;
 import Thisiscool.config.DiscordConfig;
 import Thisiscool.database.Database;
@@ -21,6 +21,7 @@ import Thisiscool.listeners.LegenderyCumEvents.AdminRequestEvent;
 import Thisiscool.listeners.LegenderyCumEvents.BanEvent;
 import Thisiscool.listeners.LegenderyCumEvents.VoteKickEvent;
 import Thisiscool.utils.Find;
+import arc.util.Log;
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;
 import discord4j.core.object.component.ActionRow;
@@ -34,6 +35,7 @@ import discord4j.core.object.reaction.ReactionEmoji;
 import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.rest.util.Color;
 import mindustry.gen.Groups;
+import mindustry.gen.Player;
 
 
 public class DiscordIntegration {
@@ -68,19 +70,26 @@ public class DiscordIntegration {
                 .footer(Gamemode.getDisplayName(event.server()), null)
                 .timestamp(Instant.now()).build()).subscribe();
     }
-    public static void sendReport(Report event) {
-        if (!connected)
+    public static void sendReportTo(Player initiator, Player target, String reason) {
+        if (!connected) {
+            Log.info("DiscordIntegration: sendReport called but not connected.");
             return;
-            long h = DiscordConfig.discordConfig.ReportRoleID;
-        reportChannel.createMessage("@" + h).subscribe();
+        }
+        long h = DiscordConfig.discordConfig.ReportRoleID;
+        reportChannel.createMessage("<@&" + h + ">").subscribe();
         reportChannel.createMessage(EmbedCreateSpec.builder()
                 .color(getRandomColor())
                 .title("Reported")
-                .addField("Reported player:", event.target.coloredName(), false)
-                .addField("Reported by:", event.initiator.coloredName(), false)
-                .addField("Reason:", event.reason, false)
-                .footer(Gamemode.getDisplayName(event.server), null)
-                .timestamp(Instant.now()).build()).subscribe();
+                .addField("Reported player:", target.plainName(), false)
+                .addField("Reported by:", initiator.plainName(), false)
+                .addField("Reason:", reason, false)
+                .footer(Config.getMode().displayName, null)
+                .timestamp(Instant.now()).build())
+                .subscribe();
+    
+        adminChannel.createMessage("<@&" + h + ">"   + "Slaves Get to Work").subscribe();
+        adminChannel.createMessage("Reported player: " + target.plainName()+ target.uuid()).subscribe();
+        adminChannel.createMessage("Reported by: " + initiator.plainName()+ initiator.uuid()).subscribe();
     }
 
     public static void sendAdminRequest(AdminRequestEvent event) {
