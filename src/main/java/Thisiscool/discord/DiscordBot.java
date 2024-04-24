@@ -93,33 +93,32 @@ public class DiscordBot {
                 var member = event.getMember().orElse(null);
                 if (member == null || member.isBot())
                     return;
-                    message.getChannel()
-                    .filter(channel -> channel.getId().asLong() == discordConfig.Chat)
-                    .flatMap(isMatch -> Mono.just(new MessageContext(message, member, message.getChannel().block())))
-                    .subscribe(context -> {
-                        var response = discordHandler.handleMessage(message.getContent(), context);
-                        switch (response.type) {
-                            case fewArguments ->
-                                context.error("Too Few Arguments", "Usage: @**@** @", discordHandler.prefix,
-                                        response.runCommand, response.command.paramText).subscribe();
-                            case manyArguments ->
-                                context.error("Too Many Arguments", "Usage: @**@** @", discordHandler.prefix,
-                                        response.runCommand, response.command.paramText).subscribe();
-                            case unknownCommand -> context.error("Unknown Command",
-                                    "To see a list of all available commands, use @**help**", discordHandler.prefix)
-                                    .subscribe();
-                
-                            case valid ->
-                                Log.info("[Discord] @ used @", member.getDisplayName(), message.getContent());
-                            default -> throw new IllegalArgumentException("Unexpected value: " + response.type);
-                        }
-                    });
-          
+                message.getChannel()
+                        .map(channel -> new MessageContext(message, member, channel))
+                        .subscribe(context -> {
+                            var response = discordHandler.handleMessage(message.getContent(), context);
+                            switch (response.type) {
+                                case fewArguments ->
+                                    context.error("Too Few Arguments", "Usage: @**@** @", discordHandler.prefix,
+                                            response.runCommand, response.command.paramText).subscribe();
+                                case manyArguments ->
+                                    context.error("Too Many Arguments", "Usage: @**@** @", discordHandler.prefix,
+                                            response.runCommand, response.command.paramText).subscribe();
+                                case unknownCommand -> context.error("Unknown Command",
+                                        "To see a list of all available commands, use @**help**", discordHandler.prefix)
+                                        .subscribe();
+
+                                case valid ->
+                                    Log.info("[Discord] @ used @", member.getDisplayName(), message.getContent());
+                                default -> throw new IllegalArgumentException("Unexpected value: " + response.type);
+                            }
+                        });
 
                 // Prevent commands from being sent to the game
                 if (message.getContent().startsWith(discordConfig.prefix))
                     return;
-      
+                if (message.getChannelId().asLong() != discordConfig.Chat)
+                    return;
 
                 var server = discordConfig.Chat;
                 if (server == null)
