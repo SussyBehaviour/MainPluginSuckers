@@ -44,14 +44,14 @@ public class LegenderyCumEvents {
 
     public static void load() {
             LegenderyCum.on(ServerMessageEvent.class, event -> {
-                var channel = discordConfig.serverToChannel.get(event.server);
+                var channel = discordConfig.Chat;
                 if (channel == null)
                     return;
 
                 DiscordIntegration.sendMessage(channel, "`" + event.name + ": " + event.message + "`");
             });
             LegenderyCum.on(ServerMessageEmbedEvent.class, event -> {
-                var channel = discordConfig.serverToChannel.get(event.server);
+                var channel = discordConfig.Chat;
                 if (channel == null)
                     return;
 

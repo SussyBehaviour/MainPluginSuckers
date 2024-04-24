@@ -4,7 +4,6 @@ import static Thisiscool.PluginVars.*;
 import static mindustry.Vars.*;
 
 import Thisiscool.MainHelper.ConfigLoader;
-import arc.struct.ObjectMap;
 import arc.struct.Seq;
 import arc.util.Log;
 
@@ -33,5 +32,5 @@ public class DiscordConfig {
 
     public Long ReportRoleID= 0L;
     
-    public ObjectMap<String, Long> serverToChannel = ObjectMap.of("server", 0L);
+    public Long Chat = 0L;
 }

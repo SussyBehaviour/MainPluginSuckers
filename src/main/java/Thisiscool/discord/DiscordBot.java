@@ -7,6 +7,7 @@ import static Thisiscool.utils.Checks.*;
 import java.util.function.Predicate;
 
 import Thisiscool.StuffForUs.net.LegenderyCum;
+import Thisiscool.config.Config;
 import Thisiscool.listeners.LegenderyCumEvents.DiscordMessageEvent;
 import Thisiscool.listeners.LegenderyCumEvents.ListRequest;
 import Thisiscool.utils.PageIterator;
@@ -116,7 +117,7 @@ public class DiscordBot {
                 if (message.getContent().startsWith(discordConfig.prefix))
                     return;
 
-                var server = discordConfig.serverToChannel.findKey(message.getChannelId().asLong(), false);
+                var server = discordConfig.Chat;
                 if (server == null)
                     return;
 
@@ -132,9 +133,9 @@ public class DiscordBot {
                                 .filter(Predicate.not(Predicate.isEqual(Role.DEFAULT_COLOR)))
                                 .last(Color.WHITE))
                         .switchIfEmpty(Mono.fromRunnable(() -> LegenderyCum
-                                .send(new DiscordMessageEvent(server, member.getDisplayName(), message.getContent()))))
+                                .send(new DiscordMessageEvent(Config.getMode().displayName, member.getDisplayName(), message.getContent()))))
                         .subscribe(TupleUtils.consumer((role,
-                                color) -> LegenderyCum.send(new DiscordMessageEvent(server, role.getName(),
+                                color) -> LegenderyCum.send(new DiscordMessageEvent(Config.getMode().displayName, role.getName(),
                                         Integer.toHexString(color.getRGB()), member.getDisplayName(),
                                         message.getContent()))));
             });

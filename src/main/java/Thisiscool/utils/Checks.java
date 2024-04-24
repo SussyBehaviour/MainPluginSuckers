@@ -1,7 +1,6 @@
 package Thisiscool.utils;
 
 import static Thisiscool.config.Config.*;
-import static Thisiscool.config.DiscordConfig.*;
 import static Thisiscool.utils.Utils.*;
 import static arc.math.Mathf.*;
 import static mindustry.Vars.*;
@@ -21,7 +20,6 @@ import Thisiscool.listeners.LegenderyCumEvents.EmbedResponse;
 import arc.files.Fi;
 import arc.struct.Seq;
 import arc.util.Log;
-import arc.util.Strings;
 import arc.util.Time;
 import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;
 import discord4j.core.spec.EmbedCreateSpec;
@@ -236,12 +234,6 @@ public class Checks {
     public static boolean notFound(MessageContext context, Rank rank) {
         return check(rank == null, context, "Rank Not Found", "Check if the input is correct.");
     }
-
-    public static boolean notFound(MessageContext context, String server) {
-        return check(!discordConfig.serverToChannel.containsKey(server), context, "Server Not Found",
-                "**Available servers:** @", Strings.join(", ", discordConfig.serverToChannel.keys()));
-    }
-
     // endregion
     // region response
 
