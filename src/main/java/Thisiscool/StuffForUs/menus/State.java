@@ -2,7 +2,6 @@ package Thisiscool.StuffForUs.menus;
 
 import arc.struct.ObjectMap;
 
-@SuppressWarnings("unchecked")
 public record State(ObjectMap<String, Object> map) {
 
     public static State create() {
@@ -22,13 +21,17 @@ public record State(ObjectMap<String, Object> map) {
         map.remove(key.name);
         return this;
     }
-
-    public <T> T get(StateKey<T> key) {
-        return (T) map.get(key.name);
+    public <T> T get(StateKey<T> key, Class<T> type) {
+        Object value = map.get(key.name);
+        if (value == null) {
+            return null;
+        }
+        return type.cast(value);
     }
-
-    public <T> T get(StateKey<T> key, T def) {
-        return (T) map.get(key.name, def);
+    
+    public <T> T get(StateKey<T> key, T def, Class<T> type) {
+        Object value = map.get(key.name, def);
+        return type.cast(value);
     }
 
     public boolean contains(StateKey<?> key) {

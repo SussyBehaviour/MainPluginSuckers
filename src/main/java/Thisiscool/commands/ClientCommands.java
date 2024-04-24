@@ -149,11 +149,7 @@ public class ClientCommands {
                 Commands.create("report")
                 .welcomeMessage(true)
                 .cooldown(60000L)
-                .register((args, player) -> {
-                    if (args.length < 2) {
-                        Call.sendMessage("Please use correct arguments","-[red]"+"Player to Report+[cyan]Reason", player);
-                        return;
-                    }    
+                .register((args, player) -> { 
                     var target = Find.player(args[0]);
                     if (notFound(player, target)) {
                         return;
@@ -165,11 +161,6 @@ public class ClientCommands {
                 .cooldown(1000)
                 .welcomeMessage(true)
                 .register((args, player) -> {
-                    if (args.length < 1) {
-                        Call.sendMessage("Please use correct arguments", "-[red]Enter your link code from discord",
-                                player);
-                        return;
-                    }
                     int code = Integer.parseInt(args[0]);
                     if (Database.getPlayerData(player).DiscordId != 0) {
                         Call.sendMessage("[red]", "You are already linked to a discord account.", player);

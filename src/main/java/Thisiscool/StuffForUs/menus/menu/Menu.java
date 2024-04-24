@@ -58,15 +58,14 @@ public class Menu extends Interface<MenuView> {
     }
 
     @Override
-    public <T1> Menu transform(StateKey<T1> key, Cons2<MenuView, T1> transformer) {
-        return (Menu) super.transform(view -> transformer.get(view, view.state.get(key)));
+    public <T1> Menu transform(StateKey<T1> key, Class<T1> type, Cons2<MenuView, T1> transformer) {
+        return (Menu) super.transform(view -> transformer.get(view, view.state.get(key, type)));
     }
-
+    
     @Override
-    public <T1, T2> Menu transform(StateKey<T1> key1, StateKey<T2> key2, Cons3<MenuView, T1, T2> transformer) {
-        return (Menu) super.transform(view -> transformer.get(view, view.state.get(key1), view.state.get(key2)));
+    public <T1, T2> Menu transform(StateKey<T1> key1, Class<T1> type1, StateKey<T2> key2, Class<T2> type2, Cons3<MenuView, T1, T2> transformer) {
+        return (Menu) super.transform(view -> transformer.get(view, view.state.get(key1, type1), view.state.get(key2, type2)));
     }
-
     public Menu followUp(boolean followUp) {
         this.followUp = followUp;
         return this;

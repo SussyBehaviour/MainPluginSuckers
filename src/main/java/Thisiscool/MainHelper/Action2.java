@@ -8,7 +8,6 @@ import arc.func.Cons2;
 import mindustry.gen.Call;
 
 @FunctionalInterface
-@SuppressWarnings("all")
 public interface Action2<V extends View, T> extends Cons2<V, T> {
 
     static <V extends View, T> Action2<V, T> none() {

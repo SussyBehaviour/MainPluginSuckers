@@ -3,12 +3,13 @@ package Thisiscool;
 import static java.time.temporal.ChronoUnit.*;
 
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import Thisiscool.StuffForUs.votes.Report;
 import Thisiscool.StuffForUs.votes.VoteKick;
 import Thisiscool.StuffForUs.votes.VoteSession;
-import arc.struct.Seq;
 import arc.util.CommandHandler;
 import mindustry.core.Version;
 import reactor.util.function.Tuple2;
@@ -30,9 +31,9 @@ public class PluginVars {
     public static final String discordConfigFile = "discord-config.json";
     public static final String discordServerUrl = "https://discord.gg/vaGBFkvCwg";
     public static final String translationApiUrl = "https://clients5.google.com/translate_a/t?client=dict-chrome-ex&dt=t";
-    public static final Pattern durationPattern = Pattern.compile("(\\d+)\\s*?([a-zA-Zа-яА-Я]+)");
-    @SuppressWarnings("unchecked")
-    public static final Seq<Tuple2<Pattern, ChronoUnit>> durationPatterns = Seq.with();
+    public static final Pattern durationPattern = Pattern.compile("(\\d++)\\s*?([a-zA-Zа-яА-Я]+)");
+    public static final List<Tuple2<Pattern, ChronoUnit>> durationPatterns = new ArrayList<>();
+
     static {
         durationPatterns.add(Tuples.of(Pattern.compile("(mon|month|months)"), MONTHS));
         durationPatterns.add(Tuples.of(Pattern.compile("(w|week|weeks)"), WEEKS));
@@ -41,6 +42,7 @@ public class PluginVars {
         durationPatterns.add(Tuples.of(Pattern.compile("(m|min|mins|minute|minutes)"), MINUTES));
         durationPatterns.add(Tuples.of(Pattern.compile("(s|sec|secs|second|seconds)"), SECONDS));
     }
+
     public static VoteSession vote;
     public static VoteKick voteKick;
     public static Report report;

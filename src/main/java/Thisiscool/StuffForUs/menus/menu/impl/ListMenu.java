@@ -12,7 +12,6 @@ import arc.math.Mathf;
 import arc.struct.Seq;
 import mindustry.gen.Player;
 
-@SuppressWarnings({"unchecked", "rawtypes"})
 public class ListMenu extends Menu {
     public static final StateKey<Integer>
             PAGE = new StateKey<>("page");
@@ -33,25 +32,24 @@ public class ListMenu extends Menu {
     public ListMenu(int maxPerPage, String leftButton, String rightButton, String pageButton, String closeButton) {
         this.maxPerPage = maxPerPage;
         this.transform(menu -> {
-            var content = (Seq<Object>) menu.state.get(CONTENT).get(menu);
-            var formatter = (Cons3<StringBuilder, Integer, Object>) menu.state.get(FORMATTER);
-
+            var content = (Seq<Object>) menu.state.get(CONTENT, Func.class).get(menu);
+            var formatter = (Cons3<StringBuilder, Integer, Object>) menu.state.get(FORMATTER, Cons3.class);
+    
             int pages = Math.max(1, Mathf.ceil((float) content.size / maxPerPage));
-            int page = Math.min(menu.state.get(PAGE), pages);
-
-            menu.title((String) menu.state.get(TITLE).get(page));
+            int page = Math.min(menu.state.get(PAGE, Integer.class), pages);
+    
+            menu.title((String) menu.state.get(TITLE, Func.class).get(page));
             menu.content(format(content, page, formatter));
-
+    
             menu.option(leftButton, Action.showWith(PAGE, Math.max(1, page - 1)));
             menu.option(pageButton, Action.show(), page, pages);
             menu.option(rightButton, Action.showWith(PAGE, Math.min(page + 1, pages)));
-
+    
             menu.row();
-
+    
             menu.option(closeButton);
         }).followUp(true);
     }
-
     // region show
 
     public <T> MenuView show(Player player, String title, Seq<T> content, Cons3<StringBuilder, Integer, T> formatter) {

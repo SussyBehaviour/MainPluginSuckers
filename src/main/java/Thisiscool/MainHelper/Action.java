@@ -7,7 +7,7 @@ import arc.func.Cons;
 import mindustry.gen.Call;
 
 @FunctionalInterface
-@SuppressWarnings("all")
+
 public interface Action<V extends View> extends Cons<V> {
 
     static <V extends View> Action<V> none() {

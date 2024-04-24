@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@SuppressWarnings("unchecked")
 public class EventBus {
     protected final Legend Legend;
 

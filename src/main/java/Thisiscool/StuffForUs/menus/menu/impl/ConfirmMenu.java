@@ -24,11 +24,11 @@ public class ConfirmMenu extends Menu {
 
     public ConfirmMenu(String confirmButton, String denyButton) {
         this.transform(menu -> {
-            menu.title(menu.state.get(TITLE));
-            menu.content(menu.state.get(CONTENT), menu.state.get(VALUES));
-
-            menu.option(confirmButton, Action.run(menu.state.get(CONFIRMED)));
-            menu.option(denyButton, Action.run(menu.state.get(DENIED)));
+            menu.title(menu.state.get(TITLE, String.class));
+            menu.content(menu.state.get(CONTENT, String.class), menu.state.get(VALUES, Object[].class));
+    
+            menu.option(confirmButton, Action.run(menu.state.get(CONFIRMED, Runnable.class)));
+            menu.option(denyButton, Action.run(menu.state.get(DENIED, Runnable.class)));
         });
     }
 

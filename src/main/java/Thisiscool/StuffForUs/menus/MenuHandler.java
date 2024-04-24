@@ -68,21 +68,22 @@ public class MenuHandler {
     public static void load() {
         // region menu
 
-        statsMenu.transform(TARGET, DATA, (menu, target, data) -> {
+        statsMenu.transform(TARGET, Player.class, DATA, PlayerData.class, (menu, target, data) -> {
             menu.title("stats.title");
             menu.content("stats.content", target.coloredName(), data.id, data.rank.name(menu.player),
                     data.rank.description(menu.player), data.blocksPlaced, data.blocksBroken, data.gamesPlayed,
                     data.wavesSurvived, data.attackWins, data.TowerdefenseWins, data.FootballWins,
-                    data.HungerGamesWins, data.pvpWins, Bundle.formatDuration(menu.player, Duration.ofMinutes(data.playTime)));
-
+                    data.HungerGamesWins, data.pvpWins,
+                    Bundle.formatDuration(menu.player, Duration.ofMinutes(data.playTime)));
+        
             menu.option("stats.requirements.show", Action.open(requirementsMenu)).row();
             menu.option("ui.button.close");
         });
-
-        promotionMenu.transform(DATA, (menu, data) -> {
+        
+        promotionMenu.transform(DATA, PlayerData.class, (menu, data) -> {
             menu.title("stats.promotion.title");
             menu.content("stats.promotion.content", data.rank.name(menu.player), data.rank.description(menu.player));
-
+        
             menu.option("stats.requirements.show", Action.open(requirementsMenu)).row();
             menu.option("ui.button.close");
         });
@@ -163,54 +164,54 @@ public class MenuHandler {
         // endregion
         // region input
 
-        kickDurationInput.transform(TARGET, (input, target) -> {
+        kickDurationInput.transform(TARGET, Player.class, (input, target) -> {
             input.title("kick.duration.title");
             input.content("kick.duration.content", target.coloredName());
-
+        
             input.defaultText("kick.duration.default");
             input.textLength(32);
-
+        
             input.result(text -> {
                 var duration = parseDuration(text);
                 kickReasonInput.open(input, DURATION, duration.toMillis());
             });
         });
-
-        banDurationInput.transform(TARGET, (input, target) -> {
+        
+        banDurationInput.transform(TARGET, Player.class, (input, target) -> {
             input.title("ban.duration.title");
             input.content("ban.duration.content", target.coloredName());
-
+        
             input.defaultText("ban.duration.default");
             input.textLength(32);
-
+        
             input.result(text -> {
                 var duration = parseDuration(text);
                 banReasonInput.open(input, DURATION, duration.toMillis());
             });
         });
-
-        kickReasonInput.transform(TARGET, (input, target) -> {
+        
+        kickReasonInput.transform(TARGET, Player.class, (input, target) -> {
             input.title("kick.reason.title");
             input.content("kick.reason.content", target.coloredName(),
-                    Bundle.formatDuration(input.player, input.state.get(DURATION)));
-
+                    Bundle.formatDuration(input.player, input.state.get(DURATION, Long.class)));
+        
             input.defaultText("kick.reason.default");
             input.textLength(64);
-
+        
             input.closed((Runnable) Action.back());
-            input.result(text -> Admins.kick(target, input.player, input.state.get(DURATION), text));
+            input.result(text -> Admins.kick(target, input.player, input.state.get(DURATION, Long.class), text));
         });
-
-        banReasonInput.transform(TARGET, (input, target) -> {
+        
+        banReasonInput.transform(TARGET, Player.class, (input, target) -> {
             input.title("ban.reason.title");
             input.content("ban.reason.content", target.coloredName(),
-                    Bundle.formatDuration(input.player, input.state.get(DURATION)));
-
+                    Bundle.formatDuration(input.player, input.state.get(DURATION, Long.class)));
+        
             input.defaultText("ban.reason.default");
             input.textLength(64);
-
+        
             input.closed((Runnable) Action.back());
-            input.result(text -> Admins.ban(target, input.player, input.state.get(DURATION), text));
+            input.result(text -> Admins.ban(target, input.player, input.state.get(DURATION, Long.class), text));
         });
 
         // endregion

@@ -8,7 +8,6 @@ import Thisiscool.StuffForUs.menus.menu.Menu;
 import arc.func.Func;
 import mindustry.gen.Player;
 
-@SuppressWarnings({"unchecked", "rawtypes"})
 public class PageMenu extends Menu {
     public static final StateKey<Integer>
             PAGE = new StateKey<>("page"),
@@ -24,15 +23,15 @@ public class PageMenu extends Menu {
 
     public PageMenu(String leftButton, String rightButton, String pageButton, String closeButton) {
         this.transform(menu -> {
-            menu.title((String) menu.state.get(TITLE).get(menu.state.get(PAGE)));
-            menu.content((String) menu.state.get(CONTENT).get(menu.state.get(PAGE)));
-
-            menu.option(leftButton, Action.showWith(PAGE, Math.max(1, menu.state.get(PAGE) - 1)));
-            menu.option(pageButton, Action.show(), menu.state.get(PAGE), menu.state.get(PAGES));
-            menu.option(rightButton, Action.showWith(PAGE, Math.min(menu.state.get(PAGE) + 1, menu.state.get(PAGES))));
-
+            menu.title((String) menu.state.get(TITLE, Func.class).get(menu.state.get(PAGE, Integer.class)));
+            menu.content((String) menu.state.get(CONTENT, Func.class).get(menu.state.get(PAGE, Integer.class)));
+    
+            menu.option(leftButton, Action.showWith(PAGE, Math.max(1, menu.state.get(PAGE, Integer.class) - 1)));
+            menu.option(pageButton, Action.show(), menu.state.get(PAGE, Integer.class), menu.state.get(PAGES, Integer.class));
+            menu.option(rightButton, Action.showWith(PAGE, Math.min(menu.state.get(PAGE, Integer.class) + 1, menu.state.get(PAGES, Integer.class))));
+    
             menu.row();
-
+    
             menu.option(closeButton);
         }).followUp(true);
     }

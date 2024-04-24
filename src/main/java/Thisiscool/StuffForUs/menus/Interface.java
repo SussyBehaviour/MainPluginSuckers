@@ -79,14 +79,12 @@ public abstract class Interface<V extends View> {
         return this;
     }
 
-    public <T1> Interface<V> transform(StateKey<T1> key, Cons2<V, T1> transformer) {
-        return transform(view -> transformer.get(view, view.state.get(key)));
+    public <T1> Interface<V> transform(StateKey<T1> key, Class<T1> type, Cons2<V, T1> transformer) {
+        return transform(view -> transformer.get(view, view.state.get(key, type)));
     }
-
-    public <T1, T2> Interface<V> transform(StateKey<T1> key1, StateKey<T2> key2, Cons3<V, T1, T2> transformer) {
-        return transform(view -> transformer.get(view, view.state.get(key1), view.state.get(key2)));
+    public <T1, T2> Interface<V> transform(StateKey<T1> key1, Class<T1> type1, StateKey<T2> key2, Class<T2> type2, Cons3<V, T1, T2> transformer) {
+        return transform(view -> transformer.get(view, view.state.get(key1, type1), view.state.get(key2, type2)));
     }
-
     // endregion
 
     public abstract class View {
