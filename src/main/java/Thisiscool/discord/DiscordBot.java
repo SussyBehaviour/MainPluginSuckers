@@ -47,12 +47,14 @@ public class DiscordBot {
     public static GuildMessageChannel votekickChannel;
     public static GuildMessageChannel reportChannel;
     public static boolean connected;
+
     public static Mono<String> getUserNameById(long userId) {
         Snowflake snowflake = Snowflake.of(userId);
         return gateway.getUserById(snowflake)
                 .map(User::getUsername)
                 .switchIfEmpty(Mono.just("notlinked"));
     }
+
     public static void connect() {
         try {
             HttpResources.set(LoopResources.create("d4j-http", 4, true));
@@ -91,31 +93,33 @@ public class DiscordBot {
                 var member = event.getMember().orElse(null);
                 if (member == null || member.isBot())
                     return;
-
-                message.getChannel()
-                        .map(channel -> new MessageContext(message, member, channel))
-                        .subscribe(context -> {
-                            var response = discordHandler.handleMessage(message.getContent(), context);
-                            switch (response.type) {
-                                case fewArguments ->
-                                    context.error("Too Few Arguments", "Usage: @**@** @", discordHandler.prefix,
-                                            response.runCommand, response.command.paramText).subscribe();
-                                case manyArguments ->
-                                    context.error("Too Many Arguments", "Usage: @**@** @", discordHandler.prefix,
-                                            response.runCommand, response.command.paramText).subscribe();
-                                case unknownCommand -> context.error("Unknown Command",
-                                        "To see a list of all available commands, use @**help**", discordHandler.prefix)
-                                        .subscribe();
-
-                                case valid ->
-                                    Log.info("[Discord] @ used @", member.getDisplayName(), message.getContent());
-                                default -> throw new IllegalArgumentException("Unexpected value: " + response.type);
-                            }
-                        });
+                    message.getChannel()
+                    .filter(channel -> channel.getId().asLong() == discordConfig.Chat)
+                    .flatMap(isMatch -> Mono.just(new MessageContext(message, member, message.getChannel().block())))
+                    .subscribe(context -> {
+                        var response = discordHandler.handleMessage(message.getContent(), context);
+                        switch (response.type) {
+                            case fewArguments ->
+                                context.error("Too Few Arguments", "Usage: @**@** @", discordHandler.prefix,
+                                        response.runCommand, response.command.paramText).subscribe();
+                            case manyArguments ->
+                                context.error("Too Many Arguments", "Usage: @**@** @", discordHandler.prefix,
+                                        response.runCommand, response.command.paramText).subscribe();
+                            case unknownCommand -> context.error("Unknown Command",
+                                    "To see a list of all available commands, use @**help**", discordHandler.prefix)
+                                    .subscribe();
+                
+                            case valid ->
+                                Log.info("[Discord] @ used @", member.getDisplayName(), message.getContent());
+                            default -> throw new IllegalArgumentException("Unexpected value: " + response.type);
+                        }
+                    });
+          
 
                 // Prevent commands from being sent to the game
                 if (message.getContent().startsWith(discordConfig.prefix))
                     return;
+      
 
                 var server = discordConfig.Chat;
                 if (server == null)
@@ -133,11 +137,13 @@ public class DiscordBot {
                                 .filter(Predicate.not(Predicate.isEqual(Role.DEFAULT_COLOR)))
                                 .last(Color.WHITE))
                         .switchIfEmpty(Mono.fromRunnable(() -> LegenderyCum
-                                .send(new DiscordMessageEvent(Config.getMode().displayName, member.getDisplayName(), message.getContent()))))
+                                .send(new DiscordMessageEvent(Config.getMode().displayName, member.getDisplayName(),
+                                        message.getContent()))))
                         .subscribe(TupleUtils.consumer((role,
-                                color) -> LegenderyCum.send(new DiscordMessageEvent(Config.getMode().displayName, role.getName(),
-                                        Integer.toHexString(color.getRGB()), member.getDisplayName(),
-                                        message.getContent()))));
+                                color) -> LegenderyCum
+                                        .send(new DiscordMessageEvent(Config.getMode().displayName, role.getName(),
+                                                Integer.toHexString(color.getRGB()), member.getDisplayName(),
+                                                message.getContent()))));
             });
 
             gateway.on(ButtonInteractionEvent.class).subscribe(event -> {
@@ -145,20 +151,21 @@ public class DiscordBot {
                 if (content.length < 3)
                     return;
 
-                LegenderyCum.request(new ListRequest(content[0], content[1], Strings.parseInt(content[2])), response -> {
-                    var embed = EmbedCreateSpec.builder();
+                LegenderyCum.request(new ListRequest(content[0], content[1], Strings.parseInt(content[2])),
+                        response -> {
+                            var embed = EmbedCreateSpec.builder();
 
-                    switch (content[0]) {
-                        case "maps" -> PageIterator.formatMapsPage(embed, response);
-                        case "players" -> PageIterator.formatPlayersPage(embed, response);
+                            switch (content[0]) {
+                                case "maps" -> PageIterator.formatMapsPage(embed, response);
+                                case "players" -> PageIterator.formatPlayersPage(embed, response);
 
-                        default -> throw new IllegalStateException();
-                    }
+                                default -> throw new IllegalStateException();
+                            }
 
-                    event.edit().withEmbeds(embed.build())
-                            .withComponents(PageIterator.createPageButtons(content[0], content[1], response))
-                            .subscribe();
-                });
+                            event.edit().withEmbeds(embed.build())
+                                    .withComponents(PageIterator.createPageButtons(content[0], content[1], response))
+                                    .subscribe();
+                        });
             });
 
             gateway.on(SelectMenuInteractionEvent.class).subscribe(event -> {

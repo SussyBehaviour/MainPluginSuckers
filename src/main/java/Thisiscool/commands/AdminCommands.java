@@ -10,6 +10,7 @@ import Thisiscool.MainHelper.Bundle;
 import Thisiscool.MainHelper.Commands;
 import Thisiscool.StuffForUs.menus.MenuHandler;
 import Thisiscool.StuffForUs.net.Translator;
+import Thisiscool.StuffForUs.votes.VoteWaves;
 import Thisiscool.utils.Find;
 import arc.util.Strings;
 import mindustry.gen.Call;
@@ -112,6 +113,21 @@ public class AdminCommands {
 
                     team.items().add(item, amount);
                     Bundle.send(player, "commands.give.success", amount, item.emoji(), item.name, team.coloredName());
+                });
+                Commands.admin("Waves")
+                .enabled(config.mode.enableWaves)
+                .cooldown(60000L)
+                .welcomeMessage(true)
+                .register((args, player) -> {
+                    if (alreadyVoting(player, vote))
+                        return;
+
+                    int amount = args.length > 0 ? Strings.parseInt(args[0]) : 1;
+                    if (invalidAmount(player, amount, 1, maxWavesAmount))
+                        return;
+
+                    vote = new VoteWaves(amount);
+                    vote.vote(player, 10);
                 });
 
         Commands.admin("spawn")

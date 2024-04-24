@@ -15,14 +15,12 @@ import Thisiscool.StuffForUs.votes.Report;
 import Thisiscool.StuffForUs.votes.VoteKick;
 import Thisiscool.StuffForUs.votes.VoteRtv;
 import Thisiscool.StuffForUs.votes.VoteSurrender;
-import Thisiscool.StuffForUs.votes.VoteWaves;
 import Thisiscool.database.Cache;
 import Thisiscool.database.Database;
 import Thisiscool.listeners.LegenderyCumEvents.AdminRequestEvent;
 import Thisiscool.utils.Find;
 import Thisiscool.utils.PageIterator;
 import Thisiscool.utils.Utils;
-import arc.util.Strings;
 import mindustry.gen.Call;
 
 public class ClientCommands {
@@ -136,21 +134,6 @@ public class ClientCommands {
                 .enabled(config.mode.enableRtv)
                 .register(PageIterator::maps);
 
-        Commands.create("Waves")
-                .enabled(config.mode.enableWaves)
-                .cooldown(60000L)
-                .welcomeMessage(true)
-                .register((args, player) -> {
-                    if (alreadyVoting(player, vote))
-                        return;
-
-                    int amount = args.length > 0 ? Strings.parseInt(args[0]) : 1;
-                    if (invalidAmount(player, amount, 1, maxWavesAmount))
-                        return;
-
-                    vote = new VoteWaves(amount);
-                    vote.vote(player, 1);
-                });
 
         Commands.create("surrender")
                 .enabled(config.mode.enableSurrender)
