@@ -29,8 +29,6 @@ public class Config {
         strict.set(config.mode.enableStrict);
         enableVotekick.set(config.mode.enableVotekick);
     }
-    public String hubIp = "Thisiscool.net";
-    public int hubPort = 6567;
     public String mongoUrl = "url";
     public Gamemode mode = Hub;
     public static Gamemode getMode() {

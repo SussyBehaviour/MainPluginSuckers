@@ -45,13 +45,6 @@ public class ClientCommands {
         Commands.create("settings")
                 .welcomeMessage(true)
                 .register((args, player) -> MenuHandler.showSettingsMenu(player));
-
-        Commands.create("hub")
-                .enabled(!config.hubIp.isEmpty())
-                .register((args, player) -> net.pingHost(config.hubIp, config.hubPort,
-                        host -> Call.connect(player.con, config.hubIp, config.hubPort),
-                        e -> Bundle.send(player, "commands.hub.error")));
-
         Commands.create("stats")
                 .welcomeMessage(true)
                 .register((args, player) -> {
