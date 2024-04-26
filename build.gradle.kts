@@ -8,7 +8,9 @@ repositories {
     mavenCentral()
     maven("https://jitpack.io")
 }
-
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("-Xlint:unchecked")
+}
 dependencies {
     val json = JsonSlurper().parseText(file("src/main/resources/plugin.json").readText()) as Map<*, *>
     project.version = json["version"]!!
