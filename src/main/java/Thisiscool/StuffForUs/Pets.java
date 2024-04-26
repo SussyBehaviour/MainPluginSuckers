@@ -1,10 +1,17 @@
-package mindustry.plugin.minimods;
-
+package Thisiscool.StuffForUs;
+import Thisiscool.database.Database;
+import Thisiscool.database.Ranks.Rank;
+import Thisiscool.database.models.Petsdata;
+import Thisiscool.database.models.Petsdata.Pet;
+import Thisiscool.utils.Utils;
 import arc.Events;
 import arc.graphics.Color;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.*;
+import arc.util.CommandHandler;
+import arc.util.Log;
+import arc.util.Structs;
+import arc.util.Timer;
 import mindustry.Vars;
 import mindustry.ai.types.MinerAI;
 import mindustry.content.Blocks;
@@ -17,14 +24,6 @@ import mindustry.gen.Call;
 import mindustry.gen.Groups;
 import mindustry.gen.Player;
 import mindustry.gen.Unit;
-import mindustry.plugin.MiniMod;
-import mindustry.plugin.database.Database;
-import mindustry.plugin.discord.DiscordPalette;
-import mindustry.plugin.discord.DiscordVars;
-import mindustry.plugin.discord.discordcommands.DiscordRegistrar;
-import mindustry.plugin.utils.GameMsg;
-import mindustry.plugin.utils.Rank;
-import mindustry.plugin.utils.Utils;
 import mindustry.type.Item;
 import mindustry.type.ItemStack;
 import mindustry.type.UnitType;
@@ -34,38 +33,34 @@ import mindustry.world.blocks.defense.turrets.BaseTurret;
 import mindustry.world.blocks.defense.turrets.PointDefenseTurret;
 import mindustry.world.blocks.defense.turrets.Turret;
 import mindustry.world.blocks.storage.CoreBlock;
-import mindustry.world.meta.Env;
-import org.javacord.api.entity.message.embed.EmbedBuilder;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-public class Pets implements MiniMod {
+public class Pets {
     /**
      * Pets that are currently spawned. Continuously read by controllers, which despawn their unit if it is not in this list.
      */
     ObjectMap<String, Seq<String>> spawnedPets = new ObjectMap<>();
 
-    protected static int maxPets(int rank) {
+    public static int maxPets(String rank) {
         return switch (rank) {
-            case 0, 1 -> 0;
-            case 2, 3 -> 1;
-            case 4 -> 2;
+            case "Civilian", "DClass" -> 0;
+            case "LEVEL0", "LEVEL1" -> 1;
+            case "LEVEL2" -> 2;
+            case "LEVEL3" -> 5;
             default -> 3;
         };
     }
-    protected static int maxTier(int rank) {
+    public static int maxTier(String rank) {
         return switch (rank) {
-            case 0, 1 -> 0;
-            case 2 -> 1;
-            case 3, 4 -> 2;
-            case 5 -> 3;
+            case "Civilian", "DClass" -> 0;
+            case "LEVEL0", "LEVEL1" -> 1;
+            case "LEVEL2" -> 2;
+            case "LEVEL3", "LEVEL4" -> 3;
+            case "LEVEL5" -> 4;
             default -> 4;
         };
     }
 
-    protected static int tierOf(UnitType type) {
+    public static int tierOf(UnitType type) {
         if (type == UnitTypes.quad || type == UnitTypes.scepter || type == UnitTypes.vela || type == UnitTypes.alpha || type == UnitTypes.beta || type == UnitTypes.gamma) {
             return 4;
         } else if (type == UnitTypes.fortress || type == UnitTypes.quasar || type == UnitTypes.spiroct || type == UnitTypes.zenith || type == UnitTypes.mega ||
@@ -95,7 +90,7 @@ public class Pets implements MiniMod {
             return new Item[]{Items.copper, Items.lead, Items.titanium};
         }
     }
-    protected static int rank(PetDatabase.Pet pet) {
+    protected static int rank(Pet pet) {
         var items = possibleFoods(pet.species);
         long min = Long.MAX_VALUE;
         for (var item : items) {
@@ -159,73 +154,51 @@ public class Pets implements MiniMod {
         return bestTeam;
     }
 
-    @Override
     public void registerEvents() {
         for (UnitType unit : Vars.content.units()) {
             if (unit.itemCapacity != 10) {
                 unit.itemCapacity = 10;
             }
         }
-
-
-        Events.on(EventType.WorldLoadEvent.class, event -> {
-            /** Enable serpulo units on erekir... alternative is to modify source code supportsEnv function */
-            for (var unit : Vars.content.units()) {
-                unit.envDisabled = (unit.envDisabled & ~Env.scorching);
-                unit.envRequired = (unit.envRequired & ~Env.terrestrial);
-                unit.envEnabled = (unit.envEnabled | Env.scorching);
-            }
-        });
     }
 
-    @Override
     public void registerCommands(CommandHandler handler) {
         handler.<Player>register("pet", "[name...]", "Spawns a pet", (args, player) -> {
-            var pets = PetDatabase.getPets(player.uuid());
+            var pets = Petsdata.getPets(player.uuid());
             if (pets == null || pets.length == 0) {
-                player.sendMessage(GameMsg.error("Pet", "You didn't create any pets. Join our Discord to make a pet."));
                 return;
             }
-
             var pet = args.length == 0 ? null : Structs.find(pets, p -> p.name.equalsIgnoreCase(args[0]));
             if (pet == null) {
-                player.sendMessage(GameMsg.custom("Pet", "sky",
-                        "Your pets:" + Seq.with(pets).toString(", ", p -> p.name)));
                 return;
             }
 
             var alreadySpawned = spawnedPets.get(player.uuid(), new Seq<>());
             if (alreadySpawned.contains(pet.name)) {
-                player.sendMessage(GameMsg.error("Pet", "Pet '" + args[0] + "' is already spawned"));
                 return;
             }
 
             if (!spawnPet(pet, player)) {
-                player.sendMessage(GameMsg.error("Pet", "Pet [#" + pet.color.toString().substring(0, 6) + "]" + pet.name + "[scarlet] can't be spawned here"));
                 return;
             }
 
             alreadySpawned.add(pet.name);
             spawnedPets.put(player.uuid(), alreadySpawned);
-            player.sendMessage(GameMsg.success("Pet", "Pet [#" + pet.color.toString().substring(0, 6) + "]" + pet.name + "[green] successfully spawned!"));
         });
 
         handler.<Player>register("despawn", "<name...>", "Despawns a pet", (args, player) -> {
             var spawned = spawnedPets.get(player.uuid());
             if (spawned == null) {
-                player.sendMessage(GameMsg.error("Pet", args[0] + "[" + GameMsg.ERROR + "] is not currently spawned"));
                 return;
             }
             if (!spawned.contains(args[0])) {
-                player.sendMessage(GameMsg.error("Pet", args[0] + "[" + GameMsg.ERROR + "] is not currently spawned"));
                 return;
             }
             spawned.remove(args[0]);
-            player.sendMessage(GameMsg.info("Pet", args[0] + "[" + GameMsg.INFO + "] was despawned"));
         });
     }
 
-    private boolean spawnPet(PetDatabase.Pet pet, Player player) {
+    private boolean spawnPet(Pet pet, Player player) {
         // correct team can't be set instantly, otherwise pet won't spawn
         Unit unit = pet.species.spawn(player.team(), player.x, player.y);
         if (unit == null) {
@@ -238,69 +211,11 @@ public class Pets implements MiniMod {
         unit.controller(controller);
         controller.unit(unit);
 
-//        Call.spawnEffect(unit.x, unit.y, unit.rotation, unit.type);
-//        Events.fire(new EventType.UnitSpawnEvent(unit));
+        Call.spawnEffect(unit.x, unit.y, unit.rotation, unit.type);
+       Events.fire(new EventType.UnitSpawnEvent(unit));
         return true;
     }
-
-    @Override
-    public void registerDiscordCommands(DiscordRegistrar handler) {
-        handler.register("addpet", "<species> <color:rrggbb> <name...>",
-                data -> {
-                    data.help = "Create a new pet";
-                    data.category = "Pets";
-                },
-                ctx -> {
-                    Database.Player pd = Database.getDiscordData(ctx.author().getId());
-                    if (pd == null) {
-                        ctx.error("Not in database", "You have not linked your discord account. Type **" + DiscordVars.prefix + "redeem** to link.");
-                        return;
-                    }
-                    if (Strings.stripColors(ctx.args.get("name")).length() > 30 && ctx.args.get("name").length() > 300) {
-                        ctx.error("Pet name is to long", "Please choose a shorter name for your pet");
-                        return;
-                    }
-
-                    var pets = PetDatabase.getPets(pd.uuid);
-                    if (pets.length >= maxPets(pd.rank)) {
-                        ctx.error("Too Many Pets", "You currently have " + pets.length + " pets, but a " + Rank.all[pd.rank].name + " can only have " + maxPets(pd.rank) + " pets. Increase your rank for more pets.");
-                        return;
-                    }
-                    for (var pet : pets) {
-                        if (pet.name.equalsIgnoreCase(ctx.args.get("name"))) {
-                            ctx.error("Pet already exists", "You already have a pet named '" + pet.name + "'");
-                            return;
-                        }
-                    }
-
-                    var pet = new PetDatabase.Pet(pd.uuid, ctx.args.get("name"));
-                    pet.color = Utils.parseColor(ctx.args.get("color:rrggbb"));
-                    if (pet.color == null) {
-                        ctx.error("Not a valid color", "Make sure you are using `rrggbb` format");
-                        return;
-                    }
-                    pet.species = Vars.content.units().find(u -> u.name.equalsIgnoreCase(ctx.args.get("species")));
-                    if (pet.species == null) {
-                        ctx.error("Invalid Species", "'" + ctx.args.get("species") + "' is not a valid unit");
-                        return;
-                    }
-
-                    int tier = tierOf(pet.species);
-                    if (tier < 0) {
-                        ctx.error("Unsupport Species", "Species must be T1-4, not be a naval unit, and not be the antumbra");
-                        return;
-                    }
-
-                    if (tier > maxTier(pd.rank)) {
-                        ctx.error("Insufficient Rank", pet.species.name + " is tier " + tier + ", but a " + Rank.all[pd.rank].name + " can only have tier " + maxTier(pd.rank) + " pets.");
-                        return;
-                    }
-
-                    PetDatabase.addPet(pet);
-                    ctx.success("Created pet", "Successfully created " + pet.name + ". Type in-game **/pet " + pet.name + "** to spawn your pet.");
-                }
-        );
-
+    public void registerDiscordCommands(DiscordCommandHandler handler) {
         handler.register("pets", "",
                 data -> {
                     data.help = "Show list of pets";
@@ -504,9 +419,9 @@ public class Pets implements MiniMod {
             pets.remove(name);
 
             if (player.con != null && player.con.isConnected()) {
-                player.sendMessage(GameMsg.custom("Pet", "yellow", "Your pet [#" + color.toString().substring(0, 6) + "]" + name + "[yellow] died! " +
+                Call.sendMessage("Pet"+ "yellow"+ "Your pet [#" + color.toString().substring(0, 6) + "]" + name + "[yellow] died! " +
                         "Make sure you are spawning any ground pets on empty tiles."
-                ));
+                );
             }
         }
 
@@ -690,7 +605,7 @@ public class Pets implements MiniMod {
             // labels
             boolean isStill = Math.abs(vx) < 2 && Math.abs(vy) < 2;
             if (!hasLabel && isStill) {
-                Call.label(Utils.formatName(Rank.all[rank], "[#" + color.toString().substring(0, 6) + "]" + name), 1f, unit.x, unit.y + unit.hitSize() / 2 + Vars.tilesize);
+              //  Call.label(Utils.formatName(Rank.all[rank], "[#" + color.toString().substring(0, 6) + "]" + name), 1f, unit.x, unit.y + unit.hitSize() / 2 + Vars.tilesize);
                 hasLabel = true;
                 Timer.schedule(() -> {
                     hasLabel = false;
@@ -772,7 +687,7 @@ public class Pets implements MiniMod {
 
                         // update database
                         int amount = itemsEaten;
-                        var pet = Structs.find(PetDatabase.getPets(uuid), p -> p.name.equals(this.name));
+                        var pet = Structs.find(Petsdata.getPets(uuid), p -> p.name.equals(this.name));
                         if (pet == null) { // pet was deleted
                             Call.unitDespawn(unit);
                             return;
@@ -791,7 +706,7 @@ public class Pets implements MiniMod {
                             pet.eatenBeryllium += amount;
                         }
                         rank = rank(pet);
-                        PetDatabase.updatePet(pet);
+                        Petsdata.updatePet(pet);
                     }
                 }
 
@@ -808,134 +723,3 @@ public class Pets implements MiniMod {
     }
 }
 
-class PetDatabase {
-    public static Pet[] getPets(String owner) {
-        String sql = "SELECT * FROM pets WHERE owner = ?";
-        try {
-            PreparedStatement ps = Database.conn.prepareStatement(sql);
-            ps.setString(1, owner);
-
-            ResultSet rs = ps.executeQuery();
-            Seq<Pet> pets = new Seq<>();
-            while (rs.next()) {
-                Pet pet = Pet.fromSQL(rs);
-                pets.add(pet);
-            }
-            return pets.toArray(Pet.class);
-        } catch (SQLException e) {
-            Log.err("pet error: " + e);
-            return null;
-        }
-    }
-
-    /**
-     * Inserts a new pet
-     */
-    public static void addPet(Pet pet) {
-        String sql = "INSERT INTO pets VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try {
-            PreparedStatement pstmt = Database.conn.prepareStatement(sql);
-            pstmt.setString(1, pet.owner);
-            pstmt.setString(2, pet.name);
-            pstmt.setString(3, pet.species.name);
-            pstmt.setString(4, pet.color.toString());
-            pstmt.setLong(5, pet.eatenCoal);
-            pstmt.setLong(6, pet.eatenCopper);
-            pstmt.setLong(7, pet.eatenLead);
-            pstmt.setLong(8, pet.eatenTitanium);
-            pstmt.setLong(9, pet.eatenThorium);
-            pstmt.setLong(10, pet.eatenBeryllium);
-
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            Log.err(e);
-        }
-    }
-
-    /**
-     * Updates a given pet, using name and owner as identifiers
-     */
-    public static void updatePet(Pet pet) {
-        String sql = "UPDATE pets SET color = ?, species = ?, eatenCoal = ?, eatenCopper = ?, eatenLead = ?, eatenTitanium = ?, eatenThorium = ?, eatenBeryllium = ? WHERE owner = ? AND name = ?";
-        try {
-            PreparedStatement pstmt = Database.conn.prepareStatement(sql);
-            pstmt.setString(1, pet.color.toString());
-            pstmt.setString(2, pet.species.name);
-            pstmt.setLong(3, pet.eatenCoal);
-            pstmt.setLong(4, pet.eatenCopper);
-            pstmt.setLong(5, pet.eatenLead);
-            pstmt.setLong(6, pet.eatenTitanium);
-            pstmt.setLong(7, pet.eatenThorium);
-            pstmt.setLong(8, pet.eatenBeryllium);
-            pstmt.setString(9, pet.owner);
-            pstmt.setString(10, pet.name);
-
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            Log.err(e);
-        }
-    }
-
-    /**
-     * Removes a pet
-     */
-    public static void removePet(String owner, String name) {
-        String sql = "DELETE FROM pets WHERE owner = ? AND name = ?";
-        try {
-            PreparedStatement pstmt = Database.conn.prepareStatement(sql);
-            pstmt.setString(1, owner);
-            pstmt.setString(2, name);
-
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            Log.err(e);
-        }
-    }
-
-    public static class Pet {
-        /**
-         * UUID of user who owns the pet
-         */
-        public String owner;
-        public String name;
-        public UnitType species;
-        public Color color;
-
-        public long eatenCoal;
-        public long eatenCopper;
-        public long eatenLead;
-        public long eatenTitanium;
-        public long eatenThorium;
-        public long eatenBeryllium;
-
-        public Pet(String owner, String name) {
-            this.owner = owner;
-            this.name = name;
-        }
-
-        public static Pet fromSQL(ResultSet rs) throws SQLException {
-            String name = rs.getString("name");
-            String owner = rs.getString("owner");
-            String colorStr = rs.getString("color");
-            String speciesStr = rs.getString("species");
-            UnitType species = Vars.content.units().find(u -> u.name.equals(speciesStr));
-            if (species == null) {
-                return null;
-            }
-            Color color = Color.valueOf(colorStr);
-
-            Pet pet = new Pet(owner, name);
-            pet.color = color;
-            pet.species = species;
-
-            pet.eatenCopper = rs.getLong("eatenCopper");
-            pet.eatenLead = rs.getLong("eatenLead");
-            pet.eatenTitanium = rs.getLong("eatenTitanium");
-            pet.eatenThorium = rs.getLong("eatenThorium");
-            pet.eatenCoal = rs.getLong("eatenCoal");
-            pet.eatenBeryllium = rs.getLong("eatenBeryllium");
-
-            return pet;
-        }
-    }
-}

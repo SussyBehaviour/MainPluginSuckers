@@ -18,7 +18,7 @@ public class DiscordConfig {
 
     public String token = "token";
 
-    public String prefix = "prefix";
+    public static String prefix = "prefix";
 
     public long banChannelID = 0L;
 

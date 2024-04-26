@@ -61,6 +61,12 @@ public class Database {
                 .first());
     }
 
+    public static PlayerData getPlayerDataByDiscordId(Long discordId) {
+        return datastore.find(PlayerData.class)
+                .filter(Filters.eq("DiscordId", discordId))
+                .first();
+    }
+
     public static PlayerData getPlayerDataOrCreate(String uuid) {
         return Optional.ofNullable(datastore.find(PlayerData.class).filter(Filters.eq("uuid", uuid)).first())
                 .orElseGet(() -> {
@@ -97,6 +103,7 @@ public class Database {
     public static List<Ban> getBans() {
         return datastore.find(Ban.class).stream().toList();
     }
+
     public static Ban getBanByUUID(String uuid) {
         return datastore.find(Ban.class).filter(Filters.eq("uuid", uuid)).first();
     }

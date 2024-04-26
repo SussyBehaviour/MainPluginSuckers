@@ -19,14 +19,18 @@ import Thisiscool.discord.DiscordBot;
 import Thisiscool.listeners.LegenderyCumEvents;
 import Thisiscool.listeners.NetHandlers;
 import Thisiscool.listeners.PluginEvents;
+import arc.Events;
 import arc.util.CommandHandler;
 import arc.util.Log;
 import arc.util.Time;
+import mindustry.Vars;
 import mindustry.core.Version;
+import mindustry.game.EventType;
 import mindustry.gen.AdminRequestCallPacket;
 import mindustry.mod.Plugin;
 import mindustry.net.Packets.Connect;
 import mindustry.net.Packets.ConnectPacket;
+import mindustry.world.meta.Env;
 
 public class ThisiscoolPlugin extends Plugin {
 
@@ -54,6 +58,17 @@ public class ThisiscoolPlugin extends Plugin {
         netServer.invalidHandler = NetHandlers::invalidResponse;
         maps.setMapProvider((mode, map) -> availableMaps().random(map));
         Log.info("Thisiscool plugin loaded in @ ms.", Time.elapsed());
+        Events.on(EventType.WorldLoadEvent.class, event -> {
+            /**
+             * Enable serpulo units on erekir... alternative is to modify source code
+             * supportsEnv function
+             */
+            for (var unit : Vars.content.units()) {
+                unit.envDisabled = (unit.envDisabled & ~Env.scorching);
+                unit.envRequired = (unit.envRequired & ~Env.terrestrial);
+                unit.envEnabled = (unit.envEnabled | Env.scorching);
+            }
+        });
     }
 
     @Override

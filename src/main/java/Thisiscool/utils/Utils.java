@@ -9,6 +9,7 @@ import Thisiscool.MainHelper.Commands;
 import Thisiscool.MainHelper.Commands.Command;
 import arc.files.Fi;
 import arc.func.Cons3;
+import arc.graphics.Color;
 import arc.struct.Seq;
 import arc.util.Strings;
 import arc.util.Structs;
@@ -101,7 +102,7 @@ public class Utils {
 
     // endregion
     public static String runConsole(String cmd) {
-        cmd = cmd.replaceAll("->", "=>"); //my stupid java habits
+        cmd = cmd.replaceAll("->", "=>"); // my stupid java habits
         return mods.getScripts().runConsole(cmd);
     }
     // endregion
@@ -148,8 +149,47 @@ public class Utils {
     }
 
     // endregion
-    //Miss
+    // Miss
     public static Fi getRootFolder() {
         return Vars.mods.getMod("Mainpluginsuckers").root;
     }
+    // Colour
+
+    public static Color getColorByName(String colorName) {
+        switch (colorName.toLowerCase()) {
+            case "red":
+                return Color.red;
+            case "blue":
+                return Color.blue;
+            case "green":
+                return Color.green;
+            case "yellow":
+                return Color.yellow;
+            case "orange":
+                return Color.orange;
+            case "pink":
+                return Color.pink;
+            case "purple":
+                return Color.purple;
+            case "brown":
+                return Color.brown;
+            case "gray":
+                return Color.gray;
+            case "lightgray":
+                return Color.lightGray;
+            case "darkgray":
+                return Color.darkGray;
+            case "white":
+                return Color.white;
+            case "black":
+                return Color.black;
+            case "cyan":
+                return Color.cyan;
+            case "magenta":
+                return Color.magenta;
+            default:
+                return null;
+        }
+    }
+
 }

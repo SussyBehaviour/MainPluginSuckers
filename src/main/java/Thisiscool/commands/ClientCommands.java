@@ -96,8 +96,8 @@ public class ClientCommands {
                         return;
 
                     MenuHandler.showConfirmMenu(player, "commands.login.confirm", () -> {
-                    new AdminRequestEvent(config.mode.displayName, Cache.get(player));
-                    Bundle.send(player, "commands.login.sent");
+                        new AdminRequestEvent(config.mode.displayName, Cache.get(player));
+                        Bundle.send(player, "commands.login.sent");
                     });
                 });
 
@@ -116,11 +116,14 @@ public class ClientCommands {
                     vote = new VoteRtv(map);
                     vote.vote(player, 1);
                 });
+        Commands.create("pets")
+                .welcomeMessage(true)
+                .register((args, player) -> {
 
+                });
         Commands.create("maps")
                 .enabled(config.mode.enableRtv)
                 .register(PageIterator::maps);
-
 
         Commands.create("surrender")
                 .enabled(config.mode.enableSurrender)
@@ -133,10 +136,10 @@ public class ClientCommands {
                     vote = new VoteSurrender(player.team());
                     vote.vote(player, 1);
                 });
-                Commands.create("report")
+        Commands.create("report")
                 .welcomeMessage(true)
                 .cooldown(60000L)
-                .register((args, player) -> { 
+                .register((args, player) -> {
                     var target = Find.player(args[0]);
                     if (notFound(player, target)) {
                         return;
@@ -151,12 +154,13 @@ public class ClientCommands {
                     int code = Integer.parseInt(args[0]);
                     if (Database.getPlayerData(player).DiscordId != 0) {
                         Call.sendMessage("[red]", "You are already linked to a discord account.", player);
-                        return; 
+                        return;
                     }
                     if (!DiscordCommands.playerLinkCodes.containsKey(code)) {
                         Call.sendMessage("[red]", "Wrong code.", player);
                     } else {
-                        Database.getPlayerData(player).DiscordId = DiscordCommands.playerLinkCodes.get(code).getId().asLong();
+                        Database.getPlayerData(player).DiscordId = DiscordCommands.playerLinkCodes.get(code).getId()
+                                .asLong();
                         Database.savePlayerData(Database.getPlayerData(player));
                         Call.sendMessage("[green]", "You are linked to a discord account.", player);
                         DiscordCommands.playerLinkCodes.remove(code);

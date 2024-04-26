@@ -10,10 +10,13 @@ import java.time.Duration;
 import java.util.Base64;
 
 import Thisiscool.MainHelper.Bundle;
+import Thisiscool.StuffForUs.Pets;
 import Thisiscool.config.Config;
 import Thisiscool.config.Config.Gamemode;
+import Thisiscool.config.DiscordConfig;
 import Thisiscool.database.Database;
 import Thisiscool.database.models.Ban;
+import Thisiscool.database.models.Petsdata;
 import Thisiscool.database.models.PlayerData;
 import Thisiscool.discord.DiscordBot;
 import Thisiscool.discord.MessageContext;
@@ -32,6 +35,7 @@ import arc.util.Http;
 import arc.util.Strings;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.reaction.ReactionEmoji;
+import mindustry.Vars;
 import mindustry.gen.Call;
 import mindustry.gen.Groups;
 import mindustry.io.MapIO;
@@ -41,7 +45,7 @@ public class DiscordCommands {
     public static final IntMap<User> playerLinkCodes = new IntMap<>();
 
     public static void load() {
-        discordHandler = new CommandHandler(discordConfig.prefix);
+        discordHandler = new CommandHandler(DiscordConfig.prefix);
         discordHandler.<MessageContext>register("help", "List of all commands.", (args, context) -> {
             var builder = new StringBuilder();
             discordHandler.getCommandList()
@@ -329,7 +333,7 @@ public class DiscordCommands {
                         }
                     });
                 });
-                discordHandler.<MessageContext>register("setrank", "<player> <rank>", "Set a player's rank.",
+        discordHandler.<MessageContext>register("setrank", "<player> <rank>", "Set a player's rank.",
                 (args, context) -> {
                     if (noRole(context, discordConfig.adminRoleIDs))
                         return;
@@ -345,6 +349,68 @@ public class DiscordCommands {
                             .title("Rank Changed")
                             .addField("Player:", data.plainName(), false)
                             .addField("Rank:", rank.name(), false)).subscribe();
+                });
+        discordHandler.<MessageContext>register("addpet", "<species> <color> <name...>",
+                (args, context) -> {
+                    PlayerData pd = Database.getPlayerDataByDiscordId(context.member().getId().asLong());
+                    if (pd == null) {
+                        context.error("Not in database", "You have not linked your discord account. Type **"
+                                + DiscordConfig.prefix + "link** to link.").subscribe();
+                        return;
+                    }
+                    String petName = args[2];
+                    if (Strings.stripColors(petName).length() > 30 || petName.length() > 300) {
+                        context.error("Pet name is too long", "Please choose a shorter name for your pet").subscribe();
+                        return;
+                    }
+
+                    var pets = Petsdata.getPets(pd.uuid);
+                    if (pets.length >= Pets.maxPets(pd.rank.toString())) {
+                        context.error("Too Many Pets",
+                                "You currently have " + pets.length + " pets, but a " + pd.rank.toString()
+                                        + " can only have " + Pets.maxPets(pd.rank.toString())
+                                        + " pets. Increase your rank for more pets.")
+                                .subscribe();
+                        return;
+                    }
+                    for (var pet : pets) {
+                        if (pet.name.equalsIgnoreCase(petName)) {
+                            context.error("Pet already exists", "You already have a pet named '" + pet.name + "'")
+                                    .subscribe();
+                            return;
+                        }
+                    }
+
+                    var pet = new Petsdata.Pet(pd.uuid, petName);
+                    pet.color = Utils.getColorByName(args[1]);
+                    if (pet.color == null) {
+                        context.error("Not a valid color", "Make sure you are using deafult mindustry format").subscribe();
+                        return;
+                    }
+                    pet.species = Vars.content.units().find(u -> u.name.equalsIgnoreCase(args[0]));
+                    if (pet.species == null) {
+                        context.error("Invalid Species", "'" + args[0] + "' is not a valid unit")
+                                .subscribe();
+                        return;
+                    }
+
+                    int tier = Pets.tierOf(pet.species);
+                    if (tier < 0) {
+                        context.error("Unsupported Species",
+                                "Species must be T1-4, not be a naval unit, and not be the antumbra").subscribe();
+                        return;
+                    }
+
+                    if (tier > Pets.maxTier(pd.rank.toString())) {
+                        context.error("Insufficient Rank", pet.species.name + " is tier " + tier + ", but a "
+                                +  pd.rank.toString() + " can only have tier " + Pets.maxTier(pd.rank.toString()) + " pets.")
+                                .subscribe();
+                        return;
+                    }
+
+                    Petsdata.addPet(pet);
+                    context.success("Created pet", "Successfully created " + pet.name + ". Type in-game **/pet "
+                            + pet.name + "** to spawn your pet.").subscribe();
                 });
     }
 }
