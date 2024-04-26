@@ -10,7 +10,6 @@ import static mindustry.Vars.*;
 import java.time.Duration;
 
 import Thisiscool.MainHelper.Bundle;
-import Thisiscool.StuffForUs.net.LegenderyCum;
 import Thisiscool.database.Cache;
 import Thisiscool.database.Database;
 import Thisiscool.database.Ranks;
@@ -22,7 +21,6 @@ import arc.util.Log;
 import arc.util.Time;
 import mindustry.core.GameState.State;
 import mindustry.net.Packets.KickReason;
-
 
 public class ServerCommands {
 
@@ -46,7 +44,7 @@ public class ServerCommands {
             Log.info("&fi@: &fr&lw@", "&lcServer", "&lw" + args[0]);
             Bundle.send("commands.say.chat", args[0]);
 
-            LegenderyCum.send(new ServerMessageEvent(config.mode.displayName, "Server", stripDiscord(args[0])));
+            new ServerMessageEvent(config.mode.displayName, "Server", stripDiscord(args[0]));
         });
 
         serverHandler.register("kick", "<player> <duration> [reason...]", "Kick a player.", args -> {

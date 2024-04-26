@@ -8,16 +8,14 @@ import static mindustry.net.Administration.Config.*;
 
 import java.time.Duration;
 
-import Thisiscool.Cancer.EventBus.Request;
 import Thisiscool.MainHelper.Bundle;
-import Thisiscool.StuffForUs.net.LegenderyCum;
 import Thisiscool.StuffForUs.votes.VoteSession;
 import Thisiscool.database.Ranks.Rank;
 import Thisiscool.database.models.Ban;
 import Thisiscool.database.models.PlayerData;
 import Thisiscool.discord.MessageContext;
+import Thisiscool.listeners.Bus.Request;
 import Thisiscool.listeners.LegenderyCumEvents.EmbedResponse;
-import arc.files.Fi;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Time;
@@ -124,9 +122,6 @@ public class Checks {
         return check(map == null, player, "commands.map-not-found");
     }
 
-    public static boolean notFound(Player player, Fi save) {
-        return check(save == null, player, "commands.save-not-found");
-    }
 
     public static boolean noCores(Player player, Team team) {
         return check(team.cores().isEmpty(), player, "commands.give.no-core", team.coloredName());
@@ -254,8 +249,8 @@ public class Checks {
                 "The provided duration is invalid. (Example: 1h, 30min)");
     }
 
-    public static boolean notRemoved(Request<EmbedResponse> request, Map map) {
-        return check(!map.custom, request, "Map Not Removed", "This map is built-in and can't be removed.");
+    public static boolean notRemoved( Map map) {
+        return check(!map.custom, "Map Not Removed", "This map is built-in and can't be removed.");
     }
 
     public static boolean notBanned(Request<EmbedResponse> request, Ban ban) {
@@ -297,7 +292,7 @@ public class Checks {
 
     private static boolean check(boolean result, Request<EmbedResponse> request, String title, String content,
             Object... values) {
-        return check(result, () -> LegenderyCum.respond(request, EmbedResponse.error(title).withContent(content, values)));
+        return check(result, () -> EmbedResponse.error(title).withContent(content, values));
     }
 
     // endregion

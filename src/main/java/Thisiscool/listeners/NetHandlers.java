@@ -8,7 +8,6 @@ import static mindustry.Vars.*;
 
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.StuffForUs.menus.MenuHandler;
-import Thisiscool.StuffForUs.net.LegenderyCum;
 import Thisiscool.StuffForUs.net.Translator;
 import Thisiscool.database.Cache;
 import Thisiscool.listeners.LegenderyCumEvents.ServerMessageEvent;
@@ -41,8 +40,7 @@ public class NetHandlers {
             Log.info("&fi@: @", "&lc" + from.plainName(), "&lw" + message);
             Translator.translate(from, message);
 
-            LegenderyCum.send(
-                    new ServerMessageEvent(config.mode.displayName, stripDiscord(from.plainName()), stripDiscord(message)));
+            new ServerMessageEvent(config.mode.displayName, stripDiscord(from.plainName()), stripDiscord(message));
             return null;
         }
 

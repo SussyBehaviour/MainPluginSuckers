@@ -8,7 +8,6 @@ import Thisiscool.MainHelper.Commands;
 import Thisiscool.StuffForUs.Console;
 import Thisiscool.StuffForUs.SchemeSize;
 import Thisiscool.StuffForUs.menus.MenuHandler;
-import Thisiscool.StuffForUs.net.LegenderyCum;
 import Thisiscool.commands.AdminCommands;
 import Thisiscool.commands.ClientCommands;
 import Thisiscool.commands.DiscordCommands;
@@ -43,7 +42,6 @@ public class ThisiscoolPlugin extends Plugin {
         MenuHandler.load();
         SchemeSize.load();
         Database.connect();
-        LegenderyCum.connect();
         PluginEvents.load();
         LegenderyCumEvents.load();
         DiscordBot.connect();

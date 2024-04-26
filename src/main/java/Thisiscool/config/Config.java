@@ -31,7 +31,6 @@ public class Config {
     }
     public String hubIp = "Thisiscool.net";
     public int hubPort = 6567;
-    public int sockPort = 8306;
     public String mongoUrl = "url";
     public Gamemode mode = Hub;
     public static Gamemode getMode() {

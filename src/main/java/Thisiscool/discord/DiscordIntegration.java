@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.Random;
 
 import Thisiscool.MainHelper.Bundle;
-import Thisiscool.StuffForUs.net.LegenderyCum;
 import Thisiscool.config.Config;
 import Thisiscool.config.Config.Gamemode;
 import Thisiscool.config.DiscordConfig;
@@ -114,7 +113,7 @@ public class DiscordIntegration {
     }
 
     public static void confirm(SelectMenuInteractionEvent event, String server, String uuid) {
-        LegenderyCum.send(new AdminRequestConfirmEvent(server, uuid));
+        new AdminRequestConfirmEvent(server, uuid);
 
         var data = Database.getPlayerData(uuid);
         if (data == null)
@@ -132,7 +131,7 @@ public class DiscordIntegration {
     }
 
     public static void deny(SelectMenuInteractionEvent event, String server, String uuid) {
-        LegenderyCum.send(new AdminRequestDenyEvent(server, uuid));
+        new AdminRequestDenyEvent(server, uuid);
 
         var data = Database.getPlayerData(uuid);
         if (data == null)

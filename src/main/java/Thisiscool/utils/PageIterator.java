@@ -5,7 +5,6 @@ import static Thisiscool.utils.Utils.*;
 
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.StuffForUs.menus.MenuHandler;
-import Thisiscool.StuffForUs.net.LegenderyCum;
 import Thisiscool.config.Config;
 import Thisiscool.config.Config.Gamemode;
 import Thisiscool.database.Cache;
@@ -25,8 +24,6 @@ import discord4j.rest.util.Color;
 import mindustry.gen.Groups;
 import mindustry.gen.Player;
 
-
-
 public class PageIterator {
 
     // region client
@@ -41,6 +38,7 @@ public class PageIterator {
         client(args, player, "maps", Utils::availableMaps, (builder, index, map) -> builder.append(
                 Bundle.format("commands.maps.map", player, index, map.name(), map.author(), map.width, map.height)));
     }
+
     public static void players(String[] args, Player player) {
         client(args, player, "players", () -> Groups.player.copy(new Seq<>()),
                 (builder, index, other) -> builder.append(Bundle.format("commands.players.player", player,
@@ -72,13 +70,12 @@ public class PageIterator {
 
     private static void discord(String[] args, MessageContext context, String type,
             Cons2<Builder, ListResponse> formatter) {
-            Gamemode server = Config.getMode();
-
-
-        LegenderyCum.request(new ListRequest(type, server.displayName, 1), response -> context
-                .reply(embed -> formatter.get(embed, response))
-                .withComponents(createPageButtons(type, server.displayName, response))
-                .subscribe(), context::timeout);
+        Gamemode server = Config.getMode();
+        new ListRequest(type, server.displayName, 1, response -> {
+            context.reply(embed -> formatter.get(embed, response))
+                    .withComponents(createPageButtons(type, server.displayName, response))
+                    .subscribe();
+        });
     }
 
     public static <T> void formatListResponse(ListRequest request, Seq<T> values,
@@ -89,7 +86,7 @@ public class PageIterator {
         if (page < 1 || page > pages)
             return;
 
-        LegenderyCum.respond(request, new ListResponse(formatList(values, page, formatter), page, pages, values.size));
+        new ListResponse(formatList(values, page, formatter), page, pages, values.size);
     }
 
     public static void formatMapsPage(Builder embed, ListResponse response) {

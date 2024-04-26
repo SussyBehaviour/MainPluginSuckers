@@ -9,7 +9,6 @@ import static mindustry.server.ServerControl.*;
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.MainHelper.Commands;
 import Thisiscool.StuffForUs.menus.MenuHandler;
-import Thisiscool.StuffForUs.net.LegenderyCum;
 import Thisiscool.StuffForUs.net.Translator;
 import Thisiscool.StuffForUs.votes.Report;
 import Thisiscool.StuffForUs.votes.VoteKick;
@@ -104,13 +103,8 @@ public class ClientCommands {
                         return;
 
                     MenuHandler.showConfirmMenu(player, "commands.login.confirm", () -> {
-                        if (!LegenderyCum.isConnected()) {
-                            Bundle.send(player, "commands.login.error");
-                            return;
-                        }
-
-                        LegenderyCum.send(new AdminRequestEvent(config.mode.displayName, Cache.get(player)));
-                        Bundle.send(player, "commands.login.sent");
+                    new AdminRequestEvent(config.mode.displayName, Cache.get(player));
+                    Bundle.send(player, "commands.login.sent");
                     });
                 });
 

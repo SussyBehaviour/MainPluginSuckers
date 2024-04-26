@@ -1,4 +1,4 @@
-package Thisiscool.Cancer;
+package Thisiscool.listeners;
 
 import java.util.UUID;
 
@@ -12,16 +12,9 @@ import arc.util.Timer.Task;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
-public class EventBus {
-    protected final Legend Legend;
-
+public class Bus {
     protected final ObjectMap<String, RequestSubscription<?>> requests = new ObjectMap<>();
     protected final ObjectMap<Class<?>, Seq<EventSubscription<?>>> events = new ObjectMap<>();
-
-    public EventBus(Legend Legend) {
-        this.Legend = Legend;
-    }
 
     public <T> EventSubscription<T> run(T value, Runnable listener) {
         return on((Class<T>) value.getClass(), event -> {
