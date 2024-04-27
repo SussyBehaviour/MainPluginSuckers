@@ -327,79 +327,80 @@ public class MenuHandler {
     }
 
     public enum EffectsPack implements OptionData {
-        scathe("Scathe",
+        trail1("Trail1",
                 player -> Effects.stack(player, Fx.scatheExplosion, Fx.scatheLight),
                 player -> Effects.stack(player, Fx.scatheExplosion, Fx.scatheLight),
                 player -> Effects.at(Fx.artilleryTrailSmoke, player)),
 
-        titan("Titan",
+        trail2("Trail2",
                 player -> Effects.stack(player, Fx.titanExplosion, Fx.titanSmoke),
                 player -> Effects.stack(player, Fx.titanExplosion, Fx.titanSmoke),
                 player -> Effects.at(Fx.incendTrail, player, 3f)),
 
-        lancer("Lancer",
+        trail3("Trail3",
                 player -> Effects.stack(player, Fx.railShoot, Fx.railShoot, Fx.railShoot),
                 player -> Effects.stack(player, Fx.railShoot, Fx.railShoot, Fx.railShoot),
                 player -> Effects.at(Fx.lightningCharge, player)),
 
-        foreshadow("Foreshadow",
+        trail4("Trail4",
                 player -> Effects.stack(player, Fx.instHit, Fx.instHit, Fx.instHit),
                 player -> Effects.stack(player, Fx.instHit, Fx.instHit, Fx.instHit),
                 player -> Effects.at(Fx.mineWallSmall, player, Color.yellow)),
 
-        neoplasm("Neoplasm",
+        trail5("Trail5",
                 player -> Effects.stack(player, Pal.neoplasm1, Fx.neoplasmSplat, Fx.titanSmoke),
                 player -> Effects.stack(player, Pal.neoplasm1, Fx.neoplasmSplat, Fx.titanSmoke),
                 player -> Effects.at(Fx.neoplasmHeal, player)),
 
-        teleport("Teleport",
+        trail6("Trail6",
                 player -> Effects.stack(player, Fx.teleport, Fx.teleportActivate, Fx.teleportOut),
                 player -> Effects.stack(player, Fx.teleport, Fx.teleportActivate, Fx.teleportOut),
                 player -> Effects.at(Fx.smeltsmoke, player, Color.red)),
 
-        waterBubbles("Water Bubbles",
+        trail7("Trail7",
                 player -> Effects.rotatedPoly(Fx.coreLandDust, player, 6, 12f, -180f, 90f),
                 player -> Effects.rotatedPoly(Fx.coreLandDust, player, 6, 4f, -90f, 30f),
                 player -> Effects.at(Fx.bubble, player, 30f)),
 
-        airBubbles("Air Bubbles",
+        trail8("Trail8",
                 player -> Effects.repeat(6, 60f,
                         time -> Effects.at(Fx.missileTrailSmoke, Tmp.v1.set(60f, 0f).rotate(time * 60f).add(player))),
                 player -> Effects.repeat(6, 60f,
                         time -> Effects.at(Fx.missileTrailSmoke, Tmp.v1.set(60f, 0f).rotate(time * 300f).add(player))),
                 player -> Effects.at(Fx.airBubble, player)),
 
-        impactDrill("Impact Drill",
+        trail9("Trail9",
                 player -> Effects.stack(player, 120f, Fx.mineImpactWave, Fx.mineImpactWave, Fx.mineImpactWave,
                         Fx.mineImpact),
                 player -> Effects.stack(player, 120f, Fx.mineImpactWave, Fx.mineImpactWave, Fx.mineImpactWave,
                         Fx.mineImpact),
                 player -> Effects.at(Fx.mine, player, Color.cyan)),
 
-        greenLaser("Green Laser",
+        trail10("Trail10",
                 player -> Effects.at(Fx.greenBomb, player),
                 player -> Effects.at(Fx.greenLaserCharge, player),
                 player -> Effects.at(Fx.greenCloud, player)),
 
-        thoriumReactor("Thorium Reactor",
+        trail11("Trail11",
                 player -> Effects.at(Fx.reactorExplosion, player),
                 player -> Effects.at(Fx.reactorExplosion, player),
                 player -> Effects.at(Fx.shootSmokeSquare, player, player.unit().rotation - 180f, Pal.reactorPurple)),
 
-        impactReactor("Impact Reactor",
+        trail12("Trail12",
                 player -> Effects.at(Fx.impactReactorExplosion, player),
                 player -> Effects.at(Fx.impactReactorExplosion, player),
                 player -> Effects.at(Fx.shootSmokeSquare, player, player.unit().rotation - 180f, Pal.lighterOrange)),
 
-        suppressParticle("Suppress Particle",
+        trail13("Trail13",
                 player -> Effects.at(Fx.dynamicSpikes, player, 60f, Pal.sapBullet),
                 player -> Effects.at(Fx.dynamicSpikes, player, 60f, Pal.sapBullet),
                 player -> Effects.at(Fx.regenSuppressSeek, player, player.unit())),
 
-        missileSmoke("Missile Smoke",
+        trail14("Trail14",
                 player -> Effects.rotatedPoly(Fx.shootSmokeMissile, player, 6, 6f, -180f, 50f),
                 player -> Effects.rotatedPoly(Fx.shootSmokeMissile, player, 6, 6f, 0f, 100f),
                 player -> Effects.at(Fx.vapor, player)),
+                
 
         none("effects.disabled", "effects.disable");
 

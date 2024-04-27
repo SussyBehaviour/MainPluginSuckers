@@ -29,7 +29,7 @@ public class PluginVars {
     public static final int mindustryVersion = Version.build;
     public static final String configFile = "config.json";
     public static final String discordConfigFile = "discord-config.json";
-    public static final String discordServerUrl = "https://discord.gg/vaGBFkvCwg";
+    public static final String discordServerUrl = "https://discord.com/invite/CGdkm69";
     public static final String translationApiUrl = "https://clients5.google.com/translate_a/t?client=dict-chrome-ex&dt=t";
     public static final Pattern durationPattern = Pattern.compile("(\\d++)\\s*?([a-zA-Zа-яА-Я]+)");
     public static final List<Tuple2<Pattern, ChronoUnit>> durationPatterns = new ArrayList<>();

@@ -6,8 +6,9 @@ import static Thisiscool.utils.Checks.*;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.time.Duration;
-import java.util.Base64;
 
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.StuffForUs.Pets;
@@ -47,6 +48,7 @@ import mindustry.type.Item;
 public class DiscordCommands {
     public static final IntMap<User> playerLinkCodes = new IntMap<>();
 
+    @SuppressWarnings("deprecation")
     public static void load() {
         discordHandler = new CommandHandler(getPrefix());
         discordHandler.<MessageContext>register("help", "List of all commands.", (args, context) -> {
@@ -187,18 +189,18 @@ public class DiscordCommands {
             Log.info("Rendering map image for " + map.plainName() + "...");
             byte[] mapImageData = MapGenerator.renderMap(map);
             Log.info("Map image rendered.");
-            String base64ImageData = Base64.getEncoder().encodeToString(mapImageData);
-            Log.info("Base64 encoded image data.");
-            String imageDataUrl = "data:image/png;base64," + base64ImageData;
-            Log.info("Sending embed...");
             context.info(embed -> embed
                     .title("Map Information")
                     .addField("Map:", map.plainName(), false)
                     .addField("Author:", map.plainAuthor(), false)
                     .addField("Description:", map.plainDescription(), false)
-                    .addField("Size:", map.width + "x" + map.height, false)
-                    .image(imageDataUrl))
+                    .addField("Size:", map.width + "x" + map.height, false))
                     .subscribe();
+            InputStream imageStream = new ByteArrayInputStream(mapImageData);
+            context.message().getChannel()
+            .flatMap(channel -> channel.createMessage(spec -> spec.setContent("Here is the map image:")
+                                                         .addFile("mapImage.png", imageStream)))
+            .subscribe();
             Log.info("Embed sent.");
         });
         discordHandler.<MessageContext>register("uploadmap", "Upload a map to the server.",
@@ -215,10 +217,10 @@ public class DiscordCommands {
                                 var source = Fi.get(file.absolutePath());
                                 var mapFile = customMapDirectory.child(source.name());
                                 try {
-                                    var map = MapIO.createMap(mapFile, true);
+                                    var map = MapIO.createMap(mapFile, false);
                                     maps.reload();
                                     context.reply(EmbedResponse.success("Map Uploaded")
-                                            .withField("Map:", map.name())
+                                            .withField("Map:", map.plainName())
                                             .withField("File:", mapFile.name()));
                                 } catch (Exception error) {
                                     mapFile.delete();
