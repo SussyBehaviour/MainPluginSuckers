@@ -100,21 +100,23 @@ public class PageIterator {
                 Log.err("Null values in response in discord method for type: " + type);
                 return;
             }
-            try {
-                Log.info("Sending reply for type: " + type + ", server: " + (server == null ? "null" : server.displayName));
-                context.reply(embed -> formatter.get(embed, response))
-                        .withComponents(createPageButtons(type, server == null ? "null" : server.displayName, response))
-                        .subscribe();
-                Log.info("Reply sent for type: " + type + ", server: " + (server == null ? "null" : server.displayName));
-            } catch (NullPointerException e) {
-                Log.err("NullPointerException in discord method for type: " + type);
-            } catch (Exception e) {
-                Log.err("Exception in discord method for type: " + type );
-            }
+            sendReply(context, type, server, formatter, response);
         }));
     }
 
-
+    private static void sendReply(MessageContext context, String type, Gamemode server, Cons2<Builder, ListResponse> formatter, ListResponse response) {
+        Log.info("Sending reply for type: " + type + ", server: " + (server == null ? "null" : server.displayName));
+        try {
+            context.reply(embed -> formatter.get(embed, response))
+                    .withComponents(createPageButtons(type, server == null ? "null" : server.displayName, response))
+                    .subscribe();
+            Log.info("Reply sent for type: " + type + ", server: " + (server == null ? "null" : server.displayName));
+        } catch (NullPointerException e) {
+            Log.err("NullPointerException in discord method for type: " + type);
+        } catch (Exception e) {
+            Log.err("Exception in discord method for type: " + type);
+        }
+    }
     public static <T> void formatListResponse(ListRequest request, Seq<T> values,
             Cons3<StringBuilder, Integer, T> formatter) {
         Log.info("Formatting list response for request: " + request);

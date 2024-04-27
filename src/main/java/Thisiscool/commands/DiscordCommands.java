@@ -78,7 +78,7 @@ public class DiscordCommands {
                 Log.info("unitCount: " + unitCount + " (int)");
                 Log.info("mapName: " + mapName + " (String)");
                 Log.info("wave: " + wave + " (int)");
-                Log.info("tps: " + tps + " (float)");
+                Log.info("tps: " + tps + " (int)");
                 Log.info("ramUsage: " + ramUsage + " (long)");
                 String response = String.format(
                         "Server Status:\n" +
@@ -87,7 +87,7 @@ public class DiscordCommands {
                                 "Units: %d\n" +
                                 "Map: %s\n" +
                                 "Wave: %d\n" +
-                                "TPS: %.2f\n" +
+                                "TPS: %d\n" +
                                 "RAM usage: %d MB",
                         isServerRunning, playerCount, unitCount, mapName, wave, tps, ramUsage);
                 Log.info("Server Status", response);
