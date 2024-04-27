@@ -77,11 +77,9 @@ public class PageIterator {
         discord(context, "players", PageIterator::formatPlayersPage);
     }
 
-    private static void discord(MessageContext context, String type,
-            Cons2<Builder, ListResponse> formatter) {
+    private static void discord(MessageContext context, String type, Cons2<Builder, ListResponse> formatter) {
         Gamemode server = Config.getMode();
-        Log.info("Discord method called for type: " + type + ", server: "
-                + (server == null ? "null" : server.displayName));
+        Log.info("Discord method called for type: " + type + ", server: " + (server == null ? "null" : server.displayName));
         if (context == null) {
             Log.err("Null context in discord method for type: " + type);
             return;
@@ -92,33 +90,34 @@ public class PageIterator {
             Log.err("Null formatter in discord method for type: " + type);
             return;
         }
-        Events.fire(new ListRequest(type, server == null ? null : server.displayName, 1, response -> {
-            Log.info("Sending response for type: " + type + ", server: "
-                    + (server == null ? "null" : server.displayName));
+        // Create a ListRequest with a callback to handle the ListResponse
+        ListRequest request = new ListRequest(type, server == null ? null : server.displayName, 1, response -> {
+            Log.info("Sending response for type: " + type + ", server: " + (server == null ? "null" : server.displayName));
             if (response == null) {
                 Log.err("Null response in discord method for type: " + type);
                 return;
-            } else if (response.content == null) {
-                Log.err("Null values in response in discord method for type: " + type);
+            } else if (response.content == null || response.content.isEmpty()) {
+                Log.err("Null or empty content in response in discord method for type: " + type);
                 return;
             }
             // Log the response object
             Log.info("Response details: " + response.toString());
-
+    
             try {
-                Log.info("Sending reply for type: " + type + ", server: "
-                        + (server == null ? "null" : server.displayName));
+                Log.info("Sending reply for type: " + type + ", server: " + (server == null ? "null" : server.displayName));
                 context.reply(embed -> formatter.get(embed, response))
                         .withComponents(createPageButtons(type, server == null ? "null" : server.displayName, response))
                         .subscribe();
-                Log.info(
-                        "Reply sent for type: " + type + ", server: " + (server == null ? "null" : server.displayName));
+                Log.info("Reply sent for type: " + type + ", server: " + (server == null ? "null" : server.displayName));
             } catch (NullPointerException e) {
-                Log.err("NullPointerException in discord method for type: " + type);
+                Log.err("NullPointerException in discord method for type: " + type, e);
             } catch (Exception e) {
-                Log.err("Exception in discord method for type: " + type);
+                Log.err("Exception in discord method for type: " + type, e);
             }
-        }));
+        });
+    
+        // Fire the ListRequest event
+        Events.fire(request);
     }
 
     public static <T> void formatListResponse(ListRequest request, Seq<T> values,

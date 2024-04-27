@@ -98,7 +98,8 @@ public class LegenderyCumEvents {
                                 .append("\n"));
 
                 default -> {
-                    Log.warn("[Discord] List request from @ for unknown type @ on server @ rejected",request.type, request.server);
+                    Log.warn("[Discord] List request from @ for unknown type @ on server @ rejected", request.type,
+                            request.server);
                     throw new IllegalStateException();
                 }
             }
@@ -145,15 +146,18 @@ public class LegenderyCumEvents {
 
     public record SetRankSyncEvent(String uuid, Rank rank) {
     }
+
     @FunctionalInterface
     public interface ListResponseHandler {
         void handle(ListResponse response);
     }
+
     @AllArgsConstructor
     public static class ListRequest extends Request<ListResponse> {
         public final String type, server;
         public final int page;
         private final ListResponseHandler responseHandler;
+
         public void executeResponseHandler(ListResponse response) {
             if (responseHandler != null) {
                 responseHandler.handle(response);
