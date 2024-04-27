@@ -102,7 +102,7 @@ public class Utils {
 
     // endregion
     public static String runConsole(String cmd) {
-        cmd = cmd.replaceAll("->", "=>"); // my stupid java habits
+        cmd = cmd.replaceAll("->", "=>");
         return mods.getScripts().runConsole(cmd);
     }
     // endregion
