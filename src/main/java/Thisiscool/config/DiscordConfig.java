@@ -18,7 +18,7 @@ public class DiscordConfig {
 
     public String token = "token";
 
-    public static String prefix = "prefix";
+    public String prefix = "prefix";
 
     public long banChannelID = 0L;
 
@@ -33,4 +33,7 @@ public class DiscordConfig {
     public Long ReportRoleID= 0L;
     
     public Long Chat = 0L;
+    public static String getPrefix() {
+        return discordConfig.prefix;
+    }
 }

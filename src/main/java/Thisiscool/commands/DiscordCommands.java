@@ -13,7 +13,6 @@ import Thisiscool.MainHelper.Bundle;
 import Thisiscool.StuffForUs.Pets;
 import Thisiscool.config.Config;
 import Thisiscool.config.Config.Gamemode;
-import Thisiscool.config.DiscordConfig;
 import Thisiscool.database.Database;
 import Thisiscool.database.models.Ban;
 import Thisiscool.database.models.Petsdata;
@@ -48,7 +47,7 @@ public class DiscordCommands {
     public static final IntMap<User> playerLinkCodes = new IntMap<>();
 
     public static void load() {
-        discordHandler = new CommandHandler(DiscordConfig.prefix);
+        discordHandler = new CommandHandler(getPrefix());
         discordHandler.<MessageContext>register("help", "List of all commands.", (args, context) -> {
             var builder = new StringBuilder();
             discordHandler.getCommandList()
@@ -358,7 +357,7 @@ public class DiscordCommands {
                     PlayerData pd = Database.getPlayerDataByDiscordId(context.member().getId().asLong());
                     if (pd == null) {
                         context.error("Not in database", "You have not linked your discord account. Type **"
-                                + DiscordConfig.prefix + "link** to link.").subscribe();
+                                + getPrefix() + "link** to link.").subscribe();
                         return;
                     }
                     String petName = args[2];
