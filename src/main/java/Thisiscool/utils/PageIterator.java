@@ -3,8 +3,6 @@ package Thisiscool.utils;
 import static Thisiscool.PluginVars.*;
 import static Thisiscool.utils.Utils.*;
 
-import java.util.Arrays;
-
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.StuffForUs.menus.MenuHandler;
 import Thisiscool.config.Config;
@@ -70,17 +68,15 @@ public class PageIterator {
     // endregion
     // region discord
 
-    public static void maps(String[] args, MessageContext context) {
-        Log.info("Maps command called with args: " + Arrays.toString(args));
-        discord(args, context, "maps", PageIterator::formatMapsPage);
+    public static void maps(MessageContext context) {
+        discord(context, "maps", PageIterator::formatMapsPage);
     }
 
-    public static void players(String[] args, MessageContext context) {
-        Log.info("Players command called with args: " + Arrays.toString(args));
-        discord(args, context, "players", PageIterator::formatPlayersPage);
+    public static void players(MessageContext context) {
+        discord(context, "players", PageIterator::formatPlayersPage);
     }
 
-    private static void discord(String[] args, MessageContext context, String type,
+    private static void discord(MessageContext context, String type,
             Cons2<Builder, ListResponse> formatter) {
         Gamemode server = Config.getMode();
         Log.info("Discord method called for type: " + type + ", server: " + server.displayName);

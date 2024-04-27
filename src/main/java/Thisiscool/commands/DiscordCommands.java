@@ -59,9 +59,9 @@ public class DiscordCommands {
             context.info("All available commands:", builder.toString()).subscribe();
         });
         discordHandler.<MessageContext>register("maps", "List of all maps of the server.",
-                PageIterator::maps);
+        (args, context) -> PageIterator.maps(context));
         discordHandler.<MessageContext>register("players", "List of all players of the server.",
-                PageIterator::players);
+        (args, context) -> PageIterator.players(context));
 
         discordHandler.<MessageContext>register("status", "Display server status.", (args, context) -> {
             try {
@@ -70,7 +70,7 @@ public class DiscordCommands {
                 int unitCount = Groups.unit.size();
                 String mapName = state.map == null ? "null" : state.map.plainName();
                 int wave = state.wave;
-                int tps = graphics.getFramesPerSecond();
+                int tps = (int) graphics.getFramesPerSecond();
                 long ramUsage = app.getJavaHeap() / 1024 / 1024;
                 String response = String.format(
                         "Server Status:\n" +

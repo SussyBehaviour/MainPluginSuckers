@@ -80,11 +80,6 @@ public class LegenderyCumEvents {
                 DiscordIntegration.deny(event.uuid);
         });
         Events.on(ListRequest.class, request -> {
-            if (!request.server.equals(config.mode.displayName)) {
-                Log.info("[Discord] List request from @ for type @ on server @ rejected", request.type, request.server);
-                return;
-            }
-
             Log.info("[Discord] List request from @ for type @ on server @ accepted", request.type, request.server);
 
             switch (request.type) {
@@ -109,7 +104,7 @@ public class LegenderyCumEvents {
             }
         });
         Events.on(ArtvRequest.class, request -> {
-            if (!request.server.equals(config.mode.displayName) || noRtv(request))
+            if (noRtv(request))
                 return;
             var map = request.map == null ? maps.getNextMap(instance.lastMode, state.map) : Find.map(request.map);
             if (notFound(request, map))
