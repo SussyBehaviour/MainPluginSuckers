@@ -91,22 +91,22 @@ public class PageIterator {
             return;
         }
         // Create a ListRequest with a callback to handle the ListResponse
-        ListRequest request = new ListRequest(type, server == null ? null : server.displayName, 1, response -> {
+        ListRequest request = new ListRequest(type, server == null ? null : server.displayName, 1, ListResponse -> {
             Log.info("Sending response for type: " + type + ", server: " + (server == null ? "null" : server.displayName));
-            if (response == null) {
+            if (ListResponse == null) {
                 Log.err("Null response in discord method for type: " + type);
                 return;
-            } else if (response.content == null || response.content.isEmpty()) {
+            } else if (ListResponse.content == null || ListResponse.content.isEmpty()) {
                 Log.err("Null or empty content in response in discord method for type: " + type);
                 return;
             }
             // Log the response object
-            Log.info("Response details: " + response.toString());
+            Log.info("Response details: " + ListResponse.toString());
     
             try {
                 Log.info("Sending reply for type: " + type + ", server: " + (server == null ? "null" : server.displayName));
-                context.reply(embed -> formatter.get(embed, response))
-                        .withComponents(createPageButtons(type, server == null ? "null" : server.displayName, response))
+                context.reply(embed -> formatter.get(embed, ListResponse))
+                        .withComponents(createPageButtons(type, server == null ? "null" : server.displayName, ListResponse))
                         .subscribe();
                 Log.info("Reply sent for type: " + type + ", server: " + (server == null ? "null" : server.displayName));
             } catch (NullPointerException e) {
@@ -115,8 +115,6 @@ public class PageIterator {
                 Log.err("Exception in discord method for type: " + type, e);
             }
         });
-    
-        // Fire the ListRequest event
         Events.fire(request);
     }
 
