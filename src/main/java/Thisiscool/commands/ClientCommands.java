@@ -22,6 +22,7 @@ import Thisiscool.listeners.LegenderyCumEvents.AdminRequestEvent;
 import Thisiscool.utils.Find;
 import Thisiscool.utils.PageIterator;
 import Thisiscool.utils.Utils;
+import arc.Events;
 import arc.struct.Seq;
 import arc.util.Structs;
 import mindustry.gen.Call;
@@ -99,7 +100,7 @@ public class ClientCommands {
                         return;
 
                     MenuHandler.showConfirmMenu(player, "commands.login.confirm", () -> {
-                        new AdminRequestEvent(config.mode.displayName, Cache.get(player));
+                        Events.fire(new AdminRequestEvent(config.mode.displayName, Cache.get(player)));
                         Bundle.send(player, "commands.login.sent");
                     });
                 });

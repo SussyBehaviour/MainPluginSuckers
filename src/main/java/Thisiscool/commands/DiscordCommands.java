@@ -73,6 +73,13 @@ public class DiscordCommands {
                 int wave = (int) state.wave;
                 int tps = (int) graphics.getFramesPerSecond();
                 long ramUsage = (long) app.getJavaHeap() / 1024 / 1024;
+                Log.info("isServerRunning: " + isServerRunning + " (boolean)");
+                Log.info("playerCount: " + playerCount + " (int)");
+                Log.info("unitCount: " + unitCount + " (int)");
+                Log.info("mapName: " + mapName + " (String)");
+                Log.info("wave: " + wave + " (int)");
+                Log.info("tps: " + tps + " (float)");
+                Log.info("ramUsage: " + ramUsage + " (long)");
                 String response = String.format(
                         "Server Status:\n" +
                                 "Server Running: %b\n" +

@@ -40,7 +40,7 @@ public class NetHandlers {
             Log.info("&fi@: @", "&lc" + from.plainName(), "&lw" + message);
             Translator.translate(from, message);
 
-            new ServerMessageEvent(config.mode.displayName, stripDiscord(from.plainName()), stripDiscord(message));
+            Events.fire(new ServerMessageEvent(config.mode.displayName, stripDiscord(from.plainName()), stripDiscord(message)));
             return null;
         }
 
