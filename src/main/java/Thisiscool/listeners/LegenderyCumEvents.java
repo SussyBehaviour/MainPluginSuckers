@@ -86,21 +86,21 @@ public class LegenderyCumEvents {
 
             switch (request.type) {
                 case "maps" -> PageIterator.<Map>formatListResponse(request, availableMaps(),
-                (StringBuilder builder, Integer index, Map map) -> {
-                    builder.append("**").append(index).append(".** ").append(map.plainName())
-                            .append("\n").append("Author: ").append(map.plainAuthor())
-                            .append("\n").append(map.width).append("x").append(map.height)
-                            .append("\n");
-                },
-                new ListResponse[1]);
+                        (StringBuilder builder, Integer index, Map map) -> {
+                            builder.append("**").append(index).append(".** ").append(map.plainName())
+                                    .append("\n").append("Author: ").append(map.plainAuthor())
+                                    .append("\n").append(map.width).append("x").append(map.height)
+                                    .append("\n");
+                        },
+                        new ListResponse[1]);
                 case "players" -> PageIterator.<Player>formatListResponse(request, Groups.player.copy(new Seq<>()),
-                (StringBuilder builder, Integer index, Player player) -> {
-                    builder.append("**").append(index).append(".** ").append(player.plainName())
-                            .append("\nID: ").append(Cache.get(player).id)
-                            .append("\nLanguage: ").append(player.locale)
-                            .append("\n");
-                },
-                new ListResponse[1]);
+                        (StringBuilder builder, Integer index, Player player) -> {
+                            builder.append("**").append(index).append(".** ").append(player.plainName())
+                                    .append("\nID: ").append(Cache.get(player).id)
+                                    .append("\nLanguage: ").append(player.locale)
+                                    .append("\n");
+                        },
+                        new ListResponse[1]);
                 default -> {
                     Log.warn("[Discord] List request from @ for unknown type @ on server @ rejected", request.type,
                             request.server);
@@ -161,6 +161,15 @@ public class LegenderyCumEvents {
         public final String type, server;
         public final int page;
         private final ListResponseHandler responseHandler;
+
+        @Override
+        public String toString() {
+            return "ListRequest{" +
+                    "type='" + type + '\'' +
+                    ", server='" + server + '\'' +
+                    ", page=" + page +
+                    '}';
+        }
 
         public void executeResponseHandler(ListResponse response) {
             if (responseHandler != null) {
