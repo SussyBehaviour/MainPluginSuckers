@@ -6,7 +6,6 @@ import arc.Events;
 import arc.graphics.Color;
 import arc.struct.ObjectMap;
 import arc.struct.Seq;
-import arc.util.CommandHandler;
 import arc.util.Log;
 import arc.util.Structs;
 import arc.util.Timer;
@@ -40,24 +39,63 @@ public class Pets {
     public static ObjectMap<String, Seq<String>> spawnedPets = new ObjectMap<>();
 
     public static int maxPets(String rank) {
-        return switch (rank) {
-            case "Civilian", "DClass" -> 0;
-            case "LEVEL0", "LEVEL1" -> 1;
-            case "LEVEL2" -> 2;
-            case "LEVEL3" -> 5;
-            default -> 3;
+        Log.info("[Pets] Calculating max pets for rank " + rank);
+        int max = switch (rank) {
+            case "Civilian", "DClass" -> {
+                Log.info("[Pets] Rank is Civilian or DClass, returning 0");
+                yield 0;
+            }
+            case "LEVEL0", "LEVEL1" -> {
+                Log.info("[Pets] Rank is LEVEL0 or LEVEL1, returning 1");
+                yield 1;
+            }
+            case "LEVEL2" -> {
+                Log.info("[Pets] Rank is LEVEL2, returning 2");
+                yield 2;
+            }
+            case "LEVEL3" -> {
+                Log.info("[Pets] Rank is LEVEL3, returning 5");
+                yield 5;
+            }
+            default -> {
+                Log.info("[Pets] Rank is something else, returning 3");
+                yield 3;
+            }
         };
+        Log.info("[Pets] Max pets for rank " + rank + " is " + max);
+        return max;
     }
 
     public static int maxTier(String rank) {
-        return switch (rank) {
-            case "Civilian", "DClass" -> 0;
-            case "LEVEL0", "LEVEL1" -> 1;
-            case "LEVEL2" -> 2;
-            case "LEVEL3", "LEVEL4" -> 3;
-            case "LEVEL5" -> 4;
-            default -> 4;
+        Log.info("[Pets] Calculating max tier for rank " + rank);
+        int max = switch (rank) {
+            case "Civilian", "DClass" -> {
+                Log.info("[Pets] Rank is Civilian or DClass, returning 0");
+                yield 0;
+            }
+            case "LEVEL0", "LEVEL1" -> {
+                Log.info("[Pets] Rank is LEVEL0 or LEVEL1, returning 1");
+                yield 1;
+            }
+            case "LEVEL2" -> {
+                Log.info("[Pets] Rank is LEVEL2, returning 2");
+                yield 2;
+            }
+            case "LEVEL3", "LEVEL4" -> {
+                Log.info("[Pets] Rank is LEVEL3 or LEVEL4, returning 3");
+                yield 3;
+            }
+            case "LEVEL5" -> {
+                Log.info("[Pets] Rank is LEVEL5, returning 4");
+                yield 4;
+            }
+            default -> {
+                Log.info("[Pets] Rank is something else, returning 4");
+                yield 4;
+            }
         };
+        Log.info("[Pets] Max tier for rank " + rank + " is " + max);
+        return max;
     }
 
     public static int tierOf(UnitType type) {
@@ -164,61 +202,29 @@ public class Pets {
         }
     }
 
-    public void registerCommands(CommandHandler handler) {
-        handler.<Player>register("pet", "[name...]", "Spawns a pet", (args, player) -> {
-            var pets = Petsdata.getPets(player.uuid());
-            if (pets == null || pets.length == 0) {
-                return;
-            }
-            var pet = args.length == 0 ? null : Structs.find(pets, p -> p.name.equalsIgnoreCase(args[0]));
-            if (pet == null) {
-                return;
-            }
-
-            var alreadySpawned = spawnedPets.get(player.uuid(), new Seq<>());
-            if (alreadySpawned.contains(pet.name)) {
-                return;
-            }
-
-            if (!spawnPet(pet, player)) {
-                return;
-            }
-
-            alreadySpawned.add(pet.name);
-            spawnedPets.put(player.uuid(), alreadySpawned);
-        });
-
-        handler.<Player>register("despawn", "<name...>", "Despawns a pet", (args, player) -> {
-            var spawned = spawnedPets.get(player.uuid());
-            if (spawned == null) {
-                return;
-            }
-            if (!spawned.contains(args[0])) {
-                return;
-            }
-            spawned.remove(args[0]);
-        });
-    }
-
     public static boolean spawnPet(Pet pet, Player player) {
+        Log.info("Spawning pet '" + pet.name + "' for player " + player.name());
         // correct team can't be set instantly, otherwise pet won't spawn
         Unit unit = pet.species.spawn(player.team(), player.x, player.y);
         if (unit == null) {
+            Log.err("Failed to spawn pet '" + pet.name + "' for player " + player.name());
             return false;
         }
 
         // initialize controller
         Team team = getTeam(pet.color);
+        Log.info("Giving pet '" + pet.name + "' team " + team.id);
         UnitController controller = new PetController(player, pet.name, pet.color, team, rank(pet));
         unit.controller(controller);
         controller.unit(unit);
 
         Call.spawnEffect(unit.x, unit.y, unit.rotation, unit.type);
+        Log.info("Spawned pet '" + pet.name + "' for player " + player.name());
         Events.fire(new EventType.UnitSpawnEvent(unit));
         return true;
     }
 
-   static class PetController implements UnitController {
+    static class PetController implements UnitController {
         final String uuid;
         final Player player;
         final String name;

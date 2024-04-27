@@ -3,6 +3,8 @@ package Thisiscool.utils;
 import static Thisiscool.PluginVars.*;
 import static Thisiscool.utils.Utils.*;
 
+import java.util.Arrays;
+
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.StuffForUs.menus.MenuHandler;
 import Thisiscool.config.Config;
@@ -16,6 +18,7 @@ import arc.func.Cons3;
 import arc.func.Prov;
 import arc.math.Mathf;
 import arc.struct.Seq;
+import arc.util.Log;
 import arc.util.Strings;
 import discord4j.core.object.component.ActionRow;
 import discord4j.core.object.component.Button;
@@ -29,9 +32,16 @@ public class PageIterator {
     // region client
 
     public static void commands(String[] args, Player player) {
-        client(args, player, "help", () -> availableCommands(player),
-                (builder, index, command) -> builder.append(Bundle.format("commands.help.command", player, command.name,
-                        command.params(player), command.description(player))));
+        Log.info("Commands method called for player: " + player.name());
+        client(args, player, "help", () -> {
+            Log.info("Fetching available commands for player: " + player.name());
+            return availableCommands(player);
+        }, (builder, index, command) -> {
+            Log.info("Appending command details for command: " + command.name);
+            builder.append(Bundle.format("commands.help.command", player, command.name,
+                    command.params(player), command.description(player)));
+        });
+        Log.info("Commands method completed for player: " + player.name());
     }
 
     public static void maps(String[] args, Player player) {
@@ -61,17 +71,21 @@ public class PageIterator {
     // region discord
 
     public static void maps(String[] args, MessageContext context) {
+        Log.info("Maps command called with args: " + Arrays.toString(args));
         discord(args, context, "maps", PageIterator::formatMapsPage);
     }
 
     public static void players(String[] args, MessageContext context) {
+        Log.info("Players command called with args: " + Arrays.toString(args));
         discord(args, context, "players", PageIterator::formatPlayersPage);
     }
 
     private static void discord(String[] args, MessageContext context, String type,
             Cons2<Builder, ListResponse> formatter) {
         Gamemode server = Config.getMode();
+        Log.info("Discord method called for type: " + type + ", server: " + server.displayName);
         new ListRequest(type, server.displayName, 1, response -> {
+            Log.info("Sending response for type: " + type + ", server: " + server.displayName);
             context.reply(embed -> formatter.get(embed, response))
                     .withComponents(createPageButtons(type, server.displayName, response))
                     .subscribe();
@@ -80,24 +94,32 @@ public class PageIterator {
 
     public static <T> void formatListResponse(ListRequest request, Seq<T> values,
             Cons3<StringBuilder, Integer, T> formatter) {
+        Log.info("Formatting list response for request: " + request);
         int page = request.page;
         int pages = Math.max(1, Mathf.ceil((float) values.size / maxPerPage));
 
-        if (page < 1 || page > pages)
+        if (page < 1 || page > pages) {
+            Log.info("Invalid page number for request: " + request);
             return;
+        }
 
+        Log.info("Creating ListResponse for request: " + request);
         new ListResponse(formatList(values, page, formatter), page, pages, values.size);
     }
 
     public static void formatMapsPage(Builder embed, ListResponse response) {
+        Log.info("Formatting maps page with response: " + response);
         formatDiscordPage(embed, "Maps in Playlist: @", "Page @ / @", response);
     }
 
     public static void formatPlayersPage(Builder embed, ListResponse response) {
+        Log.info("Formatting players page with response: " + response);
         formatDiscordPage(embed, "Players Online: @", "Page @ / @", response);
     }
 
     public static void formatDiscordPage(Builder embed, String title, String footer, ListResponse response) {
+        Log.info(
+                "Formatting Discord page with title: " + title + ", footer: " + footer + ", and response: " + response);
         embed.title(Strings.format(title, response.total));
         embed.footer(Strings.format(footer, response.page, response.pages), null);
 
@@ -106,6 +128,7 @@ public class PageIterator {
     }
 
     public static ActionRow createPageButtons(String type, String server, ListResponse response) {
+        Log.info("Creating page buttons for type: " + type + ", server: " + server + ", and response: " + response);
         return ActionRow.of(
                 Button.primary(type + "-" + server + "-" + (response.page - 1), "<--").disabled(response.page <= 1),
                 Button.primary(type + "-" + server + "-" + (response.page + 1), "-->")

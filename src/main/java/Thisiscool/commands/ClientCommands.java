@@ -169,41 +169,49 @@ public class ClientCommands {
                         DiscordCommands.playerLinkCodes.remove(code);
                     }
                 });
-        Commands.create("pet")
+                Commands.create("pet")
                 .welcomeMessage(true)
                 .register((args, player) -> {
                     var pets = Petsdata.getPets(player.uuid());
                     if (pets == null || pets.length == 0) {
+                        Call.sendMessage("[red]", "You have no pets to spawn.", player);
                         return;
                     }
                     var pet = args.length == 0 ? null : Structs.find(pets, p -> p.name.equalsIgnoreCase(args[0]));
                     if (pet == null) {
+                        Call.sendMessage("[red]", "Pet not found.", player);
                         return;
                     }
-
+        
                     var alreadySpawned = Pets.spawnedPets.get(player.uuid(), new Seq<>());
                     if (alreadySpawned.contains(pet.name)) {
+                        Call.sendMessage("[red]", "This pet is already spawned.", player);
                         return;
                     }
-
+        
                     if (!Pets.spawnPet(pet, player)) {
+                        Call.sendMessage("[red]", "Failed to spawn pet.", player);
                         return;
                     }
-
+        
                     alreadySpawned.add(pet.name);
                     Pets.spawnedPets.put(player.uuid(), alreadySpawned);
+                    Call.sendMessage("[green]", "Pet spawned successfully.", player);
                 });
-        Commands.create("despawnpet")
+        Commands.create("petdespawn")
                 .welcomeMessage(true)
                 .register((args, player) -> {
                     var spawned = Pets.spawnedPets.get(player.uuid());
                     if (spawned == null) {
+                        Call.sendMessage("[red]", "You have no pets to despawn.", player);
                         return;
                     }
                     if (!spawned.contains(args[0])) {
+                        Call.sendMessage("[red]", "Pet not found or not spawned.", player);
                         return;
                     }
                     spawned.remove(args[0]);
+                    Call.sendMessage("[green]", "Pet despawned successfully.", player);
                 });
     }
 

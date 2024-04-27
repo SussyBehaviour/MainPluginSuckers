@@ -31,6 +31,7 @@ import arc.math.Mathf;
 import arc.struct.IntMap;
 import arc.util.CommandHandler;
 import arc.util.Http;
+import arc.util.Log;
 import arc.util.Strings;
 import arc.util.Structs;
 import discord4j.core.object.entity.User;
@@ -63,24 +64,31 @@ public class DiscordCommands {
                 PageIterator::players);
 
         discordHandler.<MessageContext>register("status", "Display server status.", (args, context) -> {
-            boolean isServerRunning = state.isPlaying();
-            int playerCount = Groups.player.size();
-            int unitCount = Groups.unit.size();
-            String mapName = state.map.plainName();
-            int wave = state.wave;
-            int tps = graphics.getFramesPerSecond();
-            long ramUsage = app.getJavaHeap() / 1024 / 1024;
-            String response = String.format(
-                    "Server Status:\n" +
-                            "Server Running: %b\n" +
-                            "Players: %d\n" +
-                            "Units: %d\n" +
-                            "Map: %s\n" +
-                            "Wave: %d\n" +
-                            "TPS: %.2f\n" +
-                            "RAM usage: %d MB",
-                    isServerRunning, playerCount, unitCount, mapName, wave, tps, ramUsage);
-            context.info("Server Status", response, new Object[0]).subscribe();
+            try {
+                boolean isServerRunning = state.isPlaying();
+                int playerCount = Groups.player.size();
+                int unitCount = Groups.unit.size();
+                String mapName = state.map == null ? "null" : state.map.plainName();
+                int wave = state.wave;
+                int tps = graphics.getFramesPerSecond();
+                long ramUsage = app.getJavaHeap() / 1024 / 1024;
+                String response = String.format(
+                        "Server Status:\n" +
+                                "Server Running: %b\n" +
+                                "Players: %d\n" +
+                                "Units: %d\n" +
+                                "Map: %s\n" +
+                                "Wave: %d\n" +
+                                "TPS: %.2f\n" +
+                                "RAM usage: %d MB",
+                        isServerRunning, playerCount, unitCount, mapName, wave, tps, ramUsage);
+                Log.info("Server Status", response);
+                context.info("Server Status", response, new Object[0]).subscribe();
+            } catch (Exception e) {
+                String errorMessage = "Error while getting server status: " + e.getMessage();
+                Log.err(errorMessage);
+                context.error("Server Status Error", errorMessage, new Object[0]).subscribe();
+            }
         });
 
         discordHandler.<MessageContext>register("artv", "[map...]", "Force map change.", (args, context) -> {
@@ -123,12 +131,17 @@ public class DiscordCommands {
         discordHandler.<MessageContext>register("map", "<map...>", "Map", (args, context) -> {
             var map = Find.map(args[0]);
             if (map == null) {
+                Log.err("Map not found: " + args[0]);
                 context.error("Error", "Map not found.").subscribe();
                 return;
             }
+            Log.info("Rendering map image for " + map.plainName() + "...");
             byte[] mapImageData = MapGenerator.renderMap(map);
+            Log.info("Map image rendered.");
             String base64ImageData = Base64.getEncoder().encodeToString(mapImageData);
+            Log.info("Base64 encoded image data.");
             String imageDataUrl = "data:image/png;base64," + base64ImageData;
+            Log.info("Sending embed...");
             context.info(embed -> embed
                     .title("Map Information")
                     .addField("Map:", map.plainName(), false)
@@ -137,6 +150,7 @@ public class DiscordCommands {
                     .addField("Size:", map.width + "x" + map.height, false)
                     .image(imageDataUrl))
                     .subscribe();
+            Log.info("Embed sent.");
         });
         discordHandler.<MessageContext>register("uploadmap", "Upload a map to the server.",
                 (args, context) -> {
@@ -358,11 +372,14 @@ public class DiscordCommands {
                     if (pd == null) {
                         context.error("Not in database", "You have not linked your discord account. Type **"
                                 + getPrefix() + "link** to link.").subscribe();
+                        Log.err("[Discord] addpet: Player " + context.member().getDisplayName()
+                                + " is not in database.");
                         return;
                     }
                     String petName = args[2];
                     if (Strings.stripColors(petName).length() > 30 || petName.length() > 300) {
                         context.error("Pet name is too long", "Please choose a shorter name for your pet").subscribe();
+                        Log.err("[Discord] addpet: Pet name " + petName + " is too long.");
                         return;
                     }
 
@@ -373,12 +390,15 @@ public class DiscordCommands {
                                         + " can only have " + Pets.maxPets(pd.rank.toString())
                                         + " pets. Increase your rank for more pets.")
                                 .subscribe();
+                        Log.err("[Discord] addpet: Player " + context.member().getDisplayName() + " has too many pets");
                         return;
                     }
                     for (var pet : pets) {
                         if (pet.name.equalsIgnoreCase(petName)) {
                             context.error("Pet already exists", "You already have a pet named '" + pet.name + "'")
                                     .subscribe();
+                            Log.err("[Discord] addpet: Player " + context.member().getDisplayName()
+                                    + " already has pet " + pet.name);
                             return;
                         }
                     }
@@ -388,12 +408,14 @@ public class DiscordCommands {
                     if (pet.color == null) {
                         context.error("Not a valid color", "Make sure you are using deafult mindustry format")
                                 .subscribe();
+                        Log.err("[Discord] addpet: " + context.member().getDisplayName() + " is using invalid color");
                         return;
                     }
                     pet.species = Vars.content.units().find(u -> u.name.equalsIgnoreCase(args[0]));
                     if (pet.species == null) {
                         context.error("Invalid Species", "'" + args[0] + "' is not a valid unit")
                                 .subscribe();
+                        Log.err("[Discord] addpet: " + context.member().getDisplayName() + " is using invalid species");
                         return;
                     }
 
@@ -401,6 +423,7 @@ public class DiscordCommands {
                     if (tier < 0) {
                         context.error("Unsupported Species",
                                 "Species must be T1-4, not be a naval unit, and not be the antumbra").subscribe();
+                        Log.err("[Discord] addpet: " + context.member().getDisplayName() + " is using unsupported species");
                         return;
                     }
 
@@ -409,17 +432,20 @@ public class DiscordCommands {
                                 + pd.rank.toString() + " can only have tier " + Pets.maxTier(pd.rank.toString())
                                 + " pets.")
                                 .subscribe();
+                        Log.err("[Discord] addpet: " + context.member().getDisplayName() + " is using pet with insufficient rank");
                         return;
                     }
 
                     Petsdata.addPet(pet);
                     context.success("Created pet", "Successfully created " + pet.name + ". Type in-game **/pet "
                             + pet.name + "** to spawn your pet.").subscribe();
+                    Log.info("[Discord] addpet: Player " + context.member().getDisplayName() + " created pet " + pet.name);
                 });
         discordHandler.<MessageContext>register("pet", "<name...>", "Show pet information", (args, context) -> {
             PlayerData pd = Database.getPlayerDataByDiscordId(context.member().getId().asLong());
             if (pd == null) {
                 context.error("Not in database", "You have not linked your discord account. Use /redeem to link.");
+                Log.info("[Discord] pet: " + context.member().getDisplayName() + " is not in database");
                 return;
             }
 
@@ -428,6 +454,7 @@ public class DiscordCommands {
             var pet = Structs.find(pets, p -> p.name.equalsIgnoreCase(name));
             if (pet == null) {
                 context.error("No such pet", "You don't have a pet named '" + name + "'");
+                Log.info("[Discord] pet: " + context.member().getDisplayName() + " does not have pet " + name);
                 return;
             }
             String foodEaten = "";
@@ -459,6 +486,8 @@ public class DiscordCommands {
                     .addField("Food Eaten", trimmedFoodEaten, false)
                     .addField("Rank", pd.rank.toString(), true)
                     .addField("Owner", pd.plainName(), true));
+            Log.info("[Discord] pet: " + context.member().getDisplayName() + " viewed pet " + pet.name);
         });
+
     }
 }
