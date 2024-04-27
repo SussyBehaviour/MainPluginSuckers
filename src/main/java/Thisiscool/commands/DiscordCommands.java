@@ -33,13 +33,16 @@ import arc.struct.IntMap;
 import arc.util.CommandHandler;
 import arc.util.Http;
 import arc.util.Strings;
+import arc.util.Structs;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.reaction.ReactionEmoji;
 import mindustry.Vars;
+import mindustry.content.Items;
 import mindustry.gen.Call;
 import mindustry.gen.Groups;
 import mindustry.io.MapIO;
 import mindustry.server.ServerControl;
+import mindustry.type.Item;
 
 public class DiscordCommands {
     public static final IntMap<User> playerLinkCodes = new IntMap<>();
@@ -384,7 +387,8 @@ public class DiscordCommands {
                     var pet = new Petsdata.Pet(pd.uuid, petName);
                     pet.color = Utils.getColorByName(args[1]);
                     if (pet.color == null) {
-                        context.error("Not a valid color", "Make sure you are using deafult mindustry format").subscribe();
+                        context.error("Not a valid color", "Make sure you are using deafult mindustry format")
+                                .subscribe();
                         return;
                     }
                     pet.species = Vars.content.units().find(u -> u.name.equalsIgnoreCase(args[0]));
@@ -403,7 +407,8 @@ public class DiscordCommands {
 
                     if (tier > Pets.maxTier(pd.rank.toString())) {
                         context.error("Insufficient Rank", pet.species.name + " is tier " + tier + ", but a "
-                                +  pd.rank.toString() + " can only have tier " + Pets.maxTier(pd.rank.toString()) + " pets.")
+                                + pd.rank.toString() + " can only have tier " + Pets.maxTier(pd.rank.toString())
+                                + " pets.")
                                 .subscribe();
                         return;
                     }
@@ -412,5 +417,49 @@ public class DiscordCommands {
                     context.success("Created pet", "Successfully created " + pet.name + ". Type in-game **/pet "
                             + pet.name + "** to spawn your pet.").subscribe();
                 });
+        discordHandler.<MessageContext>register("pet", "<name...>", "Show pet information", (args, context) -> {
+            PlayerData pd = Database.getPlayerDataByDiscordId(context.member().getId().asLong());
+            if (pd == null) {
+                context.error("Not in database", "You have not linked your discord account. Use /redeem to link.");
+                return;
+            }
+
+            String name = args[0];
+            var pets = Petsdata.getPets(pd.uuid);
+            var pet = Structs.find(pets, p -> p.name.equalsIgnoreCase(name));
+            if (pet == null) {
+                context.error("No such pet", "You don't have a pet named '" + name + "'");
+                return;
+            }
+            String foodEaten = "";
+            Item[] foods = Pets.possibleFoods(pet.species);
+            if (Structs.contains(foods, Items.coal)) {
+                foodEaten += Items.coal.emoji() + " " + pet.eatenCoal + "\n";
+            }
+            if (Structs.contains(foods, Items.copper)) {
+                foodEaten += Items.copper.emoji() + " " + pet.eatenCopper + "\n";
+            }
+            if (Structs.contains(foods, Items.lead)) {
+                foodEaten += Items.lead.emoji() + " " + pet.eatenLead + "\n";
+            }
+            if (Structs.contains(foods, Items.titanium)) {
+                foodEaten += Items.titanium.emoji() + " " + pet.eatenTitanium + "\n";
+            }
+            if (Structs.contains(foods, Items.thorium)) {
+                foodEaten += Items.thorium.emoji() + " " + pet.eatenThorium + "\n";
+            }
+            if (Structs.contains(foods, Items.beryllium)) {
+                foodEaten += Items.beryllium.emoji() + " " + pet.eatenBeryllium + "\n";
+            }
+
+            final String trimmedFoodEaten = foodEaten.trim();
+            context.success(embed -> embed
+                    .title("Pet: " + pet.name)
+                    .addField("Species", pet.species.localizedName, true)
+                    .addField("Color", "#" + pet.color.toString(), true)
+                    .addField("Food Eaten", trimmedFoodEaten, false)
+                    .addField("Rank", pd.rank.toString(), true)
+                    .addField("Owner", pd.plainName(), true));
+        });
     }
 }

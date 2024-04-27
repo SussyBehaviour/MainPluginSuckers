@@ -7,6 +7,7 @@ import static Thisiscool.utils.Checks.*;
 import java.util.function.Predicate;
 
 import Thisiscool.config.Config;
+import Thisiscool.config.DiscordConfig;
 import Thisiscool.listeners.LegenderyCumEvents.DiscordMessageEvent;
 import Thisiscool.listeners.LegenderyCumEvents.ListRequest;
 import Thisiscool.utils.PageIterator;
@@ -114,7 +115,7 @@ public class DiscordBot {
                         });
 
                 // Prevent commands from being sent to the game
-                if (message.getContent().startsWith(discordConfig.prefix))
+                if (message.getContent().startsWith(DiscordConfig.prefix))
                     return;
                 if (message.getChannelId().asLong() != discordConfig.Chat)
                     return;
@@ -182,7 +183,7 @@ public class DiscordBot {
             gateway.getSelf()
                     .flatMap(user -> gateway.getGuilds()
                             .flatMap(guild -> guild
-                                    .changeSelfNickname("[" + discordConfig.prefix + "] " + user.getUsername()))
+                                    .changeSelfNickname("[" + DiscordConfig.prefix + "] " + user.getUsername()))
                             .then())
                     .subscribe();
 

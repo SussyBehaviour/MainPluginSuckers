@@ -1,9 +1,7 @@
 package Thisiscool.StuffForUs;
-import Thisiscool.database.Database;
-import Thisiscool.database.Ranks.Rank;
+
 import Thisiscool.database.models.Petsdata;
 import Thisiscool.database.models.Petsdata.Pet;
-import Thisiscool.utils.Utils;
 import arc.Events;
 import arc.graphics.Color;
 import arc.struct.ObjectMap;
@@ -36,9 +34,10 @@ import mindustry.world.blocks.storage.CoreBlock;
 
 public class Pets {
     /**
-     * Pets that are currently spawned. Continuously read by controllers, which despawn their unit if it is not in this list.
+     * Pets that are currently spawned. Continuously read by controllers, which
+     * despawn their unit if it is not in this list.
      */
-    ObjectMap<String, Seq<String>> spawnedPets = new ObjectMap<>();
+    public static ObjectMap<String, Seq<String>> spawnedPets = new ObjectMap<>();
 
     public static int maxPets(String rank) {
         return switch (rank) {
@@ -49,6 +48,7 @@ public class Pets {
             default -> 3;
         };
     }
+
     public static int maxTier(String rank) {
         return switch (rank) {
             case "Civilian", "DClass" -> 0;
@@ -61,35 +61,37 @@ public class Pets {
     }
 
     public static int tierOf(UnitType type) {
-        if (type == UnitTypes.quad || type == UnitTypes.scepter || type == UnitTypes.vela || type == UnitTypes.alpha || type == UnitTypes.beta || type == UnitTypes.gamma) {
+        if (type == UnitTypes.quad || type == UnitTypes.scepter || type == UnitTypes.vela || type == UnitTypes.alpha
+                || type == UnitTypes.beta || type == UnitTypes.gamma) {
             return 4;
-        } else if (type == UnitTypes.fortress || type == UnitTypes.quasar || type == UnitTypes.spiroct || type == UnitTypes.zenith || type == UnitTypes.mega ||
-                type == UnitTypes.precept || type == UnitTypes.anthicus || type == UnitTypes.obviate
-        ) {
+        } else if (type == UnitTypes.fortress || type == UnitTypes.quasar || type == UnitTypes.spiroct
+                || type == UnitTypes.zenith || type == UnitTypes.mega ||
+                type == UnitTypes.precept || type == UnitTypes.anthicus || type == UnitTypes.obviate) {
             return 3;
-        } else if (type == UnitTypes.mace || type == UnitTypes.pulsar || type == UnitTypes.atrax || type == UnitTypes.horizon || type == UnitTypes.poly ||
-                type == UnitTypes.locus || type == UnitTypes.cleroi || type == UnitTypes.avert
-        ) {
+        } else if (type == UnitTypes.mace || type == UnitTypes.pulsar || type == UnitTypes.atrax
+                || type == UnitTypes.horizon || type == UnitTypes.poly ||
+                type == UnitTypes.locus || type == UnitTypes.cleroi || type == UnitTypes.avert) {
             return 2;
-        } else if (type == UnitTypes.dagger || type == UnitTypes.nova || type == UnitTypes.crawler || type == UnitTypes.flare || type == UnitTypes.mono ||
-                type == UnitTypes.elude || type == UnitTypes.merui || type == UnitTypes.stell
-        ) {
+        } else if (type == UnitTypes.dagger || type == UnitTypes.nova || type == UnitTypes.crawler
+                || type == UnitTypes.flare || type == UnitTypes.mono ||
+                type == UnitTypes.elude || type == UnitTypes.merui || type == UnitTypes.stell) {
             return 1;
         }
         return -1;
     }
 
-    protected static Item[] possibleFoods(UnitType type) {
+    public static Item[] possibleFoods(UnitType type) {
         if (type == UnitTypes.crawler) {
-            return new Item[]{Items.coal};
+            return new Item[] { Items.coal };
         } else if (type == UnitTypes.quasar || type == UnitTypes.pulsar) {
-            return new Item[]{Items.beryllium, Items.titanium, Items.thorium};
+            return new Item[] { Items.beryllium, Items.titanium, Items.thorium };
         } else if (type.flying && type != UnitTypes.quad) {
-            return new Item[]{Items.copper, Items.lead, Items.titanium, Items.thorium};
+            return new Item[] { Items.copper, Items.lead, Items.titanium, Items.thorium };
         } else {
-            return new Item[]{Items.copper, Items.lead, Items.titanium};
+            return new Item[] { Items.copper, Items.lead, Items.titanium };
         }
     }
+
     protected static int rank(Pet pet) {
         var items = possibleFoods(pet.species);
         long min = Long.MAX_VALUE;
@@ -126,7 +128,7 @@ public class Pets {
     /**
      * Creates a team if one does not already exist
      */
-    private Team getTeam(Color color) {
+    private static Team getTeam(Color color) {
         double minErr = Double.POSITIVE_INFINITY;
         Team bestTeam = null;
 
@@ -137,13 +139,13 @@ public class Pets {
         }
 
         for (Team team : Team.all) {
-            if (team.id <= 5 && team != Team.derelict) continue; // don't want player to control pets
+            if (team.id <= 5 && team != Team.derelict)
+                continue; // don't want player to control pets
 
             float[] hsv1 = team.color.toHsv(new float[3]);
-            double err =
-                    1.0 * (hsv1[0] - hsv2[0]) * (hsv1[0] - hsv2[0]) +
-                            200.0 * 200.0 * (hsv1[1] - hsv2[1]) * (hsv1[1] - hsv2[1]) +
-                            200.0 * 200.0 * (hsv1[2] - hsv2[2]) * (hsv1[2] - hsv2[2]);
+            double err = 1.0 * (hsv1[0] - hsv2[0]) * (hsv1[0] - hsv2[0]) +
+                    200.0 * 200.0 * (hsv1[1] - hsv2[1]) * (hsv1[1] - hsv2[1]) +
+                    200.0 * 200.0 * (hsv1[2] - hsv2[2]) * (hsv1[2] - hsv2[2]);
 
             if (err < minErr) {
                 minErr = err;
@@ -198,7 +200,7 @@ public class Pets {
         });
     }
 
-    private boolean spawnPet(Pet pet, Player player) {
+    public static boolean spawnPet(Pet pet, Player player) {
         // correct team can't be set instantly, otherwise pet won't spawn
         Unit unit = pet.species.spawn(player.team(), player.x, player.y);
         if (unit == null) {
@@ -212,167 +214,11 @@ public class Pets {
         controller.unit(unit);
 
         Call.spawnEffect(unit.x, unit.y, unit.rotation, unit.type);
-       Events.fire(new EventType.UnitSpawnEvent(unit));
+        Events.fire(new EventType.UnitSpawnEvent(unit));
         return true;
     }
-    public void registerDiscordCommands(DiscordCommandHandler handler) {
-        handler.register("pets", "",
-                data -> {
-                    data.help = "Show list of pets";
-                    data.category = "Pets";
-                },
-                ctx -> {
-                    Database.Player pd = Database.getDiscordData(ctx.author().getId());
-                    if (pd == null) {
-                        ctx.error("Not in database", "You have not linked your discord account. Use /redeem to link.");
-                        return;
-                    }
 
-                    var pets = PetDatabase.getPets(pd.uuid);
-                    if (pets == null || pets.length == 0) {
-                        ctx.sendEmbed(DiscordPalette.INFO, "No pets", "You don't own any pets");
-                        return;
-                    }
-
-                    var info = Vars.netServer.admins.getInfoOptional(pd.uuid);
-                    var name = info == null ? "unknown" : info.lastName;
-
-                    var eb = new EmbedBuilder()
-                            .setTitle(Utils.escapeEverything(name) + "'s Pets")
-                            .setColor(DiscordPalette.INFO);
-
-                    for (var pet : pets) {
-                        eb.addField(pet.name, pet.species.localizedName + " (" + Rank.all[rank(pet)].name + ")");
-                    }
-
-                    ctx.sendEmbed(eb);
-                }
-        );
-
-        handler.register("pet", "<name...>",
-                data -> {
-                    data.help = "Show pet information";
-                    data.category = "Pets";
-                },
-                ctx -> {
-                    Database.Player pd = Database.getDiscordData(ctx.author().getId());
-                    if (pd == null) {
-                        ctx.error("Not in database", "You have not linked your discord account. Use /redeem to link.");
-                        return;
-                    }
-
-                    String name = ctx.args.get("name");
-                    var pets = PetDatabase.getPets(pd.uuid);
-                    var pet = Structs.find(pets, p -> p.name.equalsIgnoreCase(name));
-                    if (pet == null) {
-                        ctx.error("No such pet", "You don't have a pet named '" + name + "'");
-                        return;
-                    }
-
-                    String ownerName = "unknown";
-                    var info = Vars.netServer.admins.getInfoOptional(pd.uuid);
-                    if (info != null) {
-                        ownerName = Utils.escapeEverything(info.lastName);
-                    }
-
-                    String foodEaten = "";
-                    Item[] foods = possibleFoods(pet.species);
-                    if (Structs.contains(foods, Items.coal)) {
-                        foodEaten += DiscordVars.emoji("coal").getMentionTag() + " " + pet.eatenCoal + "\n";
-                    }
-                    if (Structs.contains(foods, Items.copper)) {
-                        foodEaten += DiscordVars.emoji("copper").getMentionTag() + " " + pet.eatenCopper + "\n";
-                    }
-                    if (Structs.contains(foods, Items.lead)) {
-                        foodEaten += DiscordVars.emoji("lead").getMentionTag() + " " + pet.eatenLead + "\n";
-                    }
-                    if (Structs.contains(foods, Items.titanium)) {
-                        foodEaten += DiscordVars.emoji("titanium").getMentionTag() + " " + pet.eatenTitanium + "\n";
-                    }
-                    if (Structs.contains(foods, Items.thorium)) {
-                        foodEaten += DiscordVars.emoji("thorium").getMentionTag() + " " + pet.eatenThorium + "\n";
-                    }
-                    if (Structs.contains(foods, Items.beryllium)) {
-                        foodEaten += DiscordVars.emoji("beryllium").getMentionTag() + " " + pet.eatenBeryllium + "\n";
-                    }
-
-                    ctx.sendEmbed(new EmbedBuilder()
-                            .setColor(new java.awt.Color(pet.color.r, pet.color.g, pet.color.b))
-                            .setTitle("Pet: " + pet.name)
-                            .addInlineField("Species", pet.species.localizedName)
-                            .addInlineField("Color", "#" + pet.color.toString())
-                            .addField("Food Eaten", foodEaten.trim())
-                            .addInlineField("Rank", Rank.all[rank(pet)].name)
-                            .addInlineField("Owner", ownerName)
-                    );
-                }
-        );
-
-        handler.register("updatepet", "<color:rrggbb> <name...>",
-                data -> {
-                    data.help = "Update an existing pet";
-                    data.category = "Pets";
-                },
-                ctx -> {
-                    Database.Player pd = Database.getDiscordData(ctx.author().getId());
-                    if (pd == null) {
-                        ctx.error("Not in database", "You have not linked your discord account. Use /redeem to link.");
-                        return;
-                    }
-
-                    String name = ctx.args.get("name");
-                    var pets = PetDatabase.getPets(pd.uuid);
-                    var pet = Structs.find(pets, p -> p.name.equalsIgnoreCase(name));
-                    if (pet == null) {
-                        ctx.error("No such pet", "You don't have a pet named '" + name + "'");
-                        return;
-                    }
-
-                    pet.color = Utils.parseColor(ctx.args.get("color:rrggbb"));
-                    if (pet.color == null) {
-                        ctx.error("Not a valid color", "Make sure you are using `rrggbb` format");
-                        return;
-                    }
-
-                    PetDatabase.updatePet(pet);
-                    ctx.success("Successfully updated " + pet.name, "Changed their color to " + pet.color.toString());
-                }
-        );
-
-        handler.register("removepet", "<name...>",
-                data -> {
-                    data.help = "Remove a pet";
-                    data.category = "Pets";
-                },
-                ctx -> {
-                    Database.Player pd = Database.getDiscordData(ctx.author().getId());
-                    if (pd == null) {
-                        ctx.error("Not in database", "You have not linked your discord account. Use /redeem to link.");
-                        return;
-                    }
-
-                    String name = ctx.args.get("name");
-                    var pets = PetDatabase.getPets(pd.uuid);
-                    // find the pet, in case the player uses wrong casing
-                    var pet = Structs.find(pets, p -> p.name.equalsIgnoreCase(name));
-                    if (pet == null) {
-                        ctx.error("No such pet", "You don't have a pet named '" + name + "'");
-                        return;
-                    }
-
-                    // if pet is still alive, despawn it
-                    var spawned = spawnedPets.get(pd.uuid);
-                    if (spawned != null) {
-                        spawned.remove(pet.name);
-                    }
-
-                    PetDatabase.removePet(pd.uuid, pet.name);
-                    ctx.success("Success", "Successfully deleted " + pet.name);
-                }
-        );
-    }
-
-    class PetController implements UnitController {
+   static class PetController implements UnitController {
         final String uuid;
         final Player player;
         final String name;
@@ -419,9 +265,9 @@ public class Pets {
             pets.remove(name);
 
             if (player.con != null && player.con.isConnected()) {
-                Call.sendMessage("Pet"+ "yellow"+ "Your pet [#" + color.toString().substring(0, 6) + "]" + name + "[yellow] died! " +
-                        "Make sure you are spawning any ground pets on empty tiles."
-                );
+                Call.sendMessage("Pet" + "yellow" + "Your pet [#" + color.toString().substring(0, 6) + "]" + name
+                        + "[yellow] died! " +
+                        "Make sure you are spawning any ground pets on empty tiles.");
             }
         }
 
@@ -495,7 +341,8 @@ public class Pets {
 
         private CoreBlock.CoreBuild closeCore(float targetx, float targety) {
             var cores = Vars.state.teams.cores(player.team());
-            if (cores == null || cores.size == 0) return null;
+            if (cores == null || cores.size == 0)
+                return null;
             CoreBlock.CoreBuild closestCore = null;
             float closestDst = 12 * Vars.tilesize;
             for (var core : cores) {
@@ -507,9 +354,11 @@ public class Pets {
             return closestCore;
         }
 
+        @SuppressWarnings("null")
         @Override
         public void updateUnit() {
-            if (unit == null) return;
+            if (unit == null)
+                return;
             if (!Groups.player.contains(p -> p == player)) {
                 Log.warn("pet owner disconnected :(");
                 Call.unitDespawn(unit);
@@ -605,7 +454,9 @@ public class Pets {
             // labels
             boolean isStill = Math.abs(vx) < 2 && Math.abs(vy) < 2;
             if (!hasLabel && isStill) {
-              //  Call.label(Utils.formatName(Rank.all[rank], "[#" + color.toString().substring(0, 6) + "]" + name), 1f, unit.x, unit.y + unit.hitSize() / 2 + Vars.tilesize);
+                // Call.label(Utils.formatName(Rank.all[rank], "[#" +
+                // color.toString().substring(0, 6) + "]" + name), 1f, unit.x, unit.y +
+                // unit.hitSize() / 2 + Vars.tilesize);
                 hasLabel = true;
                 Timer.schedule(() -> {
                     hasLabel = false;
@@ -624,20 +475,21 @@ public class Pets {
                 for (int x = startX; x < startX + 10; x++) {
                     for (int y = startY; y < startY + 10; y++) {
                         Tile tile = Vars.world.tiles.get(x, y);
-                        if (tile == null) continue;
-                        if (
-                                (tile.drop() != null && Structs.contains(possibleFoods(unit.type), tile.drop()) && tile.block() == Blocks.air) ||
-                                        (tile.wallDrop() != null && Structs.contains(possibleFoods(unit.type), tile.wallDrop()))
-                        ) {
+                        if (tile == null)
+                            continue;
+                        if ((tile.drop() != null && Structs.contains(possibleFoods(unit.type), tile.drop())
+                                && tile.block() == Blocks.air) ||
+                                (tile.wallDrop() != null
+                                        && Structs.contains(possibleFoods(unit.type), tile.wallDrop()))) {
                             tiles.add(tile);
                         }
                     }
                 }
 
-//                Log.info("possible ores: " + tiles.size);
+                // Log.info("possible ores: " + tiles.size);
                 if (tiles.size != 0) {
                     this.mining = tiles.random();
-//                    Log.info("mining: " + this.mining.drop());
+                    // Log.info("mining: " + this.mining.drop());
                     isEating = true;
                 }
             }
@@ -658,7 +510,8 @@ public class Pets {
                 }
 
                 // if mine is too far away, skip to eating
-                if (mining != null && (mining.x - unit.tileX()) * (mining.x - unit.tileX()) + (mining.y - unit.tileY()) * (mining.y - unit.tileY()) >= 10 * 10) {
+                if (mining != null && (mining.x - unit.tileX()) * (mining.x - unit.tileX())
+                        + (mining.y - unit.tileY()) * (mining.y - unit.tileY()) >= 10 * 10) {
                     mining = null;
                     if (unit.stack != null) {
                         itemsEaten = unit.stack.amount;
@@ -710,7 +563,6 @@ public class Pets {
                     }
                 }
 
-
                 // rotation
                 if (mining != null)
                     unit.rotation = unit.angleTo(mining);
@@ -722,4 +574,3 @@ public class Pets {
         }
     }
 }
-

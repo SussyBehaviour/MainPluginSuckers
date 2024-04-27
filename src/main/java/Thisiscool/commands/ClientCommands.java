@@ -8,6 +8,7 @@ import static mindustry.server.ServerControl.*;
 
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.MainHelper.Commands;
+import Thisiscool.StuffForUs.Pets;
 import Thisiscool.StuffForUs.menus.MenuHandler;
 import Thisiscool.StuffForUs.net.Translator;
 import Thisiscool.StuffForUs.votes.Report;
@@ -16,12 +17,14 @@ import Thisiscool.StuffForUs.votes.VoteRtv;
 import Thisiscool.StuffForUs.votes.VoteSurrender;
 import Thisiscool.database.Cache;
 import Thisiscool.database.Database;
+import Thisiscool.database.models.Petsdata;
 import Thisiscool.listeners.LegenderyCumEvents.AdminRequestEvent;
 import Thisiscool.utils.Find;
 import Thisiscool.utils.PageIterator;
 import Thisiscool.utils.Utils;
+import arc.struct.Seq;
+import arc.util.Structs;
 import mindustry.gen.Call;
-
 public class ClientCommands {
 
     public static void load() {
@@ -166,5 +169,42 @@ public class ClientCommands {
                         DiscordCommands.playerLinkCodes.remove(code);
                     }
                 });
+        Commands.create("pet")
+                .welcomeMessage(true)
+                .register((args, player) -> {
+                    var pets = Petsdata.getPets(player.uuid());
+                    if (pets == null || pets.length == 0) {
+                        return;
+                    }
+                    var pet = args.length == 0 ? null : Structs.find(pets, p -> p.name.equalsIgnoreCase(args[0]));
+                    if (pet == null) {
+                        return;
+                    }
+
+                    var alreadySpawned = Pets.spawnedPets.get(player.uuid(), new Seq<>());
+                    if (alreadySpawned.contains(pet.name)) {
+                        return;
+                    }
+
+                    if (!Pets.spawnPet(pet, player)) {
+                        return;
+                    }
+
+                    alreadySpawned.add(pet.name);
+                    Pets.spawnedPets.put(player.uuid(), alreadySpawned);
+                });
+        Commands.create("despawnpet")
+                .welcomeMessage(true)
+                .register((args, player) -> {
+                    var spawned = Pets.spawnedPets.get(player.uuid());
+                    if (spawned == null) {
+                        return;
+                    }
+                    if (!spawned.contains(args[0])) {
+                        return;
+                    }
+                    spawned.remove(args[0]);
+                });
     }
+
 }
