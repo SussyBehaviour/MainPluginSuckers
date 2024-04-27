@@ -60,9 +60,9 @@ public class DiscordCommands {
             context.info("All available commands:", builder.toString()).subscribe();
         });
         discordHandler.<MessageContext>register("maps", "List of all maps of the server.",
-        (args, context) -> PageIterator.maps(context));
+                (args, context) -> PageIterator.maps(context));
         discordHandler.<MessageContext>register("players", "List of all players of the server.",
-        (args, context) -> PageIterator.players(context));
+                (args, context) -> PageIterator.players(context));
 
         discordHandler.<MessageContext>register("status", "Display server status.", (args, context) -> {
             try {
@@ -70,9 +70,9 @@ public class DiscordCommands {
                 int playerCount = Groups.player.size();
                 int unitCount = Groups.unit.size();
                 String mapName = state.map == null ? "null" : state.map.plainName();
-                int wave = state.wave;
+                int wave = (int) state.wave;
                 int tps = (int) graphics.getFramesPerSecond();
-                long ramUsage = app.getJavaHeap() / 1024 / 1024;
+                long ramUsage = (long) app.getJavaHeap() / 1024 / 1024;
                 String response = String.format(
                         "Server Status:\n" +
                                 "Server Running: %b\n" +
@@ -424,7 +424,8 @@ public class DiscordCommands {
                     if (tier < 0) {
                         context.error("Unsupported Species",
                                 "Species must be T1-4, not be a naval unit, and not be the antumbra").subscribe();
-                        Log.err("[Discord] addpet: " + context.member().getDisplayName() + " is using unsupported species");
+                        Log.err("[Discord] addpet: " + context.member().getDisplayName()
+                                + " is using unsupported species");
                         return;
                     }
 
@@ -433,14 +434,16 @@ public class DiscordCommands {
                                 + pd.rank.toString() + " can only have tier " + Pets.maxTier(pd.rank.toString())
                                 + " pets.")
                                 .subscribe();
-                        Log.err("[Discord] addpet: " + context.member().getDisplayName() + " is using pet with insufficient rank");
+                        Log.err("[Discord] addpet: " + context.member().getDisplayName()
+                                + " is using pet with insufficient rank");
                         return;
                     }
 
                     Petsdata.addPet(pet);
                     context.success("Created pet", "Successfully created " + pet.name + ". Type in-game **/pet "
                             + pet.name + "** to spawn your pet.").subscribe();
-                    Log.info("[Discord] addpet: Player " + context.member().getDisplayName() + " created pet " + pet.name);
+                    Log.info("[Discord] addpet: Player " + context.member().getDisplayName() + " created pet "
+                            + pet.name);
                 });
         discordHandler.<MessageContext>register("pet", "<name...>", "Show pet information", (args, context) -> {
             PlayerData pd = Database.getPlayerDataByDiscordId(context.member().getId().asLong());
