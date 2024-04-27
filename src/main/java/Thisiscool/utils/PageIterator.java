@@ -5,24 +5,13 @@ import static Thisiscool.utils.Utils.*;
 
 import Thisiscool.MainHelper.Bundle;
 import Thisiscool.StuffForUs.menus.MenuHandler;
-import Thisiscool.config.Config;
-import Thisiscool.config.Config.Gamemode;
 import Thisiscool.database.Cache;
-import Thisiscool.discord.MessageContext;
-import Thisiscool.listeners.LegenderyCumEvents.ListRequest;
-import Thisiscool.listeners.LegenderyCumEvents.ListResponse;
-import arc.Events;
-import arc.func.Cons2;
 import arc.func.Cons3;
 import arc.func.Prov;
 import arc.math.Mathf;
 import arc.struct.Seq;
 import arc.util.Log;
 import arc.util.Strings;
-import discord4j.core.object.component.ActionRow;
-import discord4j.core.object.component.Button;
-import discord4j.core.spec.EmbedCreateSpec.Builder;
-import discord4j.rest.util.Color;
 import mindustry.gen.Groups;
 import mindustry.gen.Player;
 
@@ -66,110 +55,4 @@ public class PageIterator {
         MenuHandler.showListMenu(player, page, "commands." + name + ".title", content, formatter);
     }
 
-    // endregion
-    // region discord
-
-    public static void maps(MessageContext context) {
-        discord(context, "maps", PageIterator::formatMapsPage);
-    }
-
-    public static void players(MessageContext context) {
-        discord(context, "players", PageIterator::formatPlayersPage);
-    }
-
-    private static void discord(MessageContext context, String type, Cons2<Builder, ListResponse> formatter) {
-        Gamemode server = Config.getMode();
-        Log.info("Discord method called for type: " + type + ", server: "
-                + (server == null ? "null" : server.displayName));
-        if (context == null) {
-            Log.err("Null context in discord method for type: " + type);
-            return;
-        } else if (type == null) {
-            Log.err("Null type in discord method");
-            return;
-        } else if (formatter == null) {
-            Log.err("Null formatter in discord method for type: " + type);
-            return;
-        }
-        ListResponse[] responseToSend = new ListResponse[1];
-
-        ListRequest request = new ListRequest(type, server == null ? null : server.displayName, 1, ListResponse -> {
-            Log.info("Sending response for type: " + type + ", server: "
-                    + (server == null ? "null" : server.displayName));
-            if (ListResponse == null) {
-                Log.err("Null response in discord method for type: " + type);
-                return;
-            } else if (ListResponse.content == null || ListResponse.content.isEmpty()) {
-                Log.err("Null or empty content in response in discord method for type: " + type);
-                return;
-            }
-            Log.info("Response details: " + ListResponse.toString());
-            responseToSend[0] = ListResponse;
-        });
-        Events.fire(request);
-
-        if (responseToSend[0] != null) {
-            try {
-                context.reply(embed -> {
-                    embed.color(Color.SUMMER_SKY);
-                    embed.title("Maps in Playlist: @");
-                    embed.footer(String.format("Page @ / @", responseToSend[0].page, responseToSend[0].pages), null);
-                    embed.description(responseToSend[0].content);
-                })
-                        .withComponents(createPageButtons("maps", server == null ? "null" : server.displayName,
-                                responseToSend[0]))
-                        .subscribe();
-            } catch (Exception e) {
-                Log.err("Exception encountered while sending reply for type: maps", e);
-            }
-        } else {
-            Log.info("No response to send for type: maps, server: " + (server == null ? "null" : server.displayName));
-        }
-    }
-
-    public static <T> void formatListResponse(ListRequest request, Seq<T> values,
-            Cons3<StringBuilder, Integer, T> formatter, ListResponse[] responseToSend) {
-        Log.info("Formatting list response for request: " + request);
-        int page = request.page;
-        int pages = Math.max(1, Mathf.ceil((float) values.size / maxPerPage));
-
-        if (page < 1 || page > pages) {
-            Log.info("Invalid page number for request: " + request);
-            return;
-        }
-
-        Log.info("Creating ListResponse for request: " + request);
-        ListResponse listResponse = new ListResponse(formatList(values, page, formatter), page, pages, values.size);
-        responseToSend[0] = listResponse;
-    }
-
-    public static void formatMapsPage(Builder embed, ListResponse response) {
-        Log.info("Formatting maps page with response: " + response);
-        formatDiscordPage(embed, "Maps in Playlist: @", "Page @ / @", response);
-    }
-
-    public static void formatPlayersPage(Builder embed, ListResponse response) {
-        Log.info("Formatting players page with response: " + response);
-        formatDiscordPage(embed, "Players Online: @", "Page @ / @", response);
-    }
-
-    public static void formatDiscordPage(Builder embed, String title, String footer, ListResponse response) {
-        Log.info(
-                "Formatting Discord page with title: " + title + ", footer: " + footer + ", and response: " + response);
-        embed.title(Strings.format(title, response.total));
-        embed.footer(Strings.format(footer, response.page, response.pages), null);
-
-        embed.color(Color.SUMMER_SKY);
-        embed.description(response.content);
-    }
-
-    public static ActionRow createPageButtons(String type, String server, ListResponse response) {
-        Log.info("Creating page buttons for type: " + type + ", server: " + server + ", and response: " + response);
-        return ActionRow.of(
-                Button.primary(type + "-" + server + "-" + (response.page - 1), "<--").disabled(response.page <= 1),
-                Button.primary(type + "-" + server + "-" + (response.page + 1), "-->")
-                        .disabled(response.page >= response.pages));
-    }
-
-    // endregion
 }

@@ -24,7 +24,6 @@ import Thisiscool.listeners.LegenderyCumEvents.EmbedResponse;
 import Thisiscool.utils.Admins;
 import Thisiscool.utils.Find;
 import Thisiscool.utils.MapGenerator;
-import Thisiscool.utils.PageIterator;
 import Thisiscool.utils.Utils;
 import arc.Events;
 import arc.files.Fi;
@@ -59,10 +58,30 @@ public class DiscordCommands {
 
             context.info("All available commands:", builder.toString()).subscribe();
         });
-        discordHandler.<MessageContext>register("maps", "List of all maps of the server.",
-                (args, context) -> PageIterator.maps(context));
-        discordHandler.<MessageContext>register("players", "List of all players of the server.",
-                (args, context) -> PageIterator.players(context));
+        discordHandler.<MessageContext>register("players", "Get all the players online.",
+                (args, context) -> {
+                    if (!state.isGame()) {
+                        context.error("Server Error", "The server is not running.").subscribe();
+                        return;
+                    }
+                    if (Groups.player.isEmpty()) {
+                        context.error("No Players", "There are no players online.").subscribe();
+                        return;
+                    }
+                    StringBuilder responseBuilder = new StringBuilder("Server Players:\n");
+                    for (var player : Groups.player) {
+                        PlayerData data = Database.getPlayerData(player);
+                        String playerInfo = String.format(
+                                "Player Name: %s\n" +
+                                        "Discord Name: %s\n" +
+                                        "Player ID: %s\n\n",
+                                player.plainName(),
+                                DiscordBot.getUserNameById(data.DiscordId).block(),
+                                data.id);
+                        responseBuilder.append(playerInfo);
+                    }
+                    context.info("Server Players", responseBuilder.toString(), new Object[0]).subscribe();
+                });
 
         discordHandler.<MessageContext>register("status", "Display server status.", (args, context) -> {
             try {
@@ -73,13 +92,6 @@ public class DiscordCommands {
                 int wave = (int) state.wave;
                 int tps = (int) graphics.getFramesPerSecond();
                 long ramUsage = (long) app.getJavaHeap() / 1024 / 1024;
-                Log.info("isServerRunning: " + isServerRunning + " (boolean)");
-                Log.info("playerCount: " + playerCount + " (int)");
-                Log.info("unitCount: " + unitCount + " (int)");
-                Log.info("mapName: " + mapName + " (String)");
-                Log.info("wave: " + wave + " (int)");
-                Log.info("tps: " + tps + " (int)");
-                Log.info("ramUsage: " + ramUsage + " (long)");
                 String response = String.format(
                         "Server Status:\n" +
                                 "Server Running: %b\n" +
@@ -90,7 +102,6 @@ public class DiscordCommands {
                                 "TPS: %d\n" +
                                 "RAM usage: %d MB",
                         isServerRunning, playerCount, unitCount, mapName, wave, tps, ramUsage);
-                Log.info("Server Status", response);
                 context.info("Server Status", response, new Object[0]).subscribe();
             } catch (Exception e) {
                 String errorMessage = "Error while getting server status: " + e.getMessage();
@@ -98,7 +109,37 @@ public class DiscordCommands {
                 context.error("Server Status Error", errorMessage, new Object[0]).subscribe();
             }
         });
+        discordHandler.<MessageContext>register("maps", "Get all the maps on the server", (args, context) -> {
 
+            StringBuilder[] mapList = new StringBuilder[] { new StringBuilder() };
+            int count = 0;
+            int maxFields = 25;
+            int maxChars = 1024;
+
+            for (var map : maps.customMaps()) {
+                String mapInfo = map.plainName() + " by " + map.plainAuthor() + " - Size [" + map.width + ", "
+                        + map.height + "]\n";
+                if (count < maxFields && mapList[0].length() + mapInfo.length() <= maxChars) {
+                    mapList[0].append(mapInfo);
+                    count++;
+                } else {
+                    context.info(embed -> embed
+                            .footer("Use the map command to get detail info about a map.", null)
+                            .addField("maps", mapList[0].toString(), false))
+                            .subscribe();
+                    mapList[0] = new StringBuilder(mapInfo);
+                    count = 1;
+                }
+            }
+
+            // Add the remaining maps to the last embed
+            if (mapList[0].length() > 0) {
+                context.info(embed -> embed
+                        .footer("Use the map command to get detail info about a map.", null)
+                        .addField("maps", mapList[0].toString(), false))
+                        .subscribe();
+            }
+        });
         discordHandler.<MessageContext>register("artv", "[map...]", "Force map change.", (args, context) -> {
             if (noRole(context, discordConfig.adminRoleIDs))
                 return;

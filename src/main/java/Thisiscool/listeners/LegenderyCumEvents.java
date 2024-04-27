@@ -3,12 +3,10 @@ package Thisiscool.listeners;
 import static Thisiscool.config.Config.*;
 import static Thisiscool.config.DiscordConfig.*;
 import static Thisiscool.utils.Checks.*;
-import static Thisiscool.utils.Utils.*;
 import static mindustry.Vars.*;
 import static mindustry.server.ServerControl.*;
 
 import Thisiscool.MainHelper.Bundle;
-import Thisiscool.database.Cache;
 import Thisiscool.database.Ranks.Rank;
 import Thisiscool.database.models.Ban;
 import Thisiscool.database.models.PlayerData;
@@ -17,7 +15,6 @@ import Thisiscool.listeners.Bus.Request;
 import Thisiscool.listeners.Bus.Response;
 import Thisiscool.utils.Admins;
 import Thisiscool.utils.Find;
-import Thisiscool.utils.PageIterator;
 import arc.Events;
 import arc.struct.Seq;
 import arc.util.Log;
@@ -29,8 +26,6 @@ import discord4j.rest.util.Color;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import mindustry.gen.Groups;
-import mindustry.gen.Player;
-import mindustry.maps.Map;
 
 public class LegenderyCumEvents {
 
@@ -80,33 +75,6 @@ public class LegenderyCumEvents {
         Events.on(AdminRequestDenyEvent.class, event -> {
             if (event.server.equals(config.mode.displayName))
                 DiscordIntegration.deny(event.uuid);
-        });
-        Events.on(ListRequest.class, request -> {
-            Log.info("[Discord] List request from @ for type @ on server @ accepted", request.type, request.server);
-
-            switch (request.type) {
-                case "maps" -> PageIterator.<Map>formatListResponse(request, availableMaps(),
-                        (StringBuilder builder, Integer index, Map map) -> {
-                            builder.append("**").append(index).append(".** ").append(map.plainName())
-                                    .append("\n").append("Author: ").append(map.plainAuthor())
-                                    .append("\n").append(map.width).append("x").append(map.height)
-                                    .append("\n");
-                        },
-                        new ListResponse[1]);
-                case "players" -> PageIterator.<Player>formatListResponse(request, Groups.player.copy(new Seq<>()),
-                        (StringBuilder builder, Integer index, Player player) -> {
-                            builder.append("**").append(index).append(".** ").append(player.plainName())
-                                    .append("\nID: ").append(Cache.get(player).id)
-                                    .append("\nLanguage: ").append(player.locale)
-                                    .append("\n");
-                        },
-                        new ListResponse[1]);
-                default -> {
-                    Log.warn("[Discord] List request from @ for unknown type @ on server @ rejected", request.type,
-                            request.server);
-                    throw new IllegalStateException();
-                }
-            }
         });
         Events.on(ArtvRequest.class, request -> {
             if (noRtv(request))

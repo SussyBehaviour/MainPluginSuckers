@@ -8,24 +8,19 @@ import java.util.function.Predicate;
 
 import Thisiscool.config.Config;
 import Thisiscool.listeners.LegenderyCumEvents.DiscordMessageEvent;
-import Thisiscool.listeners.LegenderyCumEvents.ListRequest;
-import Thisiscool.utils.PageIterator;
 import arc.Events;
 import arc.util.Log;
-import arc.util.Strings;
 import discord4j.common.ReactorResources;
 import discord4j.common.retry.ReconnectOptions;
 import discord4j.common.util.Snowflake;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.EventDispatcher;
-import discord4j.core.event.domain.interaction.ButtonInteractionEvent;
 import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.Role;
 import discord4j.core.object.entity.User;
 import discord4j.core.object.entity.channel.GuildMessageChannel;
-import discord4j.core.spec.EmbedCreateSpec;
 import discord4j.core.util.OrderUtil;
 import discord4j.gateway.intent.Intent;
 import discord4j.gateway.intent.IntentSet;
@@ -143,26 +138,6 @@ public class DiscordBot {
                                                 message.getContent()))));
             });
 
-            gateway.on(ButtonInteractionEvent.class).subscribe(event -> {
-                var content = event.getCustomId().split("-", 3);
-                if (content.length < 3)
-                    return;
-                    Events.fire(new ListRequest(content[0], content[1], Strings.parseInt(content[2]), response -> {
-                        var embed = EmbedCreateSpec.builder();
-                    
-                        switch (content[0]) {
-                            case "maps" -> PageIterator.formatMapsPage(embed, response);
-                            case "players" -> PageIterator.formatPlayersPage(embed, response);
-                    
-                            default -> throw new IllegalStateException();
-                        }
-                    
-                        event.edit().withEmbeds(embed.build())
-                                .withComponents(PageIterator.createPageButtons(content[0], content[1], response))
-                                .subscribe();
-                    }));
-             
-            });
 
             gateway.on(SelectMenuInteractionEvent.class).subscribe(event -> {
                 if (noRole(event, discordConfig.adminRoleIDs))
