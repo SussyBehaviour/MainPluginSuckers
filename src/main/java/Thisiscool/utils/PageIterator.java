@@ -107,24 +107,23 @@ public class PageIterator {
             responseToSend[0] = ListResponse;
         });
         Events.fire(request);
+
         if (responseToSend[0] != null) {
             try {
-                Log.info("Attempting to send reply for type: " + type + ", server: "
-                        + (server == null ? "null" : server.displayName));
-                context.reply(embed -> formatter.get(embed, responseToSend[0]))
-                        .withComponents(createPageButtons(type, server == null ? "null" : server.displayName,
+                context.reply(embed -> {
+                    embed.color(Color.SUMMER_SKY);
+                    embed.title("Maps in Playlist: @");
+                    embed.footer(String.format("Page @ / @", responseToSend[0].page, responseToSend[0].pages), null);
+                    embed.description(responseToSend[0].content);
+                })
+                        .withComponents(createPageButtons("maps", server == null ? "null" : server.displayName,
                                 responseToSend[0]))
                         .subscribe();
-                Log.info("Reply sent successfully for type: " + type + ", server: "
-                        + (server == null ? "null" : server.displayName));
-            } catch (NullPointerException e) {
-                Log.err("NullPointerException encountered while sending reply for type: " + type, e);
             } catch (Exception e) {
-                Log.err("Exception encountered while sending reply for type: " + type, e);
+                Log.err("Exception encountered while sending reply for type: maps", e);
             }
         } else {
-            Log.info("No response to send for type: " + type + ", server: "
-                    + (server == null ? "null" : server.displayName));
+            Log.info("No response to send for type: maps, server: " + (server == null ? "null" : server.displayName));
         }
     }
 
