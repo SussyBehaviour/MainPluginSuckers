@@ -29,6 +29,8 @@ import discord4j.rest.util.Color;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import mindustry.gen.Groups;
+import mindustry.gen.Player;
+import mindustry.maps.Map;
 
 public class LegenderyCumEvents {
 
@@ -83,20 +85,22 @@ public class LegenderyCumEvents {
             Log.info("[Discord] List request from @ for type @ on server @ accepted", request.type, request.server);
 
             switch (request.type) {
-                case "maps" -> PageIterator.formatListResponse(request, availableMaps(),
-                        (builder, index, map) -> builder
-                                .append("**").append(index).append(".** ").append(map.plainName())
-                                .append("\n").append("Author: ").append(map.plainAuthor())
-                                .append("\n").append(map.width).append("x").append(map.height)
-                                .append("\n"));
-
-                case "players" -> PageIterator.formatListResponse(request, Groups.player.copy(new Seq<>()),
-                        (builder, index, player) -> builder
-                                .append("**").append(index).append(".** ").append(player.plainName())
-                                .append("\nID: ").append(Cache.get(player).id)
-                                .append("\nLanguage: ").append(player.locale)
-                                .append("\n"));
-
+                case "maps" -> PageIterator.<Map>formatListResponse(request, availableMaps(),
+                (StringBuilder builder, Integer index, Map map) -> {
+                    builder.append("**").append(index).append(".** ").append(map.plainName())
+                            .append("\n").append("Author: ").append(map.plainAuthor())
+                            .append("\n").append(map.width).append("x").append(map.height)
+                            .append("\n");
+                },
+                new ListResponse[1]);
+                case "players" -> PageIterator.<Player>formatListResponse(request, Groups.player.copy(new Seq<>()),
+                (StringBuilder builder, Integer index, Player player) -> {
+                    builder.append("**").append(index).append(".** ").append(player.plainName())
+                            .append("\nID: ").append(Cache.get(player).id)
+                            .append("\nLanguage: ").append(player.locale)
+                            .append("\n");
+                },
+                new ListResponse[1]);
                 default -> {
                     Log.warn("[Discord] List request from @ for unknown type @ on server @ rejected", request.type,
                             request.server);
