@@ -129,7 +129,7 @@ public class PageIterator {
     }
 
     public static <T> void formatListResponse(ListRequest request, Seq<T> values,
-            Cons3<StringBuilder, Integer, T> formatter) {
+            Cons3<StringBuilder, Integer, T> formatter, ListResponse[] responseToSend) {
         Log.info("Formatting list response for request: " + request);
         int page = request.page;
         int pages = Math.max(1, Mathf.ceil((float) values.size / maxPerPage));
@@ -140,7 +140,8 @@ public class PageIterator {
         }
 
         Log.info("Creating ListResponse for request: " + request);
-        Events.fire(new ListResponse(formatList(values, page, formatter), page, pages, values.size));
+        ListResponse listResponse = new ListResponse(formatList(values, page, formatter), page, pages, values.size);
+        responseToSend[0] = listResponse;
     }
 
     public static void formatMapsPage(Builder embed, ListResponse response) {
