@@ -86,9 +86,11 @@ public class PageIterator {
         Log.info("Discord method called for type: " + type + ", server: " + server.displayName);
         new ListRequest(type, server.displayName, 1, response -> {
             Log.info("Sending response for type: " + type + ", server: " + server.displayName);
+            Log.info("Sending reply for type: " + type + ", server: " + server.displayName);
             context.reply(embed -> formatter.get(embed, response))
                     .withComponents(createPageButtons(type, server.displayName, response))
                     .subscribe();
+            Log.info("Reply sent for type: " + type + ", server: " + server.displayName);
         });
     }
 

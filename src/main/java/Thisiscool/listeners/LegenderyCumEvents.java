@@ -80,8 +80,12 @@ public class LegenderyCumEvents {
                 DiscordIntegration.deny(event.uuid);
         });
         Events.on(ListRequest.class, request -> {
-            if (!request.server.equals(config.mode.displayName))
+            if (!request.server.equals(config.mode.displayName)) {
+                Log.info("[Discord] List request from @ for type @ on server @ rejected", request.type, request.server);
                 return;
+            }
+
+            Log.info("[Discord] List request from @ for type @ on server @ accepted", request.type, request.server);
 
             switch (request.type) {
                 case "maps" -> PageIterator.formatListResponse(request, availableMaps(),
@@ -98,7 +102,10 @@ public class LegenderyCumEvents {
                                 .append("\nLanguage: ").append(player.locale)
                                 .append("\n"));
 
-                default -> throw new IllegalStateException();
+                default -> {
+                    Log.warn("[Discord] List request from @ for unknown type @ on server @ rejected",request.type, request.server);
+                    throw new IllegalStateException();
+                }
             }
         });
         Events.on(ArtvRequest.class, request -> {
