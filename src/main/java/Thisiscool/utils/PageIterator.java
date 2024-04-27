@@ -11,6 +11,7 @@ import Thisiscool.database.Cache;
 import Thisiscool.discord.MessageContext;
 import Thisiscool.listeners.LegenderyCumEvents.ListRequest;
 import Thisiscool.listeners.LegenderyCumEvents.ListResponse;
+import arc.Events;
 import arc.func.Cons2;
 import arc.func.Cons3;
 import arc.func.Prov;
@@ -80,14 +81,14 @@ public class PageIterator {
             Cons2<Builder, ListResponse> formatter) {
         Gamemode server = Config.getMode();
         Log.info("Discord method called for type: " + type + ", server: " + server.displayName);
-        new ListRequest(type, server.displayName, 1, response -> {
+        Events.fire(new ListRequest(type, server.displayName, 1, response -> {
             Log.info("Sending response for type: " + type + ", server: " + server.displayName);
             Log.info("Sending reply for type: " + type + ", server: " + server.displayName);
             context.reply(embed -> formatter.get(embed, response))
                     .withComponents(createPageButtons(type, server.displayName, response))
                     .subscribe();
             Log.info("Reply sent for type: " + type + ", server: " + server.displayName);
-        });
+        }));
     }
 
     public static <T> void formatListResponse(ListRequest request, Seq<T> values,
@@ -102,7 +103,7 @@ public class PageIterator {
         }
 
         Log.info("Creating ListResponse for request: " + request);
-        new ListResponse(formatList(values, page, formatter), page, pages, values.size);
+        Events.fire(new ListResponse(formatList(values, page, formatter), page, pages, values.size));
     }
 
     public static void formatMapsPage(Builder embed, ListResponse response) {

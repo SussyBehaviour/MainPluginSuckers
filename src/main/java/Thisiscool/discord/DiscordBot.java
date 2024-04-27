@@ -10,6 +10,7 @@ import Thisiscool.config.Config;
 import Thisiscool.listeners.LegenderyCumEvents.DiscordMessageEvent;
 import Thisiscool.listeners.LegenderyCumEvents.ListRequest;
 import Thisiscool.utils.PageIterator;
+import arc.Events;
 import arc.util.Log;
 import arc.util.Strings;
 import discord4j.common.ReactorResources;
@@ -134,19 +135,19 @@ public class DiscordBot {
                         .zipWith(roles.map(Role::getColor)
                                 .filter(Predicate.not(Predicate.isEqual(Role.DEFAULT_COLOR)))
                                 .last(Color.WHITE))
-                        .switchIfEmpty(Mono.fromRunnable(() -> new DiscordMessageEvent(Config.getMode().displayName, member.getDisplayName(),
-                                        message.getContent())))
+                        .switchIfEmpty(Mono.fromRunnable(() -> Events.fire(new DiscordMessageEvent(Config.getMode().displayName, member.getDisplayName(),
+                                        message.getContent()))))
                         .subscribe(TupleUtils.consumer((role,
-                                color) -> new DiscordMessageEvent(Config.getMode().displayName, role.getName(),
+                                color) -> Events.fire(new DiscordMessageEvent(Config.getMode().displayName, role.getName(),
                                                 Integer.toHexString(color.getRGB()), member.getDisplayName(),
-                                                message.getContent())));
+                                                message.getContent()))));
             });
 
             gateway.on(ButtonInteractionEvent.class).subscribe(event -> {
                 var content = event.getCustomId().split("-", 3);
                 if (content.length < 3)
                     return;
-                    new ListRequest(content[0], content[1], Strings.parseInt(content[2]), response -> {
+                    Events.fire(new ListRequest(content[0], content[1], Strings.parseInt(content[2]), response -> {
                         var embed = EmbedCreateSpec.builder();
                     
                         switch (content[0]) {
@@ -159,7 +160,7 @@ public class DiscordBot {
                         event.edit().withEmbeds(embed.build())
                                 .withComponents(PageIterator.createPageButtons(content[0], content[1], response))
                                 .subscribe();
-                    });
+                    }));
              
             });
 

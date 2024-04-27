@@ -257,7 +257,6 @@ public class MenuHandler {
     // region enums
 
     public enum Setting implements OptionData {
-        alerts(data -> data.alerts = !data.alerts, data -> data.alerts),
         history(data -> data.history = !data.history, data -> data.history),
         welcomeMessage(data -> data.welcomeMessage = !data.welcomeMessage, data -> data.welcomeMessage),
         discordLink(data -> data.discordLink = !data.discordLink, data -> data.discordLink);

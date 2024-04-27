@@ -27,8 +27,6 @@ public class PlayerData {
 
     @Id
     public int id;
-
-    public boolean alerts = true;
     public boolean history = false;
     public boolean welcomeMessage = true;
     public boolean discordLink = true;

@@ -12,6 +12,7 @@ import Thisiscool.database.Database;
 import Thisiscool.database.models.Ban;
 import Thisiscool.listeners.LegenderyCumEvents.BanEvent;
 import Thisiscool.listeners.LegenderyCumEvents.VoteKickEvent;
+import arc.Events;
 import arc.struct.ObjectIntMap;
 import arc.util.Log;
 import arc.util.Strings;
@@ -96,7 +97,7 @@ public class Admins {
     public static void ban(Ban ban) {
         ban.generateID();
         ban.generatePlayerID();
-        new BanEvent(config.mode.name(), Database.addBan(ban));
+        Events.fire(new BanEvent(config.mode.name(), Database.addBan(ban)));
     }
 
     public static void voteKick(Player initiator, Player target, ObjectIntMap<Player> votes, String reason) {
@@ -119,13 +120,13 @@ public class Admins {
 
         kickReason(target, kickDuration, reason, "kick.vote-kicked", initiator.coloredName(), votesFor, votesAgainst)
                 .kick(kickDuration);
-        new VoteKickEvent(
+       Events.fire( new VoteKickEvent(
                 config.mode.name(),
                 target.plainName() + " [" + Database.getPlayerData(target).id + "]",
                 initiator.plainName() + " [" + Database.getPlayerData(initiator).id + "]",
                 reason,
                 Strings.stripColors(votesFor),
-                Strings.stripColors(votesAgainst));
+                Strings.stripColors(votesAgainst)));
     }
 
     public static void checkKicked(NetConnection con, String locale) {

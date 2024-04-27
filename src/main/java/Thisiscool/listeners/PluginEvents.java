@@ -38,7 +38,7 @@ import mindustry.gen.Groups;
 public class PluginEvents {
 
     public static void load() {
-        Events.on(ServerLoadEvent.class, event -> new ServerMessageEmbedEvent(config.mode.displayName, "Server Launched", Color.SUMMER_SKY));
+        Events.on(ServerLoadEvent.class, event -> Events.fire(new ServerMessageEmbedEvent(config.mode.displayName, "Server Launched", Color.SUMMER_SKY)));
 
         Events.on(PlayEvent.class, event -> {
             state.rules.showSpawns = true;
@@ -102,8 +102,8 @@ public class PluginEvents {
             app.post(() -> data.effects.join.get(event.player));
             Log.info("@ has connected. [@ / @]", event.player.plainName(), event.player.uuid(), data.id);
             Bundle.send("events.join", event.player.coloredName(), data.id);
-            new ServerMessageEmbedEvent(config.mode.name(),
-                    event.player.plainName() + " [" + data.id + "] joined", Color.MEDIUM_SEA_GREEN);
+            Events.fire(new ServerMessageEmbedEvent(config.mode.name(),
+                    event.player.plainName() + " [" + data.id + "] joined", Color.MEDIUM_SEA_GREEN));
             if (data.welcomeMessage)
                 MenuHandler.showWelcomeMenu(event.player);
             else if (data.discordLink)
@@ -121,8 +121,8 @@ public class PluginEvents {
                 vote.left(event.player);
             if (voteKick != null)
                 voteKick.left(event.player);
-            new ServerMessageEmbedEvent(config.mode.name(),
-                    event.player.plainName() + " [" + data.id + "] left", Color.CINNABAR);
+            Events.fire(new ServerMessageEmbedEvent(config.mode.name(),
+                    event.player.plainName() + " [" + data.id + "] left", Color.CINNABAR));
         });
         instance.gameOverListener = event -> {
             Groups.player.each(player -> {

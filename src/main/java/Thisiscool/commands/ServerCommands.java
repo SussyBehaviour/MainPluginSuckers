@@ -16,6 +16,7 @@ import Thisiscool.database.Ranks;
 import Thisiscool.listeners.LegenderyCumEvents.ServerMessageEvent;
 import Thisiscool.utils.Admins;
 import Thisiscool.utils.Find;
+import arc.Events;
 import arc.util.CommandHandler;
 import arc.util.Log;
 import arc.util.Time;
@@ -44,7 +45,7 @@ public class ServerCommands {
             Log.info("&fi@: &fr&lw@", "&lcServer", "&lw" + args[0]);
             Bundle.send("commands.say.chat", args[0]);
 
-            new ServerMessageEvent(config.mode.displayName, "Server", stripDiscord(args[0]));
+            Events.fire(new ServerMessageEvent(config.mode.displayName, "Server", stripDiscord(args[0])));
         });
 
         serverHandler.register("kick", "<player> <duration> [reason...]", "Kick a player.", args -> {

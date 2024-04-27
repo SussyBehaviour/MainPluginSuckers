@@ -26,6 +26,7 @@ import Thisiscool.utils.Find;
 import Thisiscool.utils.MapGenerator;
 import Thisiscool.utils.PageIterator;
 import Thisiscool.utils.Utils;
+import arc.Events;
 import arc.files.Fi;
 import arc.math.Mathf;
 import arc.struct.IntMap;
@@ -97,7 +98,7 @@ public class DiscordCommands {
             Gamemode server = Config.getMode();
             String mapName = args.length > 0 ? args[0] : null;
             if (mapName != null) {
-                new ArtvRequest(server.displayName, mapName, context.member().getDisplayName());
+                Events.fire(new ArtvRequest(server.displayName, mapName, context.member().getDisplayName()));
                 context.info("Map Change Requested", "Map change to " + mapName + " has been requested.", new Object[0])
                         .subscribe();
             } else {

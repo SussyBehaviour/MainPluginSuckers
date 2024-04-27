@@ -20,6 +20,7 @@ import Thisiscool.listeners.LegenderyCumEvents.AdminRequestEvent;
 import Thisiscool.listeners.LegenderyCumEvents.BanEvent;
 import Thisiscool.listeners.LegenderyCumEvents.VoteKickEvent;
 import Thisiscool.utils.Find;
+import arc.Events;
 import arc.util.Log;
 import discord4j.common.util.Snowflake;
 import discord4j.core.event.domain.interaction.SelectMenuInteractionEvent;
@@ -113,7 +114,7 @@ public class DiscordIntegration {
     }
 
     public static void confirm(SelectMenuInteractionEvent event, String server, String uuid) {
-        new AdminRequestConfirmEvent(server, uuid);
+        Events.fire(new AdminRequestConfirmEvent(server, uuid));
 
         var data = Database.getPlayerData(uuid);
         if (data == null)
@@ -131,7 +132,7 @@ public class DiscordIntegration {
     }
 
     public static void deny(SelectMenuInteractionEvent event, String server, String uuid) {
-        new AdminRequestDenyEvent(server, uuid);
+        Events.fire(new AdminRequestDenyEvent(server, uuid));
 
         var data = Database.getPlayerData(uuid);
         if (data == null)
