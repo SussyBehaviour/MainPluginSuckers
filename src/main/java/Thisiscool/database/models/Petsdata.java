@@ -7,6 +7,7 @@ import org.bson.Document;
 import Thisiscool.database.Database;
 import arc.graphics.Color;
 import arc.util.Log;
+import dev.morphia.annotations.Entity;
 import dev.morphia.query.Query;
 import dev.morphia.query.updates.UpdateOperators;
 import mindustry.Vars;
@@ -64,6 +65,7 @@ public class Petsdata {
         }
     }
 
+    @Entity
     public static class Pet {
         public String owner;
         public String name;
@@ -81,11 +83,12 @@ public class Petsdata {
             this.owner = owner;
             this.name = name;
         }
+
         public Document toDocument() {
             Document document = new Document();
             document.append("owner", owner);
             document.append("name", name);
-            document.append("species", species.localizedName); 
+            document.append("species", species.localizedName);
             document.append("color", color.toString());
             document.append("eatenCoal", eatenCoal);
             document.append("eatenCopper", eatenCopper);
@@ -95,7 +98,6 @@ public class Petsdata {
             document.append("eatenBeryllium", eatenBeryllium);
             return document;
         }
-    
 
         public static Pet fromDocument(Document document) {
             Pet pet = new Pet(document.getString("owner"), document.getString("name"));
