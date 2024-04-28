@@ -131,7 +131,8 @@ public class Pets {
     }
 
     protected static int rank(Pet pet) {
-        var items = possibleFoods(pet.species);
+        UnitType unitType = Vars.content.units().find(u -> u.name.equals(pet.speciesName));
+        var items = possibleFoods(unitType);
         long min = Long.MAX_VALUE;
         for (var item : items) {
             long value = switch (item.name) {
@@ -204,8 +205,8 @@ public class Pets {
 
     public static boolean spawnPet(Pet pet, Player player) {
         Log.info("Spawning pet '" + pet.name + "' for player " + player.name());
-        // correct team can't be set instantly, otherwise pet won't spawn
-        Unit unit = pet.species.spawn(player.team(), player.x, player.y);
+        UnitType unitType = Vars.content.units().find(u -> u.name.equals(pet.speciesName));
+        Unit unit = unitType.spawn(player.team(), player.x, player.y);
         if (unit == null) {
             Log.err("Failed to spawn pet '" + pet.name + "' for player " + player.name());
             return false;
