@@ -465,6 +465,7 @@ public class DiscordCommands {
                         Log.err("[Discord] addpet: " + context.member().getDisplayName() + " is using invalid color");
                         return;
                     }
+                    pet.speciesName =args[0];
                     UnitType unitType = Vars.content.units().find(u -> u.name.equals(pet.speciesName));
                     if (unitType == null) {
                         context.error("Invalid Species", "'" + args[0] + "' is not a valid unit")
