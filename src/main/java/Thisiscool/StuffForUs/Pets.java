@@ -2,6 +2,7 @@ package Thisiscool.StuffForUs;
 
 import Thisiscool.database.models.Petsdata;
 import Thisiscool.database.models.Petsdata.Pet;
+import Thisiscool.utils.Utils;
 import arc.Events;
 import arc.graphics.Color;
 import arc.struct.ObjectMap;
@@ -213,9 +214,9 @@ public class Pets {
         }
 
         // initialize controller
-        Team team = getTeam(pet.color);
+        Team team = getTeam(Utils.getColorByName(pet.color));
         Log.info("Giving pet '" + pet.name + "' team " + team.id);
-        UnitController controller = new PetController(player, pet.name, pet.color, team, rank(pet));
+        UnitController controller = new PetController(player, pet.name, Utils.getColorByName(pet.color), team, rank(pet));
         unit.controller(controller);
         controller.unit(unit);
 

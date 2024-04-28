@@ -5,7 +5,6 @@ import java.util.List;
 import org.bson.Document;
 
 import Thisiscool.database.Database;
-import arc.graphics.Color;
 import arc.util.Log;
 import dev.morphia.annotations.Entity;
 import dev.morphia.query.Query;
@@ -69,7 +68,7 @@ public class Petsdata {
         public String owner;
         public String name;
         public String speciesName;
-        public Color color;
+        public String color;
 
         public long eatenCoal;
         public long eatenCopper;
@@ -104,7 +103,7 @@ public class Petsdata {
         public static Pet fromDocument(Document document) {
             Pet pet = new Pet(document.getString("owner"), document.getString("name"));
             pet.speciesName = document.getString("species");
-            pet.color = Color.valueOf(document.getString("color"));
+            pet.color = document.getString("color");
             pet.eatenCoal = document.getLong("eatenCoal");
             pet.eatenCopper = document.getLong("eatenCopper");
             pet.eatenLead = document.getLong("eatenLead");

@@ -458,7 +458,7 @@ public class DiscordCommands {
                     }
 
                     var pet = new Petsdata.Pet(pd.uuid, petName);
-                    pet.color = Utils.getColorByName(args[1]);
+                    pet.color = args[1];
                     if (pet.color == null) {
                         context.error("Not a valid color", "Make sure you are using deafult mindustry format")
                                 .subscribe();
