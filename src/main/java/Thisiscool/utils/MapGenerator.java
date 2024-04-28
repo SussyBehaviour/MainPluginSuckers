@@ -29,7 +29,6 @@ import mindustry.world.Tile;
 import mindustry.world.WorldContext;
 import mindustry.world.blocks.environment.OreBlock;
 import mindustry.world.blocks.storage.CoreBlock;
-
 public class MapGenerator {
 
     public static void init() {
@@ -54,6 +53,7 @@ public class MapGenerator {
         try {
             return parseImage(generatePreview(map), false);
         } catch (Exception e) {
+            Log.err("Error while parsing map: ", e);
             return emptyBytes;
         }
     }
