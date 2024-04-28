@@ -1,7 +1,7 @@
 package Thisiscool.database.models;
 
-import Thisiscool.StuffForUs.menus.MenuHandler.EffectsPack;
 import Thisiscool.StuffForUs.menus.MenuHandler.Language;
+import Thisiscool.StuffForUs.menus.MenuHandler.TrailsPack;
 import Thisiscool.database.Database;
 import Thisiscool.database.Ranks.Rank;
 import arc.util.Strings;
@@ -32,7 +32,7 @@ public class PlayerData {
     public boolean discordLink = true;
 
     public Language language = Language.off;
-    public EffectsPack effects = EffectsPack.none;
+    public TrailsPack trail = TrailsPack.none;
 
     public int playTime = 0;
     public int blocksPlaced = 0;

@@ -132,7 +132,7 @@ public class MenuHandler {
 
             menu.options(1, Setting.values()).row();
             menu.option("setting.translator", Action.open(languagesMenu), data.language.name(menu)).row();
-            menu.option("setting.effects", Action.open(TrailMenu), data.effects.name(menu)).row();
+            menu.option("setting.effects", Action.open(TrailMenu), data.trail.name(menu)).row();
 
             menu.option("ui.button.close");
         }).followUp(true);
@@ -152,10 +152,10 @@ public class MenuHandler {
         TrailMenu.transform(menu -> {
             var data = Cache.get(menu.player);
 
-            menu.title("effects.title");
-            menu.content("effects.content", data.effects.name(menu));
+            menu.title("trail.title");
+            menu.content("trail.content", data.trail.name(menu));
 
-            menu.options(2, EffectsPack.values()).row();
+            menu.options(2, TrailsPack.values()).row();
 
             menu.option("ui.button.back", Action.back());
             menu.option("ui.button.close");
@@ -333,7 +333,7 @@ public class MenuHandler {
         }
     }
 
-    public enum EffectsPack implements OptionData {
+    public enum TrailsPack implements OptionData {
         trail1("Trail1",
                 player -> Effects.stack(player, getRandomEffect(), getRandomEffect()),
                 player -> Effects.stack(player, getRandomEffect(), getRandomEffect()),
@@ -413,18 +413,18 @@ public class MenuHandler {
         public final String name, button;
         public final Cons<Player> join, leave, move;
 
-        EffectsPack(String name, Cons<Player> join, Cons<Player> leave, Cons<Player> move) {
+        TrailsPack(String name, Cons<Player> join, Cons<Player> leave, Cons<Player> move) {
             this(name, name, join, leave, move);
         }
 
-        EffectsPack(String name, String button) {
+        TrailsPack(String name, String button) {
             this(name, button, player -> {
             }, player -> {
             }, player -> {
             });
         }
 
-        EffectsPack(String name, String button, Cons<Player> join, Cons<Player> leave, Cons<Player> move) {
+        TrailsPack(String name, String button, Cons<Player> join, Cons<Player> leave, Cons<Player> move) {
             this.name = name;
             this.button = button;
 
@@ -441,7 +441,7 @@ public class MenuHandler {
         public void option(MenuView menu) {
             menu.option(button, view -> {
                 var data = Cache.get(view.player);
-                data.effects = this;
+                data.trail = this;
 
                 view.getInterface().show(view);
             });
