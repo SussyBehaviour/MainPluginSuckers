@@ -31,6 +31,9 @@ public class Config {
     }
     public String mongoUrl = "url";
     public Gamemode mode = Hub;
+    public static String geturl() {
+        return config.mongoUrl;
+    }
     public static Gamemode getMode() {
         return config.mode;
     }

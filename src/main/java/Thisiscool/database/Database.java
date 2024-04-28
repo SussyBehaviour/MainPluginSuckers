@@ -7,10 +7,10 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 
 import com.mongodb.MongoClientSettings;
-import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.model.ReturnDocument;
 
+import Thisiscool.config.Config;
 import Thisiscool.database.models.Ban;
 import Thisiscool.database.models.Counter;
 import Thisiscool.database.models.Petsdata;
@@ -32,6 +32,7 @@ public class Database {
 
     public static void connect() {
         try {
+            datastore = Morphia.createDatastore(MongoClients.create(Config.geturl()), "Thisiscool");
             CodecRegistry codecRegistry = CodecRegistries.fromRegistries(
                     MongoClientSettings.getDefaultCodecRegistry(),
                     CodecRegistries.fromCodecs(new UnitTypeCodec()));
@@ -39,20 +40,11 @@ public class Database {
             MongoClientSettings settings = MongoClientSettings.builder()
                     .codecRegistry(codecRegistry)
                     .build();
-
-            MongoClient mongoClient = MongoClients.create(settings);
-            Morphia morphia = Morphia.create(settings);
-            datastore = morphia.createDatastore(mongoClient, "Thisiscool");
             mapper = datastore.getMapper();
-
             mapper.getEntityModel(Ban.class);
             mapper.getEntityModel(Counter.class);
             mapper.getEntityModel(PlayerData.class);
             mapper.getEntityModel(Petsdata.Pet.class);
-
-            datastore.ensureCaps();
-            datastore.ensureIndexes();
-
             Log.info("Database connected.");
         } catch (Exception e) {
             Log.err("Failed to connect to the database", e);
