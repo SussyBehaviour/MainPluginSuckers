@@ -466,7 +466,7 @@ public class DiscordCommands {
                         return;
                     }
                     UnitType unitType = Vars.content.units().find(u -> u.name.equals(pet.speciesName));
-                    if (pet.speciesName == null) {
+                    if (unitType == null) {
                         context.error("Invalid Species", "'" + args[0] + "' is not a valid unit")
                                 .subscribe();
                         Log.err("[Discord] addpet: " + context.member().getDisplayName() + " is using invalid species");
