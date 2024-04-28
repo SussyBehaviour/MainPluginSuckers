@@ -20,7 +20,7 @@ dependencies {
     compileOnly("com.github.anuken.mindustry:server:v$mindustryVersion") {
         exclude(group = "com.github.Anuken.Arc")
     }
-    implementation("dev.morphia.morphia:morphia-core:2.3.8")
+    implementation("dev.morphia.morphia:morphia-core:2.4.3")
     implementation("com.discord4j:discord4j-core:3.2.6")
     runtimeOnly("io.netty:netty-transport-native-epoll::linux-aarch_64")
     implementation("org.jline:jline-reader:3.21.0")
