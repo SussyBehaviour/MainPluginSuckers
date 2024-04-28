@@ -418,7 +418,7 @@ public class DiscordCommands {
                             .addField("Player:", data.plainName(), false)
                             .addField("Rank:", rank.name(), false)).subscribe();
                 });
-        discordHandler.<MessageContext>register("addpet", "<species> <color> <name...>",
+        discordHandler.<MessageContext>register("addpet", "<species> <color> <name...>","Add a pet.",
                 (args, context) -> {
                     PlayerData pd = Database.getPlayerDataByDiscordId(context.member().getId().asLong());
                     if (pd == null) {
