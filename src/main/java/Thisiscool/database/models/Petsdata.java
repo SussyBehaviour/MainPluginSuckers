@@ -14,12 +14,12 @@ import dev.morphia.query.updates.UpdateOperators;
 public class Petsdata {
 
     @SuppressWarnings("removal")
-    public static Pet[] getPets(String owner) {
+    public static Pet[] getPets(String uuid) {
         try {
-            Log.info("Attempting to find pets for owner: " + owner);
-            Query<Pet> query = Database.datastore.find(Pet.class).filter("owner", owner);
+            Log.info("Attempting to find pets for owner: " + uuid);
+            Query<Pet> query = Database.datastore.find(Pet.class).filter("owner", uuid);
             List<Pet> petsList = query.find().toList();
-            Log.info("Found " + petsList.size() + " pets for owner: " + owner);
+            Log.info("Found " + petsList.size() + " pets for owner: " + uuid);
             return petsList.toArray(new Pet[0]);
         } catch (Exception e) {
             Log.err("pet error: " + e);
@@ -81,6 +81,10 @@ public class Petsdata {
         public long eatenTitanium;
         public long eatenThorium;
         public long eatenBeryllium;
+
+        // No-argument constructor required by Morphia
+        public Pet() {
+        }
 
         public Pet(String owner, String name) {
             this.owner = owner;

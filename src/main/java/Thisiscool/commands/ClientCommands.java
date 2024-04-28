@@ -124,11 +124,6 @@ public class ClientCommands {
                     vote = new VoteRtv(map);
                     vote.vote(player, 1);
                 });
-        Commands.create("pets")
-                .welcomeMessage(true)
-                .register((args, player) -> {
-
-                });
         Commands.create("maps")
                 .enabled(config.mode.enableRtv)
                 .register(PageIterator::maps);
