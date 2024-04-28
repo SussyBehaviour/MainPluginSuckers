@@ -7,11 +7,11 @@ import org.bson.Document;
 import Thisiscool.database.Database;
 import arc.graphics.Color;
 import arc.util.Log;
+import dev.morphia.annotations.Entity;
 import dev.morphia.query.Query;
 import dev.morphia.query.updates.UpdateOperators;
 import mindustry.Vars;
 import mindustry.type.UnitType;
-
 public class Petsdata {
 
     @SuppressWarnings("removal")
@@ -63,7 +63,7 @@ public class Petsdata {
             Log.err(e);
         }
     }
-
+    @Entity
     public static class Pet {
         public String owner;
         public String name;

@@ -42,6 +42,7 @@ import mindustry.content.Items;
 import mindustry.gen.Call;
 import mindustry.gen.Groups;
 import mindustry.io.MapIO;
+import mindustry.maps.MapException;
 import mindustry.server.ServerControl;
 import mindustry.type.Item;
 
@@ -198,12 +199,12 @@ public class DiscordCommands {
                     .subscribe();
             InputStream imageStream = new ByteArrayInputStream(mapImageData);
             context.message().getChannel()
-            .flatMap(channel -> channel.createMessage(spec -> spec.setContent("Here is the map image:")
-                                                         .addFile("mapImage.png", imageStream)))
-            .subscribe();
+                    .flatMap(channel -> channel.createMessage(spec -> spec.setContent("Here is the map image:")
+                            .addFile("mapImage.png", imageStream)))
+                    .subscribe();
             Log.info("Embed sent.");
         });
-        discordHandler.<MessageContext>register("uploadmap", "Upload a map to the server.",
+        discordHandler.<MessageContext>register("uploadmap", "[map...]", "Upload a map to the server.",
                 (args, context) -> {
                     if (noRole(context, discordConfig.mapReviewerRoleIDs) || notMap(context))
                         return;
@@ -223,7 +224,7 @@ public class DiscordCommands {
                                     context.reply(EmbedResponse.success("Map Uploaded")
                                             .withField("Map:", map.plainName())
                                             .withField("File:", mapFile.name()));
-                                } catch (Exception error) {
+                                } catch (MapException error) { 
                                     mapFile.delete();
                                     context.reply(EmbedResponse.error("Invalid Map")
                                             .withContent("**@** is not a valid map.", mapFile.name()));
@@ -418,7 +419,7 @@ public class DiscordCommands {
                             .addField("Player:", data.plainName(), false)
                             .addField("Rank:", rank.name(), false)).subscribe();
                 });
-        discordHandler.<MessageContext>register("addpet", "<species> <color> <name...>","Add a pet.",
+        discordHandler.<MessageContext>register("addpet", "<species> <color> <name...>", "Add a pet.",
                 (args, context) -> {
                     PlayerData pd = Database.getPlayerDataByDiscordId(context.member().getId().asLong());
                     if (pd == null) {
