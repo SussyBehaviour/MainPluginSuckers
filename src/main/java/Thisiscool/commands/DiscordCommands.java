@@ -45,6 +45,7 @@ import mindustry.io.MapIO;
 import mindustry.maps.MapException;
 import mindustry.server.ServerControl;
 import mindustry.type.Item;
+import mindustry.type.UnitType;
 
 public class DiscordCommands {
     public static final IntMap<User> playerLinkCodes = new IntMap<>();
@@ -224,7 +225,7 @@ public class DiscordCommands {
                                     context.reply(EmbedResponse.success("Map Uploaded")
                                             .withField("Map:", map.plainName())
                                             .withField("File:", mapFile.name()));
-                                } catch (MapException error) { 
+                                } catch (MapException error) {
                                     mapFile.delete();
                                     context.reply(EmbedResponse.error("Invalid Map")
                                             .withContent("**@** is not a valid map.", mapFile.name()));
@@ -464,15 +465,15 @@ public class DiscordCommands {
                         Log.err("[Discord] addpet: " + context.member().getDisplayName() + " is using invalid color");
                         return;
                     }
-                    pet.species = Vars.content.units().find(u -> u.name.equalsIgnoreCase(args[0]));
-                    if (pet.species == null) {
+                    UnitType unitType = Vars.content.units().find(u -> u.name.equals(pet.speciesName));
+                    if (pet.speciesName == null) {
                         context.error("Invalid Species", "'" + args[0] + "' is not a valid unit")
                                 .subscribe();
                         Log.err("[Discord] addpet: " + context.member().getDisplayName() + " is using invalid species");
                         return;
                     }
 
-                    int tier = Pets.tierOf(pet.species);
+                    int tier = Pets.tierOf(unitType);
                     if (tier < 0) {
                         context.error("Unsupported Species",
                                 "Species must be T1-4, not be a naval unit, and not be the antumbra").subscribe();
@@ -482,7 +483,7 @@ public class DiscordCommands {
                     }
 
                     if (tier > Pets.maxTier(pd.rank.toString())) {
-                        context.error("Insufficient Rank", pet.species.name + " is tier " + tier + ", but a "
+                        context.error("Insufficient Rank", pet.speciesName + " is tier " + tier + ", but a "
                                 + pd.rank.toString() + " can only have tier " + Pets.maxTier(pd.rank.toString())
                                 + " pets.")
                                 .subscribe();
@@ -508,13 +509,14 @@ public class DiscordCommands {
             String name = args[0];
             var pets = Petsdata.getPets(pd.uuid);
             var pet = Structs.find(pets, p -> p.name.equalsIgnoreCase(name));
+            UnitType unitType = Vars.content.units().find(u -> u.name.equals(pet.speciesName));
             if (pet == null) {
                 context.error("No such pet", "You don't have a pet named '" + name + "'");
                 Log.info("[Discord] pet: " + context.member().getDisplayName() + " does not have pet " + name);
                 return;
             }
             String foodEaten = "";
-            Item[] foods = Pets.possibleFoods(pet.species);
+            Item[] foods = Pets.possibleFoods(unitType);
             if (Structs.contains(foods, Items.coal)) {
                 foodEaten += Items.coal.emoji() + " " + pet.eatenCoal + "\n";
             }
@@ -537,7 +539,7 @@ public class DiscordCommands {
             final String trimmedFoodEaten = foodEaten.trim();
             context.success(embed -> embed
                     .title("Pet: " + pet.name)
-                    .addField("Species", pet.species.localizedName, true)
+                    .addField("Species", pet.speciesName, true)
                     .addField("Color", "#" + pet.color.toString(), true)
                     .addField("Food Eaten", trimmedFoodEaten, false)
                     .addField("Rank", pd.rank.toString(), true)
