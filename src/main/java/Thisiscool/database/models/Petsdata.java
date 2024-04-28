@@ -80,6 +80,8 @@ public class Petsdata {
         public long eatenTitanium;
         public long eatenThorium;
         public long eatenBeryllium;
+        public Pet() {
+        }
 
         public Pet(String owner, String name) {
             this.owner = owner;
