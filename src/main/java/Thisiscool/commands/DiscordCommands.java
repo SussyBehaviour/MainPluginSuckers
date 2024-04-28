@@ -216,8 +216,9 @@ public class DiscordCommands {
                                 file.writeBytes(response.getResult());
                                 var source = Fi.get(file.absolutePath());
                                 var mapFile = customMapDirectory.child(source.name());
+                                file.writeBytes(source.readBytes());
                                 try {
-                                    var map = MapIO.createMap(mapFile, false);
+                                    var map = MapIO.createMap(mapFile, true);
                                     maps.reload();
                                     context.reply(EmbedResponse.success("Map Uploaded")
                                             .withField("Map:", map.plainName())

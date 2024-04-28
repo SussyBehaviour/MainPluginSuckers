@@ -26,6 +26,7 @@ import arc.Events;
 import arc.struct.Seq;
 import arc.util.Structs;
 import mindustry.gen.Call;
+
 public class ClientCommands {
 
     public static void load() {
@@ -49,6 +50,9 @@ public class ClientCommands {
         Commands.create("settings")
                 .welcomeMessage(true)
                 .register((args, player) -> MenuHandler.showSettingsMenu(player));
+                Commands.create("trail")
+                .welcomeMessage(true)
+                .register((args, player) -> MenuHandler.showTrailMenu(player));
         Commands.create("stats")
                 .welcomeMessage(true)
                 .register((args, player) -> {
@@ -170,7 +174,7 @@ public class ClientCommands {
                         DiscordCommands.playerLinkCodes.remove(code);
                     }
                 });
-                Commands.create("pet")
+        Commands.create("pet")
                 .welcomeMessage(true)
                 .register((args, player) -> {
                     var pets = Petsdata.getPets(player.uuid());
@@ -183,18 +187,18 @@ public class ClientCommands {
                         Call.sendMessage("[red]", "Pet not found.", player);
                         return;
                     }
-        
+
                     var alreadySpawned = Pets.spawnedPets.get(player.uuid(), new Seq<>());
                     if (alreadySpawned.contains(pet.name)) {
                         Call.sendMessage("[red]", "This pet is already spawned.", player);
                         return;
                     }
-        
+
                     if (!Pets.spawnPet(pet, player)) {
                         Call.sendMessage("[red]", "Failed to spawn pet.", player);
                         return;
                     }
-        
+
                     alreadySpawned.add(pet.name);
                     Pets.spawnedPets.put(player.uuid(), alreadySpawned);
                     Call.sendMessage("[green]", "Pet spawned successfully.", player);

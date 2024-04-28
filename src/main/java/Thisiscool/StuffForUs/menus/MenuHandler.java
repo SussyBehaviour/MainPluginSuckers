@@ -5,7 +5,11 @@ import static Thisiscool.database.Ranks.*;
 import static Thisiscool.utils.Utils.*;
 import static mindustry.net.Administration.Config.*;
 
+import java.lang.reflect.Field;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import Thisiscool.MainHelper.Action;
 import Thisiscool.MainHelper.Bundle;
@@ -28,11 +32,14 @@ import arc.graphics.Color;
 import arc.struct.Seq;
 import arc.util.Tmp;
 import mindustry.content.Fx;
+import mindustry.entities.Effect;
 import mindustry.gen.Player;
 import mindustry.graphics.Pal;
 
 public class MenuHandler {
-
+    public static void showTrailMenu(Player player) {
+        TrailMenu.show(player);
+    }
     // region menu
 
     public static final ListMenu listMenu = new ListMenu(maxPerPage);
@@ -44,7 +51,7 @@ public class MenuHandler {
             welcomeMenu = new Menu(),
             settingsMenu = new Menu(),
             languagesMenu = new Menu(),
-            effectsMenu = new Menu(),
+            TrailMenu = new Menu(),
             invalidDurationMenu = new Menu();
 
     // endregion
@@ -75,15 +82,15 @@ public class MenuHandler {
                     data.wavesSurvived, data.attackWins, data.TowerdefenseWins, data.FootballWins,
                     data.HungerGamesWins, data.pvpWins,
                     Bundle.formatDuration(menu.player, Duration.ofMinutes(data.playTime)));
-        
+
             menu.option("stats.requirements.show", Action.open(requirementsMenu)).row();
             menu.option("ui.button.close");
         });
-        
+
         promotionMenu.transform(DATA, PlayerData.class, (menu, data) -> {
             menu.title("stats.promotion.title");
             menu.content("stats.promotion.content", data.rank.name(menu.player), data.rank.description(menu.player));
-        
+
             menu.option("stats.requirements.show", Action.open(requirementsMenu)).row();
             menu.option("ui.button.close");
         });
@@ -125,7 +132,7 @@ public class MenuHandler {
 
             menu.options(1, Setting.values()).row();
             menu.option("setting.translator", Action.open(languagesMenu), data.language.name(menu)).row();
-            menu.option("setting.effects", Action.open(effectsMenu), data.effects.name(menu)).row();
+            menu.option("setting.effects", Action.open(TrailMenu), data.effects.name(menu)).row();
 
             menu.option("ui.button.close");
         }).followUp(true);
@@ -142,7 +149,7 @@ public class MenuHandler {
             menu.option("ui.button.close");
         }).followUp(true);
 
-        effectsMenu.transform(menu -> {
+        TrailMenu.transform(menu -> {
             var data = Cache.get(menu.player);
 
             menu.title("effects.title");
@@ -167,49 +174,49 @@ public class MenuHandler {
         kickDurationInput.transform(TARGET, Player.class, (input, target) -> {
             input.title("kick.duration.title");
             input.content("kick.duration.content", target.coloredName());
-        
+
             input.defaultText("kick.duration.default");
             input.textLength(32);
-        
+
             input.result(text -> {
                 var duration = parseDuration(text);
                 kickReasonInput.open(input, DURATION, duration.toMillis());
             });
         });
-        
+
         banDurationInput.transform(TARGET, Player.class, (input, target) -> {
             input.title("ban.duration.title");
             input.content("ban.duration.content", target.coloredName());
-        
+
             input.defaultText("ban.duration.default");
             input.textLength(32);
-        
+
             input.result(text -> {
                 var duration = parseDuration(text);
                 banReasonInput.open(input, DURATION, duration.toMillis());
             });
         });
-        
+
         kickReasonInput.transform(TARGET, Player.class, (input, target) -> {
             input.title("kick.reason.title");
             input.content("kick.reason.content", target.coloredName(),
                     Bundle.formatDuration(input.player, input.state.get(DURATION, Long.class)));
-        
+
             input.defaultText("kick.reason.default");
             input.textLength(64);
-        
+
             input.closed((Runnable) Action.back());
             input.result(text -> Admins.kick(target, input.player, input.state.get(DURATION, Long.class), text));
         });
-        
+
         banReasonInput.transform(TARGET, Player.class, (input, target) -> {
             input.title("ban.reason.title");
             input.content("ban.reason.content", target.coloredName(),
                     Bundle.formatDuration(input.player, input.state.get(DURATION, Long.class)));
-        
+
             input.defaultText("ban.reason.default");
             input.textLength(64);
-        
+
             input.closed((Runnable) Action.back());
             input.result(text -> Admins.ban(target, input.player, input.state.get(DURATION, Long.class), text));
         });
@@ -328,79 +335,78 @@ public class MenuHandler {
 
     public enum EffectsPack implements OptionData {
         trail1("Trail1",
-                player -> Effects.stack(player, Fx.scatheExplosion, Fx.scatheLight),
-                player -> Effects.stack(player, Fx.scatheExplosion, Fx.scatheLight),
+                player -> Effects.stack(player, getRandomEffect(), getRandomEffect()),
+                player -> Effects.stack(player, getRandomEffect(), getRandomEffect()),
                 player -> Effects.at(Fx.artilleryTrailSmoke, player)),
 
         trail2("Trail2",
-                player -> Effects.stack(player, Fx.titanExplosion, Fx.titanSmoke),
-                player -> Effects.stack(player, Fx.titanExplosion, Fx.titanSmoke),
+                player -> Effects.stack(player, getRandomEffect(), getRandomEffect()),
+                player -> Effects.stack(player, getRandomEffect(), getRandomEffect()),
                 player -> Effects.at(Fx.incendTrail, player, 3f)),
 
         trail3("Trail3",
-                player -> Effects.stack(player, Fx.railShoot, Fx.railShoot, Fx.railShoot),
-                player -> Effects.stack(player, Fx.railShoot, Fx.railShoot, Fx.railShoot),
+                player -> Effects.stack(player, getRandomEffect(), getRandomEffect(), getRandomEffect()),
+                player -> Effects.stack(player, getRandomEffect(), getRandomEffect(), getRandomEffect()),
                 player -> Effects.at(Fx.lightningCharge, player)),
 
         trail4("Trail4",
-                player -> Effects.stack(player, Fx.instHit, Fx.instHit, Fx.instHit),
-                player -> Effects.stack(player, Fx.instHit, Fx.instHit, Fx.instHit),
+                player -> Effects.stack(player, getRandomEffect(), getRandomEffect(), getRandomEffect()),
+                player -> Effects.stack(player, getRandomEffect(), getRandomEffect(), getRandomEffect()),
                 player -> Effects.at(Fx.mineWallSmall, player, Color.yellow)),
 
         trail5("Trail5",
-                player -> Effects.stack(player, Pal.neoplasm1, Fx.neoplasmSplat, Fx.titanSmoke),
-                player -> Effects.stack(player, Pal.neoplasm1, Fx.neoplasmSplat, Fx.titanSmoke),
+                player -> Effects.stack(player, Pal.neoplasm1, getRandomEffect(), getRandomEffect()),
+                player -> Effects.stack(player, Pal.neoplasm1, getRandomEffect(), getRandomEffect()),
                 player -> Effects.at(Fx.neoplasmHeal, player)),
 
         trail6("Trail6",
-                player -> Effects.stack(player, Fx.teleport, Fx.teleportActivate, Fx.teleportOut),
-                player -> Effects.stack(player, Fx.teleport, Fx.teleportActivate, Fx.teleportOut),
+                player -> Effects.stack(player, getRandomEffect(), getRandomEffect(), getRandomEffect()),
+                player -> Effects.stack(player, getRandomEffect(), getRandomEffect(), getRandomEffect()),
                 player -> Effects.at(Fx.smeltsmoke, player, Color.red)),
 
         trail7("Trail7",
-                player -> Effects.rotatedPoly(Fx.coreLandDust, player, 6, 12f, -180f, 90f),
-                player -> Effects.rotatedPoly(Fx.coreLandDust, player, 6, 4f, -90f, 30f),
+                player -> Effects.rotatedPoly(getRandomEffect(), player, 6, 12f, -180f, 90f),
+                player -> Effects.rotatedPoly(getRandomEffect(), player, 6, 4f, -90f, 30f),
                 player -> Effects.at(Fx.bubble, player, 30f)),
 
         trail8("Trail8",
                 player -> Effects.repeat(6, 60f,
-                        time -> Effects.at(Fx.missileTrailSmoke, Tmp.v1.set(60f, 0f).rotate(time * 60f).add(player))),
+                        time -> Effects.at(getRandomEffect(), Tmp.v1.set(60f, 0f).rotate(time * 60f).add(player))),
                 player -> Effects.repeat(6, 60f,
-                        time -> Effects.at(Fx.missileTrailSmoke, Tmp.v1.set(60f, 0f).rotate(time * 300f).add(player))),
+                        time -> Effects.at(getRandomEffect(), Tmp.v1.set(60f, 0f).rotate(time * 300f).add(player))),
                 player -> Effects.at(Fx.airBubble, player)),
 
         trail9("Trail9",
-                player -> Effects.stack(player, 120f, Fx.mineImpactWave, Fx.mineImpactWave, Fx.mineImpactWave,
+                player -> Effects.stack(player, 120f, getRandomEffect(), getRandomEffect(), getRandomEffect(),
                         Fx.mineImpact),
-                player -> Effects.stack(player, 120f, Fx.mineImpactWave, Fx.mineImpactWave, Fx.mineImpactWave,
+                player -> Effects.stack(player, 120f, getRandomEffect(), getRandomEffect(), getRandomEffect(),
                         Fx.mineImpact),
                 player -> Effects.at(Fx.mine, player, Color.cyan)),
 
         trail10("Trail10",
-                player -> Effects.at(Fx.greenBomb, player),
-                player -> Effects.at(Fx.greenLaserCharge, player),
-                player -> Effects.at(Fx.greenCloud, player)),
+                player -> Effects.at(getRandomEffect(), player),
+                player -> Effects.at(getRandomEffect(), player),
+                player -> Effects.at(getRandomEffect(), player)),
 
         trail11("Trail11",
-                player -> Effects.at(Fx.reactorExplosion, player),
-                player -> Effects.at(Fx.reactorExplosion, player),
-                player -> Effects.at(Fx.shootSmokeSquare, player, player.unit().rotation - 180f, Pal.reactorPurple)),
+                player -> Effects.at(getRandomEffect(), player),
+                player -> Effects.at(getRandomEffect(), player),
+                player -> Effects.at(getRandomEffect(), player, player.unit().rotation - 180f, Pal.reactorPurple)),
 
         trail12("Trail12",
-                player -> Effects.at(Fx.impactReactorExplosion, player),
-                player -> Effects.at(Fx.impactReactorExplosion, player),
-                player -> Effects.at(Fx.shootSmokeSquare, player, player.unit().rotation - 180f, Pal.lighterOrange)),
+                player -> Effects.at(getRandomEffect(), player),
+                player -> Effects.at(getRandomEffect(), player),
+                player -> Effects.at(getRandomEffect(), player, player.unit().rotation - 180f, Pal.lighterOrange)),
 
         trail13("Trail13",
-                player -> Effects.at(Fx.dynamicSpikes, player, 60f, Pal.sapBullet),
-                player -> Effects.at(Fx.dynamicSpikes, player, 60f, Pal.sapBullet),
+                player -> Effects.at(getRandomEffect(), player, 60f, Pal.sapBullet),
+                player -> Effects.at(getRandomEffect(), player, 60f, Pal.sapBullet),
                 player -> Effects.at(Fx.regenSuppressSeek, player, player.unit())),
 
         trail14("Trail14",
-                player -> Effects.rotatedPoly(Fx.shootSmokeMissile, player, 6, 6f, -180f, 50f),
-                player -> Effects.rotatedPoly(Fx.shootSmokeMissile, player, 6, 6f, 0f, 100f),
+                player -> Effects.rotatedPoly(getRandomEffect(), player, 6, 6f, -180f, 50f),
+                player -> Effects.rotatedPoly(getRandomEffect(), player, 6, 6f, 0f, 100f),
                 player -> Effects.at(Fx.vapor, player)),
-                
 
         none("effects.disabled", "effects.disable");
 
@@ -443,4 +449,25 @@ public class MenuHandler {
     }
 
     // endregion
+    public static Effect getRandomEffect() {
+        List<Effect> effects = new ArrayList<>();
+        Random random = new Random();
+
+        for (Field field : Fx.class.getFields()) {
+            try {
+                Object obj = field.get(null);
+                if (obj instanceof Effect) {
+                    effects.add((Effect) obj);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (effects.isEmpty()) {
+            return null; // or handle the case where no Effects are found
+        }
+
+        return effects.get(random.nextInt(effects.size()));
+    }
 }
