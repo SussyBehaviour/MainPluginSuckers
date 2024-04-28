@@ -37,7 +37,7 @@ public class Database {
                     MongoClientSettings.getDefaultCodecRegistry(),
                     CodecRegistries.fromCodecs(new UnitTypeCodec()));
 
-            MongoClientSettings settings = MongoClientSettings.builder()
+            MongoClientSettings.builder()
                     .codecRegistry(codecRegistry)
                     .build();
             mapper = datastore.getMapper();
