@@ -184,13 +184,16 @@ public class DiscordCommands {
         discordHandler.<MessageContext>register("map", "<map...>", "Map", (args, context) -> {
             var map = Find.map(args[0]);
             if (map == null) {
-                Log.err("Map not found: " + args[0]);
                 context.error("Error", "Map not found.").subscribe();
                 return;
             }
-            Log.info("Rendering map image for " + map.plainName() + "...");
             byte[] mapImageData = MapGenerator.renderMap(map);
-            Log.info("Map image rendered.");
+            InputStream imageStream = new ByteArrayInputStream(mapImageData);
+            context.message().getChannel()
+                    .flatMap(channel -> channel.createMessage(spec -> spec.setContent("Here is the map image:")
+                            .addFile("mapImage.png", imageStream)))
+                    .subscribe();
+
             context.info(embed -> embed
                     .title("Map Information")
                     .addField("Map:", map.plainName(), false)
@@ -198,12 +201,6 @@ public class DiscordCommands {
                     .addField("Description:", map.plainDescription(), false)
                     .addField("Size:", map.width + "x" + map.height, false))
                     .subscribe();
-            InputStream imageStream = new ByteArrayInputStream(mapImageData);
-            context.message().getChannel()
-                    .flatMap(channel -> channel.createMessage(spec -> spec.setContent("Here is the map image:")
-                            .addFile("mapImage.png", imageStream)))
-                    .subscribe();
-            Log.info("Embed sent.");
         });
         discordHandler.<MessageContext>register("uploadmap", "[map...]", "Upload a map to the server.",
                 (args, context) -> {
@@ -395,7 +392,7 @@ public class DiscordCommands {
                     playerLinkCodes.put(code, context.member());
                     Groups.player.forEach(p -> {
                         if (p.uuid().equals(data.uuid)) {
-                            Call.sendMessage("[accent]" + context.member().getDisplayName(),
+                            Call.sendMessage(p.con,"[accent]" + context.member().getDisplayName(),
                                     " wants to link with you. If you wish to link your account, type [accent] /link "
                                             + code
                                             + " to link.",
@@ -537,14 +534,14 @@ public class DiscordCommands {
             }
 
             final String trimmedFoodEaten = foodEaten.trim();
-            context.success(embed -> embed
-                    .title("Pet: " + pet.name)
-                    .addField("Species", pet.speciesName, true)
-                    .addField("Color", "#" + pet.color.toString(), true)
-                    .addField("Food Eaten", trimmedFoodEaten, false)
-                    .addField("Rank", pd.rank.toString(), true)
-                    .addField("Owner", pd.plainName(), true));
-            Log.info("[Discord] pet: " + context.member().getDisplayName() + " viewed pet " + pet.name);
+            context.info(embed -> embed
+            .title("Pet: " + pet.name)
+            .addField("Species", pet.speciesName, true)
+            .addField("Color", "#" + pet.color.toString(), true)
+            .addField("Food Eaten", trimmedFoodEaten, false)
+            .addField("Rank", pd.rank.toString(), true)
+            .addField("Owner", pd.plainName(), true))
+            .subscribe();
         });
 
     }
