@@ -3,7 +3,6 @@ package Thisiscool.database.models;
 import java.util.List;
 
 import org.bson.Document;
-import org.bson.types.ObjectId;
 
 import Thisiscool.database.Database;
 import arc.util.Log;
@@ -70,7 +69,7 @@ public class Petsdata {
     @Entity
     public static class Pet {
         @Id
-        private ObjectId id;
+        private int id;
         public String owner;
         public String name;
         public String speciesName;
@@ -86,10 +85,12 @@ public class Petsdata {
         public Pet(String owner, String name) {
             this.owner = owner;
             this.name = name;
+            this.id = Database.getPlayerDataByUuid(owner);
         }
 
         public void setSpeciesByName(String speciesName) {
             this.speciesName = speciesName;
+
         }
 
         public Document toDocument() {

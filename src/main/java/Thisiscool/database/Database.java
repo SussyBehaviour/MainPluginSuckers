@@ -84,7 +84,15 @@ public class Database {
                     return savePlayerData(data);
                 });
     }
-
+    public static int getPlayerDataByUuid(String uuid) {
+        PlayerData playerData = getPlayerData(uuid);
+        if (playerData != null) {
+            return playerData.id;
+        } else {
+            Log.err("PlayerData not found for uuid: " + uuid);
+            return 0;
+        }
+    }
     public static PlayerData savePlayerData(PlayerData data) {
         return datastore.save(data);
     }
