@@ -179,29 +179,29 @@ public class ClientCommands {
                 .register((args, player) -> {
                     var pets = Petsdata.getPets(player.uuid());
                     if (pets == null || pets.length == 0) {
-                        Call.sendMessage("[red]", "You have no pets to spawn.", player);
+                        Call.sendMessage(player.con,"[red]", "You have no pets to spawn.", player);
                         return;
                     }
                     var pet = args.length == 0 ? null : Structs.find(pets, p -> p.name.equalsIgnoreCase(args[0]));
                     if (pet == null) {
-                        Call.sendMessage("[red]", "Pet not found.", player);
+                        Call.sendMessage(player.con,"[red]", "Pet not found.", player);
                         return;
                     }
 
                     var alreadySpawned = Pets.spawnedPets.get(player.uuid(), new Seq<>());
                     if (alreadySpawned.contains(pet.name)) {
-                        Call.sendMessage("[red]", "This pet is already spawned.", player);
+                        Call.sendMessage(player.con,"[red]", "This pet is already spawned.", player);
                         return;
                     }
 
                     if (!Pets.spawnPet(pet, player)) {
-                        Call.sendMessage("[red]", "Failed to spawn pet.", player);
+                        Call.sendMessage(player.con,"[red]", "Failed to spawn pet.", player);
                         return;
                     }
 
                     alreadySpawned.add(pet.name);
                     Pets.spawnedPets.put(player.uuid(), alreadySpawned);
-                    Call.sendMessage("[green]", "Pet spawned successfully.", player);
+                    Call.sendMessage(player.con,"[green]", "Pet spawned successfully.", player);
                 });
         Commands.create("petdespawn")
                 .welcomeMessage(true)

@@ -436,7 +436,6 @@ public class DiscordCommands {
                         Log.err("[Discord] addpet: Pet name " + petName + " is too long.");
                         return;
                     }
-
                     var pets = Petsdata.getPets(pd.uuid);
                     if (pets.length >= Pets.maxPets(pd.rank.toString())) {
                         context.error("Too Many Pets",

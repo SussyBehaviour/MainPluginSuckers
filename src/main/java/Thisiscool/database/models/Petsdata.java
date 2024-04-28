@@ -3,10 +3,12 @@ package Thisiscool.database.models;
 import java.util.List;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import Thisiscool.database.Database;
 import arc.util.Log;
 import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
 import dev.morphia.query.Query;
 import dev.morphia.query.updates.UpdateOperators;
 
@@ -65,6 +67,8 @@ public class Petsdata {
 
     @Entity
     public static class Pet {
+        @Id
+        private ObjectId id;
         public String owner;
         public String name;
         public String speciesName;
@@ -81,10 +85,11 @@ public class Petsdata {
             this.owner = owner;
             this.name = name;
         }
+
         public void setSpeciesByName(String speciesName) {
             this.speciesName = speciesName;
         }
-    
+
         public Document toDocument() {
             Document document = new Document();
             document.append("owner", owner);
