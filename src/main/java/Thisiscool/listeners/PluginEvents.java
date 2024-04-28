@@ -99,7 +99,7 @@ public class PluginEvents {
             var data = Database.getPlayerDataOrCreate(event.player.uuid());
             Cache.put(event.player, data);
             Ranks.name(event.player, data);
-            app.post(() -> data.effects.join.get(event.player));
+            app.post(() -> data.trail.join.get(event.player));
             Log.info("@ has connected. [@ / @]", event.player.plainName(), event.player.uuid(), data.id);
             Bundle.send("events.join", event.player.coloredName(), data.id);
             Events.fire(new ServerMessageEmbedEvent(config.mode.name(),
@@ -114,7 +114,7 @@ public class PluginEvents {
         Events.on(PlayerLeave.class, event -> {
             var data = Cache.remove(event.player);
             Database.savePlayerData(data);
-            data.effects.leave.get(event.player);
+            data.trail.leave.get(event.player);
             Log.info("@ has disconnected. [@ / @]", event.player.plainName(), event.player.uuid(), data.id);
             Bundle.send("events.leave", event.player.coloredName(), data.id);
             if (vote != null)
@@ -161,7 +161,7 @@ public class PluginEvents {
         };
         Timer.schedule(() -> Groups.player.each(player -> {
             if (player.unit().moving())
-                Cache.get(player).effects.move.get(player);
+                Cache.get(player).trail.move.get(player);
         }), 0f, 0.1f);
 
         Timer.schedule(() -> Groups.player.each(player -> {
